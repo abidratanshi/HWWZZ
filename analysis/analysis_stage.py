@@ -186,7 +186,7 @@ class RDFanalysis():
                                         "    return TLorentzVector(RecoMuon_px[0], RecoMuon_py[0], RecoMuon_pz[0], RecoMuon_e[0]) + "
                                         "           TLorentzVector(RecoMuon_px[1], RecoMuon_py[1], RecoMuon_pz[1], RecoMuon_e[1]);"
                                         "}")
-            
+
                 # Z properties
                 .Define("RecoZ_px",    "RecoZ_p4.Px()")
                 .Define("RecoZ_py",    "RecoZ_p4.Py()")
@@ -202,8 +202,11 @@ class RDFanalysis():
 
 
                 # remove Z leptons from rest of particles in order to recluster the jets
-                .Define("RP_no_leptons", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, RecoElectrons + RecoMuons)")
-
+                # .Define("RP_no_leptons", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, RecoElectrons + RecoMuons)")
+                # check if there is a way to merge RecoElectrons and RecoMuons and then just remove those at once
+            
+                .Define("Leptons", "FCCAnalyses::ReconstructedParticle::merge(RecoElectrons, RecoMuons)")
+                .Define("RP_no_leptons", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Leptons)")
         
         )
 
@@ -290,7 +293,9 @@ class RDFanalysis():
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",    "RecoH_p4.M()")
 
-                .Define("Recoil_mass", "(TLorentzVector(0., 0., 0., 365.) - RecoZ_p4).M()")
+                
+                .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
+                .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
 
 
         )

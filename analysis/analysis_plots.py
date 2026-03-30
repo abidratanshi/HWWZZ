@@ -3,11 +3,11 @@ import ROOT
 # global parameters
 intLumi = 3e6 # pb^-1, for 365 GeV
 
-###If scaleSig=0 or scaleBack=0, we don't apply any additional scaling, on top of the normalization to cross section and integrated luminosity, as defined in finalSel.py
-###If scaleSig or scaleBack is not defined, plots will be normalized to 1
+# if scaleSig=0 or scaleBack=0, we don't apply any additional scaling, on top of the normalization to cross section and integrated luminosity, as defined in finalSel.py
+# if scaleSig or scaleBack is not defined, plots will be normalized to 1
 #scaleSig       = 0.
 #scaleBack      = 0.
-ana_tex        = 'e^{+} e^{-} #rightarrow #ell^{+} #ell^{-} H, H #rightarrow WW/ZZ'
+ana_tex        = 'e^{+} e^{-} #rightarrow l^{+} l^{-} H, H #rightarrow WW/ZZ'
 delphesVersion = '3.4.2'
 energy         = 365
 collider       = 'FCC-ee'
@@ -15,21 +15,17 @@ inputDir       = "/ceph/aratanshi/final_output/"
 # outdir         = "/ceph/aratanshi/plots"
 outdir         = "/web/aratanshi/public_html/plots"
 
-## you can save the plots in png or pdf or both
 # formats        = ['png']
 formats        = ['pdf']
 
-## you can choose to plot in logarithmic or linear scale the y axis
 #yaxis          = ['lin','log']
 yaxis          = ['log']
 
-## hree you can choose to stack or not your signals and backgrounds separately
 stacksig       = ['nostack']
 stackbkg       = ['stack']
-splitLeg       = True ### to split legend for backgrounds and signals ###
+splitLeg       = True # split legend for backgrounds and signals
 
 
-## add the list of variable that you want to plot here, the name correspond to the name of the histogram saved in final
 variables = [
 
             "n_RecoElectrons",
@@ -124,23 +120,12 @@ variables = [
     
         ]
 
-    
-#Dictionary with the analysis name as a key, and the list of selections to be plotted for this analysis. The name of the selections should be the same than in the final selection
-## add your selections from final
 selections = {}
 selections['HWWZZ']  = ["sel0"]
-# selections['HWWZZ']  = ["sel0","selZ","selH"]
 
-
-
-## pretty labels for the selections, they will appear on your plots
 extralabel = {}
-extralabel["sel0"] = "none"
-# extralabel["selZ"] = "$80 < M_Z < 100$"
-# extralabel["selH"] = "$100 < M_H < 150$"
+extralabel["sel0"] = ""
 
-
-## colors are from the ROOT color wheel or color table, assigned to each process
 colors = {}
 colors['ee_eeH_HWW']   = ROOT.kOrange+2
 colors['ee_eeH_HZZ']   = ROOT.kYellow-7
@@ -150,9 +135,6 @@ colors['ee_WW']        = ROOT.kBlue+1
 colors['ee_ZZ']        = ROOT.kCyan+2
 colors['ee_tt']        = ROOT.kGreen+3
 
-
-## we decide what is going to be plotted as a signal (line histogram) or background (filled histogram)
-## remember that you have to have at least one background for this to work
 plots = {}
 plots['HWWZZ'] = {'signal':{'ee_eeH_HWW':['wzp6_ee_eeH_HWW_ecm365'],
                                  'ee_eeH_HZZ':['wzp6_ee_eeH_HZZ_ecm365'],
@@ -166,11 +148,11 @@ plots['HWWZZ'] = {'signal':{'ee_eeH_HWW':['wzp6_ee_eeH_HWW_ecm365'],
                                      }
 }
 
-## pretty names for the processes, the format is TLatex https://root.cern.ch/doc/master/classTLatex.html
+# the format is TLatex https://root.cern.ch/doc/master/classTLatex.html
 legend = {}
 legend['ee_eeH_HWW']   = 'e^{+} e^{-} #rightarrow e^{+} e^{-} H, H #rightarrow W W'
-legend['ee_eeH_HZZ']   = 'e^{+} e^{-} #rightarrow #mu^{+} #mu^{-} H, H #rightarrow Z Z'
-legend['ee_mumuH_HWW'] = 'e^{+} e^{-} #rightarrow e^{+} e^{-} H, H #rightarrow W W'
+legend['ee_eeH_HZZ']   = 'e^{+} e^{-} #rightarrow e^{+} e^{-} H, H #rightarrow Z Z'
+legend['ee_mumuH_HWW'] = 'e^{+} e^{-} #rightarrow #mu^{+} #mu^{-} H, H #rightarrow W W'
 legend['ee_mumuH_HZZ'] = 'e^{+} e^{-} #rightarrow #mu^{+} #mu^{-} H, H #rightarrow Z Z'
 legend['ee_WW']        = 'e^{+} e^{-} #rightarrow W W'
 legend['ee_ZZ']        = 'e^{+} e^{-} #rightarrow Z Z'

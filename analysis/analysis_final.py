@@ -1,19 +1,16 @@
-#Input directory where the files produced at the stage1 level are
-inputDir = "/ceph/aratanshi/stage_output"
 
+inputDir = "/ceph/aratanshi/stage_output"
 outputDir = "/ceph/aratanshi/final_output"
 
-#Integrated luminosity for scaling number of events (required only if setting doScale to true)
 intLumi = 3e6 # pb^-1
 
-#Scale event yields by intLumi and cross section (optional)
-#if scaling, both the number of events in the table and in the histograms will be scaled
+# Scale event yields by intLumi and cross section (optional)
+# if scaling, both the number of events in the table and in the histograms will be scaled
 doScale = True
 
 #Save event yields in a table (optional)
 saveTabular = False
 
-#Number of CPUs to use
 nCPUs = 8
 
 #produces ROOT TTrees, default is False
@@ -47,20 +44,12 @@ procDictAdd = {}
 cutList = {
     ### no selection, just builds the histograms, it will not be shown in the latex table
     "sel0": "true",
-
-    # # Z window
-    # "selZ": "RecoZ_mass > 80 && RecoZ_mass < 100",
-
-    # # Higgs window
-    # "selH": "RecoH_mass > 100 && RecoH_mass < 150",
 }
 
 # Dictionary for prettier names of cuts (optional)
 ### needs to be in the same order as cutList or the table won't be organised well, it's only for the table ###
 cutLabels = {
     "sel0": "No cut",
-    # "selZ": "80 < M_Z < 100",
-    # "selH": "100 < M_H < 150",
 }
 
 ###Dictionary for the ouput variable/hitograms
