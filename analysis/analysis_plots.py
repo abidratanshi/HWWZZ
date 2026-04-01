@@ -12,11 +12,12 @@ delphesVersion = '3.4.2'
 energy         = 365
 collider       = 'FCC-ee'
 inputDir       = "/ceph/aratanshi/final_output/"
-# outdir         = "/ceph/aratanshi/plots"
-outdir         = "/web/aratanshi/public_html/plots"
+outdir         = "/ceph/aratanshi/plots_01-04-2026"
+# outdir         = "/web/aratanshi/public_html/plots
 
+formats        = ['png','pdf']
 # formats        = ['png']
-formats        = ['pdf']
+# formats        = ['pdf']
 
 #yaxis          = ['lin','log']
 yaxis          = ['log']

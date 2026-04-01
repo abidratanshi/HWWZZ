@@ -201,10 +201,7 @@ class RDFanalysis():
                 .Define("RecoZ_mass",  "RecoZ_p4.M()")
 
 
-                # remove Z leptons from rest of particles in order to recluster the jets
-                # .Define("RP_no_leptons", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, RecoElectrons + RecoMuons)")
-                # check if there is a way to merge RecoElectrons and RecoMuons and then just remove those at once
-            
+                # remove Z leptons from rest of particles in order to recluster the jets            
                 .Define("Leptons", "FCCAnalyses::ReconstructedParticle::merge(RecoElectrons, RecoMuons)")
                 .Define("RP_no_leptons", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Leptons)")
         
