@@ -20,7 +20,7 @@ inputDir = "/ceph/sgiappic/HiggsCP/winter23"
 outputDir = "/ceph/aratanshi/stage_output"
 includePaths = ["functions.h"]
 
-nCPUS = 8
+nCPUS = 6
 
 ### necessary to run on HTCondor ###
 # eosType = "eosuser"
@@ -76,116 +76,152 @@ class RDFanalysis():
                 .Alias("MCRecoAssociations1", "MCRecoAssociations#1.index")
 
                 # all final state gen electrons and positrons
-                # gen status==1 means final state particle (FS)
-                .Define("GenElectron_PID", "FCCAnalyses::MCParticle::sel_pdgID(11, true)(Particle)")
-                .Define("FSGenElectron", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenElectron_PID)") 
-                .Define("n_FSGenElectron", "FCCAnalyses::MCParticle::get_n(FSGenElectron)")
-                .Define("FSGenElectron_e", "FCCAnalyses::MCParticle::get_e(FSGenElectron)")
-                .Define("FSGenElectron_p", "FCCAnalyses::MCParticle::get_p(FSGenElectron)")
-                .Define("FSGenElectron_pt", "FCCAnalyses::MCParticle::get_pt(FSGenElectron)")
-                .Define("FSGenElectron_px", "FCCAnalyses::MCParticle::get_px(FSGenElectron)")
-                .Define("FSGenElectron_py", "FCCAnalyses::MCParticle::get_py(FSGenElectron)")
-                .Define("FSGenElectron_pz", "FCCAnalyses::MCParticle::get_pz(FSGenElectron)")
-                .Define("FSGenElectron_y", "FCCAnalyses::MCParticle::get_y(FSGenElectron)") # rapidity
-                .Define("FSGenElectron_eta", "FCCAnalyses::MCParticle::get_eta(FSGenElectron)") # pseudorapidity
-                .Define("FSGenElectron_theta", "FCCAnalyses::MCParticle::get_theta(FSGenElectron)")
-                .Define("FSGenElectron_phi", "FCCAnalyses::MCParticle::get_phi(FSGenElectron)") # polar angle in the transverse plane phi
-                .Define("FSGenElectron_charge", "FCCAnalyses::MCParticle::get_charge(FSGenElectron)")
-                .Define("FSGenElectron_mass", "FCCAnalyses::MCParticle::get_mass(FSGenElectron)")
-                .Define("FSGenElectron_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenElectron,Particle,Particle0)")
-                .Define("FSGenElectron_vertex_x", "FCCAnalyses::MCParticle::get_vertex_x( FSGenElectron )")
-                .Define("FSGenElectron_vertex_y", "FCCAnalyses::MCParticle::get_vertex_y( FSGenElectron )")
-                .Define("FSGenElectron_vertex_z", "FCCAnalyses::MCParticle::get_vertex_z( FSGenElectron )")
+                # # gen status==1 means final state particle (FS)
+                # .Define("GenElectron_PID",         "FCCAnalyses::MCParticle::sel_pdgID(11, true)(Particle)")
+                # .Define("FSGenElectron",           "FCCAnalyses::MCParticle::sel_genStatus(1)(GenElectron_PID)") 
+                # .Define("n_FSGenElectron",         "FCCAnalyses::MCParticle::get_n(FSGenElectron)")
+                # .Define("FSGenElectron_e",         "FCCAnalyses::MCParticle::get_e(FSGenElectron)")
+                # .Define("FSGenElectron_p",         "FCCAnalyses::MCParticle::get_p(FSGenElectron)")
+                # .Define("FSGenElectron_pt",        "FCCAnalyses::MCParticle::get_pt(FSGenElectron)")
+                # .Define("FSGenElectron_px",        "FCCAnalyses::MCParticle::get_px(FSGenElectron)")
+                # .Define("FSGenElectron_py",        "FCCAnalyses::MCParticle::get_py(FSGenElectron)")
+                # .Define("FSGenElectron_pz",        "FCCAnalyses::MCParticle::get_pz(FSGenElectron)")
+                # .Define("FSGenElectron_y",         "FCCAnalyses::MCParticle::get_y(FSGenElectron)") # rapidity
+                # .Define("FSGenElectron_eta",       "FCCAnalyses::MCParticle::get_eta(FSGenElectron)") # pseudorapidity
+                # .Define("FSGenElectron_theta",     "FCCAnalyses::MCParticle::get_theta(FSGenElectron)")
+                # .Define("FSGenElectron_phi",       "FCCAnalyses::MCParticle::get_phi(FSGenElectron)") # polar angle in the transverse plane phi
+                # .Define("FSGenElectron_charge",    "FCCAnalyses::MCParticle::get_charge(FSGenElectron)")
+                # .Define("FSGenElectron_mass",      "FCCAnalyses::MCParticle::get_mass(FSGenElectron)")
+                # .Define("FSGenElectron_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenElectron,Particle,Particle0)")
+                # .Define("FSGenElectron_vertex_x",  "FCCAnalyses::MCParticle::get_vertex_x( FSGenElectron )")
+                # .Define("FSGenElectron_vertex_y",  "FCCAnalyses::MCParticle::get_vertex_y( FSGenElectron )")
+                # .Define("FSGenElectron_vertex_z",  "FCCAnalyses::MCParticle::get_vertex_z( FSGenElectron )")
                 
-                # all final state gen muons 
-                .Define("GenMuon_PID", "FCCAnalyses::MCParticle::sel_pdgID(13, true)(Particle)")
-                .Define("FSGenMuon", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenMuon_PID)")
-                .Define("n_FSGenMuon", "FCCAnalyses::MCParticle::get_n(FSGenMuon)")
-                .Define("FSGenMuon_e", "FCCAnalyses::MCParticle::get_e(FSGenMuon)")
-                .Define("FSGenMuon_p", "FCCAnalyses::MCParticle::get_p(FSGenMuon)")
-                .Define("FSGenMuon_pt", "FCCAnalyses::MCParticle::get_pt(FSGenMuon)")
-                .Define("FSGenMuon_px", "FCCAnalyses::MCParticle::get_px(FSGenMuon)")
-                .Define("FSGenMuon_py", "FCCAnalyses::MCParticle::get_py(FSGenMuon)")
-                .Define("FSGenMuon_pz", "FCCAnalyses::MCParticle::get_pz(FSGenMuon)")
-                .Define("FSGenMuon_y", "FCCAnalyses::MCParticle::get_y(FSGenMuon)")
-                .Define("FSGenMuon_eta", "FCCAnalyses::MCParticle::get_eta(FSGenMuon)")
-                .Define("FSGenMuon_theta", "FCCAnalyses::MCParticle::get_theta(FSGenMuon)")
-                .Define("FSGenMuon_phi", "FCCAnalyses::MCParticle::get_phi(FSGenMuon)")
-                .Define("FSGenMuon_charge", "FCCAnalyses::MCParticle::get_charge(FSGenMuon)")
-                .Define("FSGenMuon_mass",   "FCCAnalyses::MCParticle::get_mass(FSGenMuon)")
-                .Define("FSGenMuon_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenMuon,Particle,Particle0)")
-                .Define("FSGenMuon_vertex_x", "FCCAnalyses::MCParticle::get_vertex_x( FSGenMuon )")
-                .Define("FSGenMuon_vertex_y", "FCCAnalyses::MCParticle::get_vertex_y( FSGenMuon )")
-                .Define("FSGenMuon_vertex_z", "FCCAnalyses::MCParticle::get_vertex_z( FSGenMuon )")
+                # # all final state gen muons 
+                # .Define("GenMuon_PID",         "FCCAnalyses::MCParticle::sel_pdgID(13, true)(Particle)")
+                # .Define("FSGenMuon",           "FCCAnalyses::MCParticle::sel_genStatus(1)(GenMuon_PID)")
+                # .Define("n_FSGenMuon",         "FCCAnalyses::MCParticle::get_n(FSGenMuon)")
+                # .Define("FSGenMuon_e",         "FCCAnalyses::MCParticle::get_e(FSGenMuon)")
+                # .Define("FSGenMuon_p",         "FCCAnalyses::MCParticle::get_p(FSGenMuon)")
+                # .Define("FSGenMuon_pt",        "FCCAnalyses::MCParticle::get_pt(FSGenMuon)")
+                # .Define("FSGenMuon_px",        "FCCAnalyses::MCParticle::get_px(FSGenMuon)")
+                # .Define("FSGenMuon_py",        "FCCAnalyses::MCParticle::get_py(FSGenMuon)")
+                # .Define("FSGenMuon_pz",        "FCCAnalyses::MCParticle::get_pz(FSGenMuon)")
+                # .Define("FSGenMuon_y",         "FCCAnalyses::MCParticle::get_y(FSGenMuon)")
+                # .Define("FSGenMuon_eta",       "FCCAnalyses::MCParticle::get_eta(FSGenMuon)")
+                # .Define("FSGenMuon_theta",     "FCCAnalyses::MCParticle::get_theta(FSGenMuon)")
+                # .Define("FSGenMuon_phi",       "FCCAnalyses::MCParticle::get_phi(FSGenMuon)")
+                # .Define("FSGenMuon_charge",    "FCCAnalyses::MCParticle::get_charge(FSGenMuon)")
+                # .Define("FSGenMuon_mass",      "FCCAnalyses::MCParticle::get_mass(FSGenMuon)")
+                # .Define("FSGenMuon_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenMuon,Particle,Particle0)")
+                # .Define("FSGenMuon_vertex_x",  "FCCAnalyses::MCParticle::get_vertex_x( FSGenMuon )")
+                # .Define("FSGenMuon_vertex_y",  "FCCAnalyses::MCParticle::get_vertex_y( FSGenMuon )")
+                # .Define("FSGenMuon_vertex_z",  "FCCAnalyses::MCParticle::get_vertex_z( FSGenMuon )")
 
                 ##################
                 # Reco particles #
                 ##################
 
                 # ELECTRONS 
-                .Alias("Electron0", "Electron#0.index")
-                .Define("RecoElectrons",  "ReconstructedParticle::get(Electron0, ReconstructedParticles)")            
-                .Define("n_RecoElectrons",  "ReconstructedParticle::get_n(RecoElectrons)")
+                .Alias("Electron0",            "Electron#0.index")
+                .Define("RecoElectrons",       "ReconstructedParticle::get(Electron0, ReconstructedParticles)")            
+                .Define("n_RecoElectrons",     "ReconstructedParticle::get_n(RecoElectrons)")
                 .Define("RecoElectron_e",      "ReconstructedParticle::get_e(RecoElectrons)")
                 .Define("RecoElectron_p",      "ReconstructedParticle::get_p(RecoElectrons)")
-                .Define("RecoElectron_pt",      "ReconstructedParticle::get_pt(RecoElectrons)")
-                .Define("RecoElectron_px",      "ReconstructedParticle::get_px(RecoElectrons)")
-                .Define("RecoElectron_py",      "ReconstructedParticle::get_py(RecoElectrons)")
-                .Define("RecoElectron_pz",      "ReconstructedParticle::get_pz(RecoElectrons)")
-                .Define("RecoElectron_y",     "ReconstructedParticle::get_y(RecoElectrons)")
-                .Define("RecoElectron_eta",     "ReconstructedParticle::get_eta(RecoElectrons)")
-                .Define("RecoElectron_theta",   "ReconstructedParticle::get_theta(RecoElectrons)")
-                .Define("RecoElectron_phi",     "ReconstructedParticle::get_phi(RecoElectrons)") 
-                .Define("RecoElectron_charge",  "ReconstructedParticle::get_charge(RecoElectrons)")
-                .Define("RecoElectron_mass",     "ReconstructedParticle::get_mass(RecoElectrons)")
-                .Define("RecoElectronTrack_absD0", "return abs(ReconstructedParticle2Track::getRP2TRK_D0(RecoElectrons,EFlowTrack_1))")
-                .Define("RecoElectronTrack_absZ0", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0(RecoElectrons,EFlowTrack_1))")
-                .Define("RecoElectronTrack_absD0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_D0_sig(RecoElectrons,EFlowTrack_1))") 
-                .Define("RecoElectronTrack_absZ0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0_sig(RecoElectrons,EFlowTrack_1))")
-                .Define("RecoElectronTrack_D0cov", "ReconstructedParticle2Track::getRP2TRK_D0_cov(RecoElectrons,EFlowTrack_1)") #variance (not sigma)
-                .Define("RecoElectronTrack_Z0cov", "ReconstructedParticle2Track::getRP2TRK_Z0_cov(RecoElectrons,EFlowTrack_1)")
+                .Define("RecoElectron_pt",     "ReconstructedParticle::get_pt(RecoElectrons)")
+                .Define("RecoElectron_px",     "ReconstructedParticle::get_px(RecoElectrons)")
+                .Define("RecoElectron_py",     "ReconstructedParticle::get_py(RecoElectrons)")
+                .Define("RecoElectron_pz",     "ReconstructedParticle::get_pz(RecoElectrons)")
+                .Define("RecoElectron_y",      "ReconstructedParticle::get_y(RecoElectrons)")
+                .Define("RecoElectron_eta",    "ReconstructedParticle::get_eta(RecoElectrons)")
+                .Define("RecoElectron_theta",  "ReconstructedParticle::get_theta(RecoElectrons)")
+                .Define("RecoElectron_phi",    "ReconstructedParticle::get_phi(RecoElectrons)") 
+                .Define("RecoElectron_charge", "ReconstructedParticle::get_charge(RecoElectrons)")
+                .Define("RecoElectron_mass",   "ReconstructedParticle::get_mass(RecoElectrons)")
+            
+                .Define("RecoElectrons_hard", "FCCAnalyses::ReconstructedParticle::sel_p(20)(RecoElectrons)")
+                .Define("RecoElectrons_iso",  "FCCAnalyses::ZHfunctions::coneIsolation(0.01, 0.5)(RecoElectrons_hard, ReconstructedParticles)")
+                .Define("RecoElectrons_sel",  "FCCAnalyses::ZHfunctions::sel_iso(0.25)(RecoElectrons_hard, RecoElectrons_iso)")
+
+                .Define("n_RecoElectrons_sel",     "ReconstructedParticle::get_n(RecoElectrons_sel)") 
+                .Define("RecoElectron_sel_e",      "ReconstructedParticle::get_e(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_p",      "ReconstructedParticle::get_p(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_pt",     "ReconstructedParticle::get_pt(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_px",     "ReconstructedParticle::get_px(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_py",     "ReconstructedParticle::get_py(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_pz",     "ReconstructedParticle::get_pz(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_y",      "ReconstructedParticle::get_y(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_eta",    "ReconstructedParticle::get_eta(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_theta",  "ReconstructedParticle::get_theta(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_phi",    "ReconstructedParticle::get_phi(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_charge", "ReconstructedParticle::get_charge(RecoElectrons_sel)")
+                .Define("RecoElectron_sel_mass",   "ReconstructedParticle::get_mass(RecoElectrons_sel)")
                 
                 # MUONS
-                .Alias("Muon0", "Muon#0.index")
-                .Define("RecoMuons",  "ReconstructedParticle::get(Muon0, ReconstructedParticles)")            
-                .Define("n_RecoMuons",  "ReconstructedParticle::get_n(RecoMuons)")
+                .Alias("Muon0",            "Muon#0.index")
+                .Define("RecoMuons",       "ReconstructedParticle::get(Muon0, ReconstructedParticles)")            
+                .Define("n_RecoMuons",     "ReconstructedParticle::get_n(RecoMuons)")
                 .Define("RecoMuon_e",      "ReconstructedParticle::get_e(RecoMuons)")
                 .Define("RecoMuon_p",      "ReconstructedParticle::get_p(RecoMuons)")
-                .Define("RecoMuon_pt",      "ReconstructedParticle::get_pt(RecoMuons)")
-                .Define("RecoMuon_px",      "ReconstructedParticle::get_px(RecoMuons)")
-                .Define("RecoMuon_py",      "ReconstructedParticle::get_py(RecoMuons)")
-                .Define("RecoMuon_pz",      "ReconstructedParticle::get_pz(RecoMuons)")
-                .Define("RecoMuon_y",     "ReconstructedParticle::get_y(RecoMuons)")
-                .Define("RecoMuon_eta",     "ReconstructedParticle::get_eta(RecoMuons)") 
-                .Define("RecoMuon_theta",   "ReconstructedParticle::get_theta(RecoMuons)")
-                .Define("RecoMuon_phi",     "ReconstructedParticle::get_phi(RecoMuons)")
-                .Define("RecoMuon_charge",  "ReconstructedParticle::get_charge(RecoMuons)")
-                .Define("RecoMuon_mass",     "ReconstructedParticle::get_mass(RecoMuons)")
-                .Define("RecoMuonTrack_absD0", "return abs(ReconstructedParticle2Track::getRP2TRK_D0(RecoMuons,EFlowTrack_1))")
-                .Define("RecoMuonTrack_absZ0", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0(RecoMuons,EFlowTrack_1))")
-                .Define("RecoMuonTrack_absD0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_D0_sig(RecoMuons,EFlowTrack_1))")
-                .Define("RecoMuonTrack_absZ0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0_sig(RecoMuons,EFlowTrack_1))")
-                .Define("RecoMuonTrack_D0cov", "ReconstructedParticle2Track::getRP2TRK_D0_cov(RecoMuons,EFlowTrack_1)")
-                .Define("RecoMuonTrack_Z0cov", "ReconstructedParticle2Track::getRP2TRK_Z0_cov(RecoMuons,EFlowTrack_1)")
+                .Define("RecoMuon_pt",     "ReconstructedParticle::get_pt(RecoMuons)")
+                .Define("RecoMuon_px",     "ReconstructedParticle::get_px(RecoMuons)")
+                .Define("RecoMuon_py",     "ReconstructedParticle::get_py(RecoMuons)")
+                .Define("RecoMuon_pz",     "ReconstructedParticle::get_pz(RecoMuons)")
+                .Define("RecoMuon_y",      "ReconstructedParticle::get_y(RecoMuons)")
+                .Define("RecoMuon_eta",    "ReconstructedParticle::get_eta(RecoMuons)") 
+                .Define("RecoMuon_theta",  "ReconstructedParticle::get_theta(RecoMuons)")
+                .Define("RecoMuon_phi",    "ReconstructedParticle::get_phi(RecoMuons)")
+                .Define("RecoMuon_charge", "ReconstructedParticle::get_charge(RecoMuons)")
+                .Define("RecoMuon_mass",   "ReconstructedParticle::get_mass(RecoMuons)")
+
+                .Define("RecoMuons_hard", "FCCAnalyses::ReconstructedParticle::sel_p(20)(RecoMuons)")
+                .Define("RecoMuons_iso",  "FCCAnalyses::ZHfunctions::coneIsolation(0.01, 0.5)(RecoMuons_hard, ReconstructedParticles)")
+                .Define("RecoMuons_sel",  "FCCAnalyses::ZHfunctions::sel_iso(0.25)(RecoMuons_hard, RecoMuons_iso)")
+                
+                .Define("n_RecoMuons_sel",     "ReconstructedParticle::get_n(RecoMuons_sel)") 
+                .Define("RecoMuon_sel_e",      "ReconstructedParticle::get_e(RecoMuons_sel)")
+                .Define("RecoMuon_sel_p",      "ReconstructedParticle::get_p(RecoMuons_sel)")
+                .Define("RecoMuon_sel_pt",     "ReconstructedParticle::get_pt(RecoMuons_sel)")
+                .Define("RecoMuon_sel_px",     "ReconstructedParticle::get_px(RecoMuons_sel)")
+                .Define("RecoMuon_sel_py",     "ReconstructedParticle::get_py(RecoMuons_sel)")
+                .Define("RecoMuon_sel_pz",     "ReconstructedParticle::get_pz(RecoMuons_sel)")
+                .Define("RecoMuon_sel_y",      "ReconstructedParticle::get_y(RecoMuons_sel)")
+                .Define("RecoMuon_sel_eta",    "ReconstructedParticle::get_eta(RecoMuons_sel)")
+                .Define("RecoMuon_sel_theta",  "ReconstructedParticle::get_theta(RecoMuons_sel)")
+                .Define("RecoMuon_sel_phi",    "ReconstructedParticle::get_phi(RecoMuons_sel)")
+                .Define("RecoMuon_sel_charge", "ReconstructedParticle::get_charge(RecoMuons_sel)")
+                .Define("RecoMuon_sel_mass",   "ReconstructedParticle::get_mass(RecoMuons_sel)")
+
+                #PHOTONS
+                .Alias("Photon0",            "Photon#0.index") 
+                .Define("RecoPhotons",       "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
+                .Define("n_RecoPhotons",     "ReconstructedParticle::get_n(RecoPhotons)")
+                .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
+                .Define("RecoPhoton_p",      "ReconstructedParticle::get_p(RecoPhotons)")
+                .Define("RecoPhoton_pt",     "ReconstructedParticle::get_pt(RecoPhotons)")
+                .Define("RecoPhoton_px",     "ReconstructedParticle::get_px(RecoPhotons)")
+                .Define("RecoPhoton_py",     "ReconstructedParticle::get_py(RecoPhotons)")
+                .Define("RecoPhoton_pz",     "ReconstructedParticle::get_pz(RecoPhotons)")
+		        .Define("RecoPhoton_y",      "ReconstructedParticle::get_y(RecoPhotons)") 
+		        .Define("RecoPhoton_eta",    "ReconstructedParticle::get_eta(RecoPhotons)")
+                .Define("RecoPhoton_theta",  "ReconstructedParticle::get_theta(RecoPhotons)")
+		        .Define("RecoPhoton_phi",    "ReconstructedParticle::get_phi(RecoPhotons)")
+                .Define("RecoPhoton_charge", "ReconstructedParticle::get_charge(RecoPhotons)")
+                .Define("RecoPhoton_mass",   "ReconstructedParticle::get_mass(RecoPhotons)")
             
-                # event selection for Z -> 2L ----------------------    
-            
+                # event selection for Z -> 2L
                 # require exactly 2 leptons of same flavor and opposite charge
-                .Filter("(n_RecoElectrons == 2 && "
-                        "RecoElectron_charge[0] != RecoElectron_charge[1] && "
-                        "RecoElectron_p[0] > 20 && RecoElectron_p[1] > 20) || "
-                        "(n_RecoMuons == 2 && "
-                        "RecoMuon_charge[0] != RecoMuon_charge[1] && "
-                        "RecoMuon_p[0] > 20 && RecoMuon_p[1] > 20)")
+                .Filter("(n_RecoElectrons_sel == 2 && RecoElectron_sel_charge[0] != RecoElectron_sel_charge[1]) || "
+                        "(n_RecoMuons_sel == 2 && RecoMuon_sel_charge[0] != RecoMuon_sel_charge[1])")
             
                 # reconstructing Z
-                .Define("RecoZ_p4",     "if (n_RecoElectrons == 2) {"
-                                        "    return TLorentzVector(RecoElectron_px[0], RecoElectron_py[0], RecoElectron_pz[0], RecoElectron_e[0]) + "
-                                        "           TLorentzVector(RecoElectron_px[1], RecoElectron_py[1], RecoElectron_pz[1], RecoElectron_e[1]);"
-                                        "} else {"
-                                        "    return TLorentzVector(RecoMuon_px[0], RecoMuon_py[0], RecoMuon_pz[0], RecoMuon_e[0]) + "
-                                        "           TLorentzVector(RecoMuon_px[1], RecoMuon_py[1], RecoMuon_pz[1], RecoMuon_e[1]);"
-                                        "}")
+                .Define("RecoElectron_p4", "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) + "
+                                           "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1])")
+                
+                .Define("RecoMuon_p4", "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0]) + "
+                                       "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
+                
+                .Define("RecoZ_p4", "(n_RecoElectrons_sel == 2) ? RecoElectron_p4 : RecoMuon_p4")
 
                 # Z properties
                 .Define("RecoZ_px",    "RecoZ_p4.Px()")
@@ -200,13 +236,10 @@ class RDFanalysis():
                 .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
                 .Define("RecoZ_mass",  "RecoZ_p4.M()")
 
-
-                # remove Z leptons from rest of particles in order to recluster the jets            
-                .Define("Leptons", "FCCAnalyses::ReconstructedParticle::merge(RecoElectrons, RecoMuons)")
-                .Define("RP_no_leptons", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Leptons)")
-        
+                # remove Z leptons from rest of particles in order to recluster the jets
+                .Define("Z_leptons", "(n_RecoElectrons_sel == 2) ? RecoElectrons_sel : RecoMuons_sel")
+                .Define("ReconstructedParticles_no_Z", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Z_leptons)")
         )
-
         
         # tagging
         
@@ -214,7 +247,7 @@ class RDFanalysis():
         # name of collections in EDM root files
         collections = {
             "GenParticles": "Particle",
-            "PFParticles": "RP_no_leptons",
+            "PFParticles": "ReconstructedParticles_no_Z",
             "PFTracks": "EFlowTrack",
             "PFPhotons": "EFlowPhoton",
             "PFNeutralHadrons": "EFlowNeutralHadron",
@@ -247,31 +280,24 @@ class RDFanalysis():
         df2 = jetFlavourHelper_kt4.inference(weaver_preproc, weaver_model, df2)
 
         df2 = (df2
-                .Define("TagJet_kt4_px", "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_py", "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_px",     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_py",     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_pz",     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_p",     "JetClusteringUtils::get_p({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_p",      "JetClusteringUtils::get_p({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_pt",     "JetClusteringUtils::get_pt({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_phi",    "JetClusteringUtils::get_phi({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_eta",    "JetClusteringUtils::get_eta({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_theta",    "JetClusteringUtils::get_theta({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_e", "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_theta",  "JetClusteringUtils::get_theta({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_e",      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_mass",   "JetClusteringUtils::get_m({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_charge",   "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                .Define("TagJet_kt4_flavor",  "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt4.jets))
-                .Define("n_TagJet_kt4_constituents",  "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                .Define("n_TagJet_kt4_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                .Define("n_TagJet_kt4_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                .Define("n_TagJet_kt4", "return int(TagJet_kt4_flavor.size())")
-                .Define("TagJet_kt4_cleanup", "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt4.constituents))
-
-                .Define("TagJet_kt4_isG",    "recojet_isG_kt4")
-                .Define("TagJet_kt4_isU",    "recojet_isU_kt4")
-                .Define("TagJet_kt4_isD",    "recojet_isD_kt4")
-                .Define("TagJet_kt4_isS",    "recojet_isS_kt4")
-                .Define("TagJet_kt4_isC",    "recojet_isC_kt4")
-                .Define("TagJet_kt4_isB",    "recojet_isB_kt4")
-
+                .Define("TagJet_kt4_charge", "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                .Define("TagJet_kt4_flavor", "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt4.jets))
+                .Define("n_TagJet_kt4",      "return int(TagJet_kt4_flavor.size())")
+                # .Define("n_TagJet_kt4_constituents",  "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                # .Define("n_TagJet_kt4_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                # .Define("n_TagJet_kt4_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                # .Define("TagJet_kt4_cleanup", "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt4.constituents))                
+            
                 # reconstructing H from 4 jets
                 .Define("RecoH_p4",     "TLorentzVector(TagJet_kt4_px[0], TagJet_kt4_py[0], TagJet_kt4_pz[0], TagJet_kt4_e[0]) + "
                                         "TLorentzVector(TagJet_kt4_px[1], TagJet_kt4_py[1], TagJet_kt4_pz[1], TagJet_kt4_e[1]) + "
@@ -281,20 +307,18 @@ class RDFanalysis():
                 .Define("RecoH_px",    "RecoH_p4.Px()")
                 .Define("RecoH_py",    "RecoH_p4.Py()")
                 .Define("RecoH_pz",    "RecoH_p4.Pz()")
-                .Define("RecoH_p",    "RecoH_p4.P()")
+                .Define("RecoH_p",     "RecoH_p4.P()")
                 .Define("RecoH_pt",    "RecoH_p4.Pt()")
                 .Define("RecoH_e",     "RecoH_p4.E()")
-                .Define("RecoH_eta",    "RecoH_p4.Eta()")
-                .Define("RecoH_phi",    "RecoH_p4.Phi()")
-                .Define("RecoH_theta",    "RecoH_p4.Theta()")
+                .Define("RecoH_eta",   "RecoH_p4.Eta()")
+                .Define("RecoH_phi",   "RecoH_p4.Phi()")
+                .Define("RecoH_theta", "RecoH_p4.Theta()")
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
-                .Define("RecoH_mass",    "RecoH_p4.M()")
+                .Define("RecoH_mass",  "RecoH_p4.M()")
 
                 
                 .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
                 .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-
-
         )
         return df2
 
@@ -315,12 +339,20 @@ class RDFanalysis():
             "RecoElectron_phi",
             "RecoElectron_charge",
             "RecoElectron_mass",
-            "RecoElectronTrack_absD0",
-            "RecoElectronTrack_absZ0",
-            "RecoElectronTrack_absD0sig",
-            "RecoElectronTrack_absZ0sig",
-            "RecoElectronTrack_D0cov",
-            "RecoElectronTrack_Z0cov",
+
+            "n_RecoElectrons_sel",
+            "RecoElectron_sel_e",
+            "RecoElectron_sel_p",
+            "RecoElectron_sel_pt",
+            "RecoElectron_sel_px",
+            "RecoElectron_sel_py",
+            "RecoElectron_sel_pz",
+            "RecoElectron_sel_y",
+            "RecoElectron_sel_eta",
+            "RecoElectron_sel_theta",
+            "RecoElectron_sel_phi",
+            "RecoElectron_sel_charge",
+            "RecoElectron_sel_mass",
 
             "n_RecoMuons",
             "RecoMuon_e",
@@ -335,12 +367,34 @@ class RDFanalysis():
             "RecoMuon_phi",
             "RecoMuon_charge",
             "RecoMuon_mass",
-            "RecoMuonTrack_absD0",
-            "RecoMuonTrack_absZ0",
-            "RecoMuonTrack_absD0sig",
-            "RecoMuonTrack_absZ0sig",
-            "RecoMuonTrack_D0cov",
-            "RecoMuonTrack_Z0cov",
+
+            "n_RecoMuons_sel",
+            "RecoMuon_sel_e",
+            "RecoMuon_sel_p",
+            "RecoMuon_sel_pt",
+            "RecoMuon_sel_px",
+            "RecoMuon_sel_py",
+            "RecoMuon_sel_pz",
+            "RecoMuon_sel_y",
+            "RecoMuon_sel_eta",
+            "RecoMuon_sel_theta",
+            "RecoMuon_sel_phi",
+            "RecoMuon_sel_charge",
+            "RecoMuon_sel_mass",
+
+            "n_RecoPhotons",
+            "RecoPhoton_e",
+            "RecoPhoton_p",
+            "RecoPhoton_pt",
+            "RecoPhoton_px",
+            "RecoPhoton_py",
+            "RecoPhoton_pz",
+            "RecoPhoton_y",
+            "RecoPhoton_eta",
+            "RecoPhoton_theta",
+            "RecoPhoton_phi",
+            "RecoPhoton_charge",
+            "RecoPhoton_mass",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
@@ -354,17 +408,10 @@ class RDFanalysis():
             "TagJet_kt4_mass",        
             "TagJet_kt4_charge",       
             "TagJet_kt4_flavor", 
-            "n_TagJet_kt4_constituents",   
-            "n_TagJet_kt4_charged_constituents",   
-            "n_TagJet_kt4_neutral_constituents",   
             "n_TagJet_kt4",
-
-            "TagJet_kt4_isG",
-            "TagJet_kt4_isU",
-            "TagJet_kt4_isD",
-            "TagJet_kt4_isS",
-            "TagJet_kt4_isC",
-            "TagJet_kt4_isB",
+            # "n_TagJet_kt4_constituents",   
+            # "n_TagJet_kt4_charged_constituents",   
+            # "n_TagJet_kt4_neutral_constituents",               
             
             "RecoZ_px",
             "RecoZ_py",
@@ -390,7 +437,7 @@ class RDFanalysis():
             "RecoH_y",
             "RecoH_mass",
 
-            "Recoil_mass"
+            "Recoil_mass",
         ]
 
         return branchList

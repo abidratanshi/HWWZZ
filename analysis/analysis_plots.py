@@ -7,13 +7,12 @@ intLumi = 3e6 # pb^-1, for 365 GeV
 # if scaleSig or scaleBack is not defined, plots will be normalized to 1
 #scaleSig       = 0.
 #scaleBack      = 0.
-ana_tex        = 'e^{+} e^{-} #rightarrow l^{+} l^{-} H, H #rightarrow WW/ZZ'
+ana_tex        = 'e^{+}e^{-} #rightarrow Z* #rightarrow ZH'
 delphesVersion = '3.4.2'
 energy         = 365
 collider       = 'FCC-ee'
 inputDir       = "/ceph/aratanshi/final_output/"
-outdir         = "/ceph/aratanshi/plots_01-04-2026"
-# outdir         = "/web/aratanshi/public_html/plots
+outdir         = "/web/aratanshi/public_html/plots"
 
 formats        = ['png','pdf']
 # formats        = ['png']
@@ -42,12 +41,20 @@ variables = [
             "RecoElectron_phi",
             "RecoElectron_charge",
             "RecoElectron_mass",
-            "RecoElectronTrack_absD0",
-            "RecoElectronTrack_absZ0",
-            "RecoElectronTrack_absD0sig",
-            "RecoElectronTrack_absZ0sig",
-            "RecoElectronTrack_D0cov",
-            "RecoElectronTrack_Z0cov",
+
+            "n_RecoElectrons_sel",
+            "RecoElectron_sel_e",
+            "RecoElectron_sel_p",
+            "RecoElectron_sel_pt",
+            "RecoElectron_sel_px",
+            "RecoElectron_sel_py",
+            "RecoElectron_sel_pz",
+            "RecoElectron_sel_y",
+            "RecoElectron_sel_eta",
+            "RecoElectron_sel_theta",
+            "RecoElectron_sel_phi",
+            "RecoElectron_sel_charge",
+            "RecoElectron_sel_mass",
 
             "n_RecoMuons",
             "RecoMuon_e",
@@ -62,12 +69,34 @@ variables = [
             "RecoMuon_phi",
             "RecoMuon_charge",
             "RecoMuon_mass",
-            "RecoMuonTrack_absD0",
-            "RecoMuonTrack_absZ0",
-            "RecoMuonTrack_absD0sig",
-            "RecoMuonTrack_absZ0sig",
-            "RecoMuonTrack_D0cov",
-            "RecoMuonTrack_Z0cov",
+
+            "n_RecoMuons_sel",
+            "RecoMuon_sel_e",
+            "RecoMuon_sel_p",
+            "RecoMuon_sel_pt",
+            "RecoMuon_sel_px",
+            "RecoMuon_sel_py",
+            "RecoMuon_sel_pz",
+            "RecoMuon_sel_y",
+            "RecoMuon_sel_eta",
+            "RecoMuon_sel_theta",
+            "RecoMuon_sel_phi",
+            "RecoMuon_sel_charge",
+            "RecoMuon_sel_mass",
+
+            "n_RecoPhotons",
+            "RecoPhoton_e",
+            "RecoPhoton_p",
+            "RecoPhoton_pt",
+            "RecoPhoton_px",
+            "RecoPhoton_py",
+            "RecoPhoton_pz",
+            "RecoPhoton_y",
+            "RecoPhoton_eta",
+            "RecoPhoton_theta",
+            "RecoPhoton_phi",
+            "RecoPhoton_charge",
+            "RecoPhoton_mass",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
@@ -81,17 +110,10 @@ variables = [
             "TagJet_kt4_mass",        
             "TagJet_kt4_charge",       
             "TagJet_kt4_flavor", 
-            "n_TagJet_kt4_constituents",   
-            "n_TagJet_kt4_charged_constituents",   
-            "n_TagJet_kt4_neutral_constituents",   
             "n_TagJet_kt4",
-
-            "TagJet_kt4_isG",
-            "TagJet_kt4_isU",
-            "TagJet_kt4_isD",
-            "TagJet_kt4_isS",
-            "TagJet_kt4_isC",
-            "TagJet_kt4_isB",
+            # "n_TagJet_kt4_constituents",   
+            # "n_TagJet_kt4_charged_constituents",   
+            # "n_TagJet_kt4_neutral_constituents",               
             
             "RecoZ_px",
             "RecoZ_py",
@@ -116,9 +138,8 @@ variables = [
             "RecoH_theta",
             "RecoH_y",
             "RecoH_mass",
-    
+
             "Recoil_mass",
-    
         ]
 
 selections = {}
@@ -138,23 +159,26 @@ colors['ee_tt']        = ROOT.kGreen+3
 
 plots = {}
 plots['HWWZZ'] = {'signal':{'ee_eeH_HWW':['wzp6_ee_eeH_HWW_ecm365'],
-                                 'ee_eeH_HZZ':['wzp6_ee_eeH_HZZ_ecm365'],
-                                 'ee_mumuH_HWW':['wzp6_ee_mumuH_HWW_ecm365'],
-                                 'ee_mumuH_HZZ':['wzp6_ee_mumuH_HZZ_ecm365']
-                                },
-                       
-                       'backgrounds':{'ee_WW':['p8_ee_WW_ecm365'],
-                                      'ee_ZZ':['p8_ee_ZZ_ecm365'],
-                                      'ee_tt':['p8_ee_tt_ecm365']
-                                     }
+                            'ee_mumuH_HWW':['wzp6_ee_mumuH_HWW_ecm365'],
+
+                            'ee_eeH_HZZ':['wzp6_ee_eeH_HZZ_ecm365'],
+                            'ee_mumuH_HZZ':['wzp6_ee_mumuH_HZZ_ecm365']
+                           },
+                  
+                  'backgrounds':{'ee_WW':['p8_ee_WW_ecm365'],
+                                 'ee_ZZ':['p8_ee_ZZ_ecm365'],
+                                 'ee_tt':['p8_ee_tt_ecm365']
+                                }
 }
 
 # the format is TLatex https://root.cern.ch/doc/master/classTLatex.html
 legend = {}
 legend['ee_eeH_HWW']   = 'e^{+} e^{-} #rightarrow e^{+} e^{-} H, H #rightarrow W W'
-legend['ee_eeH_HZZ']   = 'e^{+} e^{-} #rightarrow e^{+} e^{-} H, H #rightarrow Z Z'
 legend['ee_mumuH_HWW'] = 'e^{+} e^{-} #rightarrow #mu^{+} #mu^{-} H, H #rightarrow W W'
+
+legend['ee_eeH_HZZ']   = 'e^{+} e^{-} #rightarrow e^{+} e^{-} H, H #rightarrow Z Z'
 legend['ee_mumuH_HZZ'] = 'e^{+} e^{-} #rightarrow #mu^{+} #mu^{-} H, H #rightarrow Z Z'
+
 legend['ee_WW']        = 'e^{+} e^{-} #rightarrow W W'
 legend['ee_ZZ']        = 'e^{+} e^{-} #rightarrow Z Z'
 legend['ee_tt']        = 'e^{+} e^{-} #rightarrow t t'
