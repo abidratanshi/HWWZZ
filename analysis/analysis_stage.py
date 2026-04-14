@@ -306,7 +306,7 @@ class RDFanalysis():
 
                 # check if higgs is made of jets only and then filter for this
                 .Define("CheckHiggs","FCCAnalyses::ZHfunctions::CheckHiggsTopology(Jets_p4, RecoZ_p4, BestPairing)")
-                # .Filter("CheckHiggs == 1")
+                .Filter("CheckHiggs == 1")
             
                 # reconstructing H from 4 jets
                 .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
