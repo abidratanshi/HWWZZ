@@ -17,17 +17,17 @@ nCPUs = 8
 doTree = False
 
 processList = {
-    
-    # Background
-    'p8_ee_WW_ecm365':{},
-    'p8_ee_ZZ_ecm365':{},
-    'p8_ee_tt_ecm365':{},
 
     # Signal
-    'wzp6_ee_eeH_HWW_ecm365': {},
-    'wzp6_ee_eeH_HZZ_ecm365': {},
+    'wzp6_ee_eeH_HWW_ecm365':   {},
     'wzp6_ee_mumuH_HWW_ecm365': {},
+    'wzp6_ee_eeH_HZZ_ecm365':   {},
     'wzp6_ee_mumuH_HZZ_ecm365': {},
+
+    # Background
+    'p8_ee_WW_ecm365': {},
+    # 'p8_ee_ZZ_ecm365': {},
+    'p8_ee_tt_ecm365': {},
 }
 
 # Dictionary for prettier names of processes (optional, they don't do anything, maybe only in table)
@@ -39,18 +39,11 @@ procDict = "FCCee_procDict_winter2023_IDEA.json"
 # Add provate samples as it is not an offical process
 procDictAdd = {}
 
-# Dictionnay of the list of cuts. The key is the name of the selection that will be added to the output file
+# Dictionary of the list of cuts. The key is the name of the selection that will be added to the output file
 cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
-    
 }
-
-# Dictionary for prettier names of cuts (optional)
-# needs to be in the same order as cutList or the table won't be organised well, it's only for the table
-# cutLabels = {
-#     "sel0": "No cut",
-# }
 
 # Dictionary for the ouput variable/hitograms
 # The key is the name of the variable in the output files. 
@@ -170,6 +163,9 @@ histoList = {
     "RecoH_theta":              {"name":"RecoH_theta",              "title":"Reco H #theta",                 "bin":16, "xmin":0,"xmax":3.2},
     "RecoH_y":                  {"name":"RecoH_y",                  "title":"Reco H rapidity",               "bin":40, "xmin":-4., "xmax":4.},
     "RecoH_mass":               {"name":"RecoH_mass",               "title":"Reco H mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
+
+    "V1_mass":               {"name":"V1_mass",               "title":"V1 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
+    "V2_mass":               {"name":"V2_mass",               "title":"V2 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 
     "Recoil_mass":              {"name":"Recoil_mass",              "title":"Recoil mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},    
 

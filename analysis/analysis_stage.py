@@ -2,18 +2,18 @@ import os, copy
 import ROOT
 import urllib.request
 
-processList = {    
-    
-    # Background
-    'p8_ee_WW_ecm365':{'fraction':0.0005},
-    'p8_ee_ZZ_ecm365':{'fraction':0.0009},
-    'p8_ee_tt_ecm365':{'fraction':0.02},
+processList = {
 
     # Signal
-    'wzp6_ee_eeH_HWW_ecm365': {'fraction':0.05},
-    'wzp6_ee_eeH_HZZ_ecm365': {'fraction':0.05},
+    'wzp6_ee_eeH_HWW_ecm365':   {'fraction':0.05},
     'wzp6_ee_mumuH_HWW_ecm365': {'fraction':0.05},
+    'wzp6_ee_eeH_HZZ_ecm365':   {'fraction':0.05},
     'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.07},
+
+    # Background
+    'p8_ee_WW_ecm365': {'fraction':0.0005},
+    # 'p8_ee_ZZ_ecm365': {'fraction':0.0000009},
+    'p8_ee_tt_ecm365': {'fraction':0.02},
 }
 
 inputDir = "/ceph/sgiappic/HiggsCP/winter23"
@@ -296,14 +296,23 @@ class RDFanalysis():
                 # .Define("n_TagJet_kt4_constituents",  "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt4.constituents))
                 # .Define("n_TagJet_kt4_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt4.constituents))
                 # .Define("n_TagJet_kt4_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                # .Define("TagJet_kt4_cleanup", "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt4.constituents))                
+                # .Define("TagJet_kt4_cleanup", "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt4.constituents)) 
+
+                # array of TLVs for all 4 jets
+                .Define("Jets_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt4_px, TagJet_kt4_py, TagJet_kt4_pz, TagJet_kt4_e)")
+
+                # get best jet pairings
+                .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
+
+                # check if higgs is made of jets only and then filter for this
+                .Define("CheckHiggs","FCCAnalyses::ZHfunctions::CheckHiggsTopology(Jets_p4, RecoZ_p4, BestPairing)")
+                # .Filter("CheckHiggs == 1")
             
                 # reconstructing H from 4 jets
-                .Define("RecoH_p4",     "TLorentzVector(TagJet_kt4_px[0], TagJet_kt4_py[0], TagJet_kt4_pz[0], TagJet_kt4_e[0]) + "
-                                        "TLorentzVector(TagJet_kt4_px[1], TagJet_kt4_py[1], TagJet_kt4_pz[1], TagJet_kt4_e[1]) + "
-                                        "TLorentzVector(TagJet_kt4_px[2], TagJet_kt4_py[2], TagJet_kt4_pz[2], TagJet_kt4_e[2]) + "
-                                        "TLorentzVector(TagJet_kt4_px[3], TagJet_kt4_py[3], TagJet_kt4_pz[3], TagJet_kt4_e[3])")
-                    
+                .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
+                                    "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
+
+                # H properties
                 .Define("RecoH_px",    "RecoH_p4.Px()")
                 .Define("RecoH_py",    "RecoH_p4.Py()")
                 .Define("RecoH_pz",    "RecoH_p4.Pz()")
@@ -316,9 +325,14 @@ class RDFanalysis():
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",  "RecoH_p4.M()")
 
-                
+                # just to see the result, this can show what the individual bosons end up being
+                .Define("V1_mass", "(Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]]).M()")
+                .Define("V2_mass", "(Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]).M()")
+
+                # recoil
                 .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
                 .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
+
         )
         return df2
 
@@ -436,6 +450,9 @@ class RDFanalysis():
             "RecoH_theta",
             "RecoH_y",
             "RecoH_mass",
+
+            "V1_mass",
+            "V2_mass",
 
             "Recoil_mass",
         ]
