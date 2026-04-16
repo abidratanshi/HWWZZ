@@ -14,9 +14,9 @@ collider       = 'FCC-ee'
 inputDir       = "/ceph/aratanshi/final_output/"
 outdir         = "/web/aratanshi/public_html/plots"
 
-# formats        = ['png','pdf']
+formats        = ['png','pdf']
 # formats        = ['png']
-formats        = ['pdf']
+# formats        = ['pdf']
 
 #yaxis          = ['lin','log']
 yaxis          = ['log']

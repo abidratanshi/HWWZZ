@@ -307,7 +307,13 @@ class RDFanalysis():
                 # check if higgs is made of jets only and then filter for this
                 .Define("CheckHiggs","FCCAnalyses::ZHfunctions::CheckHiggsTopology(Jets_p4, RecoZ_p4, BestPairing)")
                 .Filter("CheckHiggs == 1")
-            
+
+		# just to see the result, this can show what the individual bosons end up being
+                .Define("V1_mass", "(Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]]).M()")
+                .Define("V2_mass", "(Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]).M()")
+		# constraining one to be offshell 
+                .Filter(" (V1_mass < 60 || V2_mass < 60) ")
+
                 # reconstructing H from 4 jets
                 .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
                                     "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
@@ -324,10 +330,6 @@ class RDFanalysis():
                 .Define("RecoH_theta", "RecoH_p4.Theta()")
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",  "RecoH_p4.M()")
-
-                # just to see the result, this can show what the individual bosons end up being
-                .Define("V1_mass", "(Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]]).M()")
-                .Define("V2_mass", "(Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]).M()")
 
                 # recoil
                 .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
