@@ -98,23 +98,23 @@ variables = [
             "RecoPhoton_charge",
             "RecoPhoton_mass",
 
-            "TagJet_kt4_px", 
-            "TagJet_kt4_py",    
-            "TagJet_kt4_pz",      
-            "TagJet_kt4_p",  
-            "TagJet_kt4_pt",    
-            "TagJet_kt4_phi", 
-            "TagJet_kt4_eta",     
-            "TagJet_kt4_theta",          
-            "TagJet_kt4_e",     
-            "TagJet_kt4_mass",        
-            "TagJet_kt4_charge",       
-            "TagJet_kt4_flavor", 
+            "TagJet_kt4_px",
+            "TagJet_kt4_py",
+            "TagJet_kt4_pz",
+            "TagJet_kt4_p",
+            "TagJet_kt4_pt",
+            "TagJet_kt4_phi",
+            "TagJet_kt4_eta",
+            "TagJet_kt4_theta",
+            "TagJet_kt4_e",
+            "TagJet_kt4_mass",
+            "TagJet_kt4_charge",
+            "TagJet_kt4_flavor",
             "n_TagJet_kt4",
-            # "n_TagJet_kt4_constituents",   
-            # "n_TagJet_kt4_charged_constituents",   
-            # "n_TagJet_kt4_neutral_constituents",               
-            
+            # "n_TagJet_kt4_constituents",
+            # "n_TagJet_kt4_charged_constituents",
+            # "n_TagJet_kt4_neutral_constituents",
+
             "RecoZ_px",
             "RecoZ_py",
             "RecoZ_pz",
@@ -157,19 +157,18 @@ colors['ee_eeH_HZZ']   = ROOT.kYellow-7
 colors['ee_mumuH_HWW'] = ROOT.kRed+2
 colors['ee_mumuH_HZZ'] = ROOT.kMagenta+2
 colors['ee_WW']        = ROOT.kBlue+1
-# colors['ee_ZZ']        = ROOT.kCyan+2
+colors['ee_ZZ']        = ROOT.kCyan+2
 colors['ee_tt']        = ROOT.kGreen+3
 
 plots = {}
 plots['HWWZZ'] = {'signal':{'ee_eeH_HWW':['wzp6_ee_eeH_HWW_ecm365'],
                             'ee_mumuH_HWW':['wzp6_ee_mumuH_HWW_ecm365'],
-
                             'ee_eeH_HZZ':['wzp6_ee_eeH_HZZ_ecm365'],
                             'ee_mumuH_HZZ':['wzp6_ee_mumuH_HZZ_ecm365']
                            },
-                  
+
                   'backgrounds':{'ee_WW':['p8_ee_WW_ecm365'],
-                                 # 'ee_ZZ':['p8_ee_ZZ_ecm365'],
+                                 'ee_ZZ':['p8_ee_ZZ_ecm365'],
                                  'ee_tt':['p8_ee_tt_ecm365']
                                 }
 }
@@ -183,6 +182,6 @@ legend['ee_eeH_HZZ']   = 'e^{+} e^{-} #rightarrow e^{+} e^{-} H, H #rightarrow Z
 legend['ee_mumuH_HZZ'] = 'e^{+} e^{-} #rightarrow #mu^{+} #mu^{-} H, H #rightarrow Z Z'
 
 legend['ee_WW']        = 'e^{+} e^{-} #rightarrow W W'
-# legend['ee_ZZ']        = 'e^{+} e^{-} #rightarrow Z Z'
+legend['ee_ZZ']        = 'e^{+} e^{-} #rightarrow Z Z'
 legend['ee_tt']        = 'e^{+} e^{-} #rightarrow t t'
 

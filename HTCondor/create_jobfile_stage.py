@@ -12,35 +12,20 @@ def create_condor_config(nCPUs: int,
     Creates contents of condor configuration file.
     '''
     cfg = 'Universe          = docker\n'
-
     cfg += 'docker_image     = cverstege/alma9-gridjob\n'
-
     cfg += 'accounting_group = cms.higgs \n'
-
     cfg += 'output_dir       = '+output_dir+'\n'
-
     cfg += 'executable       = $(filename)\n'
-
     cfg += 'log              = $(output_dir)log/condor_$(ClusterId).$(ProcId).log\n'
-
     cfg += 'output           = $(output_dir)out/condor_$(ClusterId).$(ProcId).out\n'
-
     cfg += 'error            = $(output_dir)err/condor_$(ClusterId).$(ProcId).err\n'
-
     cfg += 'max_retries      = 3\n'
-
     cfg += '+JobFlavour      = "longlunch"\n'
-
     cfg += 'request_memory   = '+str(memory)+' MB\n'
-
     cfg += 'request_cpus     = '+str(nCPUs)+'\n'
-
     cfg += 'requirements     = (TARGET.ProvidesCPU && TARGET.ProvidesEKPResources)\n'
-
     cfg += 'should_transfer_files   = IF_NEEDED\n'
-
     cfg += 'when_to_transfer_output  = ON_EXIT\n'
-
     cfg += 'queue filename matching files'
 
     for process in processList:
@@ -81,7 +66,7 @@ def create_subjob_script(local_dir: str,
             with open(output_dir + process + '/submit_chunk_' + str(j) + '.sh', 'w') as sh:
                 sh.write(scr)
             j+=1
-            #print(f"SUBMISSION FIlE CREATED: {process}, chunk {j-1}")
+            print(f"SUBMISSION FIlE CREATED: {process}, chunk {j-1}")
 
 def submit_jobs(output_dir: str):
     for process in processList:
@@ -100,17 +85,17 @@ processList = {
     'wzp6_ee_mumuH_HZZ_ecm365': {},
 
     # Background
-    'p8_ee_WW_ecm365': {},
-    'p8_ee_ZZ_ecm365': {},
-    'p8_ee_tt_ecm365': {},
+    'p8_ee_WW_ecm365': {'chunks':10},
+    'p8_ee_ZZ_ecm365': {'chunks':10},
+    'p8_ee_tt_ecm365': {'chunks':10},
 }
 
-inputDir = "/ceph/sgiappic/HiggsCP/winter23/"
-output = '/work/sgiappic/HTCondor/stage1_test/' ##output directory of submission files, needs to be different to have unique submission files
-outputDir = '/ceph/sgiappic/HiggsCP/stage1_ecm240_test/' ##output directory of stage2 samples
-localDir = '/ceph/sgiappic/FCCAnalyses/examples/FCCee/higgs/tautau/xsec/ecm240/'
-sourceDir = '/ceph/sgiappic/FCCAnalyses/'
-Filename = 'analysis_stage1.py'
+inputDir =  '/ceph/sgiappic/HiggsCP/winter23/'
+output =    '/ceph/aratanshi/HTCondor/' # output directory of submission files, needs to be different to have unique submission files
+outputDir = '/ceph/aratanshi/stage_output/' # output directory of stage samples
+localDir =  '/work/aratanshi/HWWZZ/analysis/'
+sourceDir = '/work/aratanshi/FCCAnalyses/'
+Filename =  'analysis_stage.py'
 
 nCPUS = 1
 Memory = 10000

@@ -2,37 +2,26 @@ import os, copy
 import ROOT
 import urllib.request
 
-processList = {
+# processList = {
 
-    # Signal
-    'wzp6_ee_eeH_HWW_ecm365':   {'fraction':0.05},
-    'wzp6_ee_mumuH_HWW_ecm365': {'fraction':0.05},
-    'wzp6_ee_eeH_HZZ_ecm365':   {'fraction':0.05},
-    'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.07},
+#     # Signal
+#     'wzp6_ee_eeH_HWW_ecm365':   {'fraction':0.05},
+#     'wzp6_ee_mumuH_HWW_ecm365': {'fraction':0.05},
+#     'wzp6_ee_eeH_HZZ_ecm365':   {'fraction':0.05},
+#     'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.07},
 
-    # Background
-    'p8_ee_WW_ecm365': {'fraction':0.0005},
-    # 'p8_ee_ZZ_ecm365': {'fraction':0.0000009},
-    'p8_ee_tt_ecm365': {'fraction':0.02},
-}
+#     # Background
+#     'p8_ee_WW_ecm365': {'fraction':0.0005},
+#     'p8_ee_ZZ_ecm365': {'fraction':0.0009},
+#     'p8_ee_tt_ecm365': {'fraction':0.0002},
+# }
 
+# directories
 inputDir = "/ceph/sgiappic/HiggsCP/winter23"
 outputDir = "/ceph/aratanshi/stage_output"
 includePaths = ["functions.h"]
 
-nCPUS = 6
-
-### necessary to run on HTCondor ###
-# eosType = "eosuser"
-
-#Optional running on HTCondor, default is False
-# runBatch = True
-
-#Optional batch queue name when running on HTCondor, default is workday
-# batchQueue = "longlunch"
-
-#Optional computing account when running on HTCondor, default is group_u_FCC.local_gen
-# compGroup = "group_u_CMS.u_zh.users"
+nCPUS = 8
 
 ## tagging -------------------------------
 ## latest particle transformer model, trained on 9M jets in winter2023 samples
@@ -223,6 +212,11 @@ class RDFanalysis():
                 
                 .Define("RecoZ_p4", "(n_RecoElectrons_sel == 2) ? RecoElectron_p4 : RecoMuon_p4")
 
+                # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
+                .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
+                .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
+                .Filter("abs(Recoil_mass - 125.0) < 20")
+
                 # Z properties
                 .Define("RecoZ_px",    "RecoZ_p4.Px()")
                 .Define("RecoZ_py",    "RecoZ_p4.Py()")
@@ -305,14 +299,14 @@ class RDFanalysis():
                 .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
 
                 # check if higgs is made of jets only and then filter for this
-                .Define("CheckHiggs","FCCAnalyses::ZHfunctions::CheckHiggsTopology(Jets_p4, RecoZ_p4, BestPairing)")
-                .Filter("CheckHiggs == 1")
+                # .Define("CheckHiggs","FCCAnalyses::ZHfunctions::CheckHiggsTopology(Jets_p4, RecoZ_p4, BestPairing)")
+                # .Filter("CheckHiggs == 1")
 
-		# just to see the result, this can show what the individual bosons end up being
+		        # just to see the result, this can show what the individual bosons end up being
                 .Define("V1_mass", "(Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]]).M()")
                 .Define("V2_mass", "(Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]).M()")
-		# constraining one to be offshell 
-                .Filter(" (V1_mass < 60 || V2_mass < 60) ")
+	        	# constraining one to be offshell 
+                .Filter("(V1_mass < 60 || V2_mass < 60)")
 
                 # reconstructing H from 4 jets
                 .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
@@ -330,10 +324,6 @@ class RDFanalysis():
                 .Define("RecoH_theta", "RecoH_p4.Theta()")
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",  "RecoH_p4.M()")
-
-                # recoil
-                .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
-                .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
 
         )
         return df2

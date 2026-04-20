@@ -26,7 +26,7 @@ processList = {
 
     # Background
     'p8_ee_WW_ecm365': {},
-    # 'p8_ee_ZZ_ecm365': {},
+    'p8_ee_ZZ_ecm365': {},
     'p8_ee_tt_ecm365': {},
 }
 
@@ -46,10 +46,10 @@ cutList = {
 }
 
 # Dictionary for the ouput variable/hitograms
-# The key is the name of the variable in the output files. 
+# The key is the name of the variable in the output files.
 # "name" is the name of the variable in the input file,
-# "title" is the x-axis label of the histogram, 
-# "bin" the number of bins of the histogram, 
+# "title" is the x-axis label of the histogram,
+# "bin" the number of bins of the histogram,
 # "xmin" the minimum x-axis value and "xmax" the maximum x-axis value.
 histoList = {
 
@@ -123,7 +123,7 @@ histoList = {
     "RecoPhoton_charge":        {"name":"RecoPhoton_charge",              "title":"Reco photon charge",                         "bin":3, "xmin":-1.5,"xmax":1.5},
     "RecoPhoton_mass":          {"name":"RecoPhoton_mass",                 "title":"Reco photon mass [GeV]",                    "bin":50, "xmin":-0.05,"xmax":0.05},
 
-    "TagJet_kt4_e":                       {"name":"TagJet_kt4_e",                       "title":"kt4 jet energy [GeV]",          "bin":50,"xmin":0 ,"xmax":100},   
+    "TagJet_kt4_e":                       {"name":"TagJet_kt4_e",                       "title":"kt4 jet energy [GeV]",          "bin":50,"xmin":0 ,"xmax":100},
     "TagJet_kt4_p":                       {"name":"TagJet_kt4_p",                       "title":"kt4 jet p [GeV]",               "bin":50,"xmin":0 ,"xmax":100},
     "TagJet_kt4_pt":                      {"name":"TagJet_kt4_pt",                      "title":"kt4 jet p_{T} [GeV]",           "bin":50,"xmin":0 ,"xmax":100},
     "TagJet_kt4_px":                      {"name":"TagJet_kt4_px",                      "title":"kt4 jet p_{x} [GeV]",           "bin":50,"xmin":-100 ,"xmax":100},
@@ -139,7 +139,7 @@ histoList = {
     # "n_TagJet_kt4_constituents":          {"name":"n_TagJet_kt4_constituents",          "title":"kt4 jet constituents",          "bin":20, "xmin":0., "xmax":20.},
     # "n_TagJet_kt4_charged_constituents":  {"name":"n_TagJet_kt4_charged_constituents",  "title":"kt4 jet charged constituents",  "bin":20, "xmin":0., "xmax":20.},
     # "n_TagJet_kt4_neutral_constituents":  {"name":"n_TagJet_kt4_neutral_constituents",  "title":"kt4 jet neutral constituents",  "bin":20, "xmin":0., "xmax":20.},
-    
+
     "RecoZ_px":                 {"name":"RecoZ_px",                 "title":"Reco Z p_{x} [GeV]",            "bin":50,"xmin":-200 ,"xmax":200},
     "RecoZ_py":                 {"name":"RecoZ_py",                 "title":"Reco Z p_{y} [GeV]",            "bin":50,"xmin":-200 ,"xmax":200},
     "RecoZ_pz":                 {"name":"RecoZ_pz",                 "title":"Reco Z p_{z} [GeV]",            "bin":50,"xmin":-200 ,"xmax":200},
@@ -151,7 +151,7 @@ histoList = {
     "RecoZ_theta":              {"name":"RecoZ_theta",              "title":"Reco Z #theta",                 "bin":16, "xmin":0,"xmax":3.2},
     "RecoZ_y":                  {"name":"RecoZ_y",                  "title":"Reco Z rapidity",               "bin":40, "xmin":-4., "xmax":4.},
     "RecoZ_mass":               {"name":"RecoZ_mass",               "title":"Reco Z mass [GeV]",             "bin":100, "xmin":50., "xmax":150},
-                                
+
     "RecoH_px":                 {"name":"RecoH_px",                 "title":"Reco H p_{x} [GeV]",            "bin":50,"xmin":-200 ,"xmax":200},
     "RecoH_py":                 {"name":"RecoH_py",                 "title":"Reco H p_{y} [GeV]",            "bin":50,"xmin":-200 ,"xmax":200},
     "RecoH_pz":                 {"name":"RecoH_pz",                 "title":"Reco H p_{z} [GeV]",            "bin":50,"xmin":-200 ,"xmax":200},
@@ -167,6 +167,6 @@ histoList = {
     "V1_mass":               {"name":"V1_mass",               "title":"V1 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
     "V2_mass":               {"name":"V2_mass",               "title":"V2 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 
-    "Recoil_mass":              {"name":"Recoil_mass",              "title":"Recoil mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},    
+    "Recoil_mass":              {"name":"Recoil_mass",              "title":"Recoil mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 
 }

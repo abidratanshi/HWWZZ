@@ -65,9 +65,9 @@ std::vector<int> FindBestJetPairing(ROOT::VecOps::RVec<TLorentzVector> jets) {
             // first term: penalize deviation from W/Z mass
             // second term: penalize deviation from off-shell mass
             double mV = 85.0;
-	    double mVstar = 40.0;
+    	    double mVstar = 40.0;
             double alpha = 0.25;
-	    // consider turning this into a chi2 like score later where SUM_i[(Vi-mi)/sigmai)^2]
+    	    // consider turning this into a chi2 like score later where SUM_i[(Vi-mi)/sigmai)^2]
             double score = std::pow(Va.M() - mV, 2) + alpha * std::pow(Vb.M() - mVstar, 2);
 
             // Keep the best pairing (smallest score)
