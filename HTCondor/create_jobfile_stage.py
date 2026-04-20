@@ -1,10 +1,5 @@
 import os
 
-def make_dir_if_not_exists(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    os.system(f"chmod -R +x {directory}")
-
 def create_condor_config(nCPUs: int,
                          memory: int,
                          output_dir: str):
@@ -36,7 +31,13 @@ def create_condor_config(nCPUs: int,
                 if filename.endswith('.sh'):
                     sub.write(f' ' + output_dir + process + '/' + filename)
 
-# _____________________________________________________________________________
+# -------------------------------------------------------------------------------------
+
+def make_dir_if_not_exists(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    os.system(f"chmod -R +x {directory}")
+
 def create_subjob_script(local_dir: str,
                          source_dir: str,
                          input_dir: str,
@@ -53,9 +54,16 @@ def create_subjob_script(local_dir: str,
     make_dir_if_not_exists(output_dir+"err")
 
     for process in processList:
-        j = 0
-        for file in os.listdir(input_dir+process):
-            make_dir_if_not_exists(output_dir+process)
+        files = sorted(os.listdir(input_dir+process)) # sorting for reproducability
+        make_dir_if_not_exists(output_dir+process)
+        
+        # check/enforce if there is a specified number of chunks in the processList
+        max_chunks = processList[process].get('chunks')
+        
+        for j, file in enumerate(files):
+            if max_chunks is not None and j >= max_chunks:
+                break
+            
             g = input_dir + process + '/' + file + ' '
             scr  = '#!/bin/bash\n\n'
             scr += 'source ' + source_dir + 'setup.sh\n\n'
@@ -65,13 +73,13 @@ def create_subjob_script(local_dir: str,
             scr += '\n\n'
             with open(output_dir + process + '/submit_chunk_' + str(j) + '.sh', 'w') as sh:
                 sh.write(scr)
-            j+=1
-            print(f"SUBMISSION FIlE CREATED: {process}, chunk {j-1}")
+            print(f"SUBMISSION FIlE CREATED: {process}, chunk {j}")
 
 def submit_jobs(output_dir: str):
     for process in processList:
         dir = output_dir + process
-        num_files = len(os.listdir(dir))-1
+        # num_files = len(os.listdir(dir))-1
+        num_files = len([f for f in os.listdir(dir) if f.endswith(".sh")]) # ensures only jobs are counted and not other file types
         os.system(f"chmod -R +x {dir}")
         os.system(f"condor_submit {dir}/job_submit.cfg")
         print(f"GOOD SUBMISSION: {process} with {num_files} chunks")
