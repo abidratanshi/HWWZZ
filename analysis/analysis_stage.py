@@ -304,15 +304,11 @@ class RDFanalysis():
                 # get best jet pairings
                 .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
 
-                # check if higgs is made of jets only and then filter for this
-                # .Define("CheckHiggs","FCCAnalyses::ZHfunctions::CheckHiggsTopology(Jets_p4, RecoZ_p4, BestPairing)")
-                # .Filter("CheckHiggs == 1")
-
 		        # just to see the result, this can show what the individual bosons end up being
                 .Define("V1_mass", "(Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]]).M()")
                 .Define("V2_mass", "(Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]).M()")
 	        	# constraining one to be offshell 
-                .Filter("(V1_mass < 60 || V2_mass < 60)")
+                # .Filter("(V1_mass < 60 || V2_mass < 60)")
 
                 # reconstructing H from 4 jets
                 .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "

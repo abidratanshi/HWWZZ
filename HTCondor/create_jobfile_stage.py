@@ -54,6 +54,13 @@ def create_subjob_script(local_dir: str,
     make_dir_if_not_exists(output_dir+"err")
 
     for process in processList:
+
+        # removing old files from directory if they exist
+        if os.path.exists(output_dir+process):
+            for f in os.listdir(output_dir+process):
+                if f.endswith(".sh"):
+                    os.remove(os.path.join(output_dir+process, f))
+        
         files = sorted(os.listdir(input_dir+process)) # sorting for reproducability
         make_dir_if_not_exists(output_dir+process)
         
