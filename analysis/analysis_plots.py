@@ -144,6 +144,8 @@ variables = [
 
             "RecoH2_mass",
 
+            "d_RecoH_mass",
+
             "Recoil_mass",
         ]
 

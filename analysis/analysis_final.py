@@ -169,6 +169,8 @@ histoList = {
     
     "RecoH2_mass":               {"name":"RecoH2_mass",               "title":"Reco H2 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 
+    "d_RecoH_mass":               {"name":"d_RecoH_mass",               "title":"delta Reco H mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
+
     "Recoil_mass":              {"name":"Recoil_mass",              "title":"Recoil mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 
 }

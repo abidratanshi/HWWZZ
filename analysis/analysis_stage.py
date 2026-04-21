@@ -2,19 +2,19 @@ import os, copy
 import ROOT
 import urllib.request
 
-# processList = {
+processList = {
 
-#     # Signal
-#     'wzp6_ee_eeH_HWW_ecm365':   {'fraction':0.05},
-#     'wzp6_ee_mumuH_HWW_ecm365': {'fraction':0.05},
-#     'wzp6_ee_eeH_HZZ_ecm365':   {'fraction':0.05},
-#     'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.07},
+    # Signal
+    'wzp6_ee_eeH_HWW_ecm365':   {'fraction':0.05},
+    'wzp6_ee_mumuH_HWW_ecm365': {'fraction':0.05},
+    'wzp6_ee_eeH_HZZ_ecm365':   {'fraction':0.05},
+    'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.07},
 
-#     # Background
-#     'p8_ee_WW_ecm365': {'fraction':0.0005},
-#     'p8_ee_ZZ_ecm365': {'fraction':0.0009},
-#     'p8_ee_tt_ecm365': {'fraction':0.0002},
-# }
+    # Background
+    'p8_ee_WW_ecm365': {'fraction':0.0005},
+    'p8_ee_ZZ_ecm365': {'fraction':0.0009},
+    'p8_ee_tt_ecm365': {'fraction':0.0002},
+}
 
 # directories
 inputDir = "/ceph/sgiappic/HiggsCP/winter23"
@@ -335,6 +335,9 @@ class RDFanalysis():
                 .Define("Jets2_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt2_px, TagJet_kt2_py, TagJet_kt2_pz, TagJet_kt2_e)")
                 .Define("RecoH2_p4", "Jets2_p4[0] + Jets2_p4[1]")
                 .Define("RecoH2_mass",  "RecoH2_p4.M()")
+
+                # checking to see the difference between the two Higgs reconstruction methods
+                .Define("d_RecoH_mass", "RecoH_p4.M() - RecoH2_p4.M()")
                
 
         )
@@ -459,8 +462,12 @@ class RDFanalysis():
             "V2_mass",
 
             "RecoH2_mass",
+            
+            "d_RecoH_mass",
 
             "Recoil_mass",
+
+            
         ]
 
         return branchList
