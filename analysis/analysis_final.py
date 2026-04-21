@@ -53,19 +53,19 @@ cutList = {
 # "xmin" the minimum x-axis value and "xmax" the maximum x-axis value.
 histoList = {
 
-    "n_RecoElectrons":                  {"name":"n_RecoElectrons",                  "title":"Number of reco electrons",                     "bin":5, "xmin":-0.5, "xmax":4.5},
-    "RecoElectron_e":                   {"name":"RecoElectron_e",                   "title":"Reco electron energy [GeV]",                   "bin":50,"xmin":0 ,"xmax":100},
-    "RecoElectron_p":                   {"name":"RecoElectron_p",                   "title":"Reco electron p [GeV]",                        "bin":50,"xmin":0 ,"xmax":100},
-    "RecoElectron_pt":                  {"name":"RecoElectron_pt",                  "title":"Reco electron p_{T} [GeV]",                    "bin":50,"xmin":0 ,"xmax":100},
-    "RecoElectron_px":                  {"name":"RecoElectron_px",                  "title":"Reco electron p_{x} [GeV]",                    "bin":50,"xmin":-100 ,"xmax":100},
-    "RecoElectron_py":                  {"name":"RecoElectron_py",                  "title":"Reco electron p_{y} [GeV]",                    "bin":50,"xmin":-100 ,"xmax":100},
-    "RecoElectron_pz":                  {"name":"RecoElectron_pz",                  "title":"Reco electron p_{z} [GeV]",                    "bin":50,"xmin":-100 ,"xmax":100},
-    "RecoElectron_y":                   {"name":"RecoElectron_y",                   "title":"Reco electron rapidity",                       "bin":40, "xmin":-4., "xmax":4.},
-    "RecoElectron_eta":                 {"name":"RecoElectron_eta",                 "title":"Reco electron #eta",                           "bin":32, "xmin":-3.2,"xmax":3.2},
-    "RecoElectron_theta":               {"name":"RecoElectron_theta",               "title":"Reco electron #theta",                         "bin":16, "xmin":0,"xmax":3.2},
-    "RecoElectron_phi":                 {"name":"RecoElectron_phi",                 "title":"Reco electron #phi",                           "bin":32, "xmin":-3.2,"xmax":3.2},
-    "RecoElectron_charge":              {"name":"RecoElectron_charge",              "title":"Reco electron charge",                         "bin":3, "xmin":-1.5,"xmax":1.5},
-    "RecoElectron_mass":                {"name":"RecoElectron_mass",                "title":"Reco electron mass [GeV]",                     "bin":20, "xmin":0., "xmax":1},
+    "n_RecoElectrons":             {"name":"n_RecoElectrons",                  "title":"Number of reco electrons",                     "bin":5, "xmin":-0.5, "xmax":4.5},
+    "RecoElectron_e":              {"name":"RecoElectron_e",                   "title":"Reco electron energy [GeV]",                   "bin":50,"xmin":0 ,"xmax":100},
+    "RecoElectron_p":              {"name":"RecoElectron_p",                   "title":"Reco electron p [GeV]",                        "bin":50,"xmin":0 ,"xmax":100},
+    "RecoElectron_pt":             {"name":"RecoElectron_pt",                  "title":"Reco electron p_{T} [GeV]",                    "bin":50,"xmin":0 ,"xmax":100},
+    "RecoElectron_px":             {"name":"RecoElectron_px",                  "title":"Reco electron p_{x} [GeV]",                    "bin":50,"xmin":-100 ,"xmax":100},
+    "RecoElectron_py":             {"name":"RecoElectron_py",                  "title":"Reco electron p_{y} [GeV]",                    "bin":50,"xmin":-100 ,"xmax":100},
+    "RecoElectron_pz":             {"name":"RecoElectron_pz",                  "title":"Reco electron p_{z} [GeV]",                    "bin":50,"xmin":-100 ,"xmax":100},
+    "RecoElectron_y":              {"name":"RecoElectron_y",                   "title":"Reco electron rapidity",                       "bin":40, "xmin":-4., "xmax":4.},
+    "RecoElectron_eta":            {"name":"RecoElectron_eta",                 "title":"Reco electron #eta",                           "bin":32, "xmin":-3.2,"xmax":3.2},
+    "RecoElectron_theta":          {"name":"RecoElectron_theta",               "title":"Reco electron #theta",                         "bin":16, "xmin":0,"xmax":3.2},
+    "RecoElectron_phi":            {"name":"RecoElectron_phi",                 "title":"Reco electron #phi",                           "bin":32, "xmin":-3.2,"xmax":3.2},
+    "RecoElectron_charge":         {"name":"RecoElectron_charge",              "title":"Reco electron charge",                         "bin":3, "xmin":-1.5,"xmax":1.5},
+    "RecoElectron_mass":           {"name":"RecoElectron_mass",                "title":"Reco electron mass [GeV]",                     "bin":20, "xmin":0., "xmax":1},
 
     "n_RecoElectrons_sel":         {"name":"n_RecoElectrons_sel",                  "title":"Number of reco electrons sel",                     "bin":5, "xmin":-0.5, "xmax":4.5},
     "RecoElectron_sel_e":          {"name":"RecoElectron_sel_e",                   "title":"Reco electron sel energy [GeV]",                   "bin":50,"xmin":0 ,"xmax":100},
@@ -133,9 +133,9 @@ histoList = {
     "TagJet_kt4_theta":                   {"name":"TagJet_kt4_theta",                   "title":"kt4 jet #theta",                "bin":16, "xmin":0,"xmax":3.2},
     "TagJet_kt4_phi":                     {"name":"TagJet_kt4_phi",                     "title":"kt4 jet #phi",                  "bin":32, "xmin":-3.2,"xmax":3.2},
     "TagJet_kt4_mass":                    {"name":"TagJet_kt4_mass",                    "title":"kt4 jet mass [GeV]",            "bin":20, "xmin":0., "xmax":200.},
-    "TagJet_kt4_charge":                  {"name":"TagJet_kt4_charge",                  "title":"kt4 jet charge",                "bin":10, "xmin":-5., "xmax":5.},
-    "TagJet_kt4_flavor":                  {"name":"TagJet_kt4_flavor",                  "title":"kt4 jet flavor",                "bin":10, "xmin":-5., "xmax":5.},
-    "n_TagJet_kt4":                       {"name":"n_TagJet_kt4",                       "title":"Number of kt4 jet",             "bin":5, "xmin":-0.5, "xmax":4.5},
+    # "TagJet_kt4_charge":                  {"name":"TagJet_kt4_charge",                  "title":"kt4 jet charge",                "bin":10, "xmin":-5., "xmax":5.},
+    # "TagJet_kt4_flavor":                  {"name":"TagJet_kt4_flavor",                  "title":"kt4 jet flavor",                "bin":10, "xmin":-5., "xmax":5.},
+    # "n_TagJet_kt4":                       {"name":"n_TagJet_kt4",                       "title":"Number of kt4 jet",             "bin":5, "xmin":-0.5, "xmax":4.5},
     # "n_TagJet_kt4_constituents":          {"name":"n_TagJet_kt4_constituents",          "title":"kt4 jet constituents",          "bin":20, "xmin":0., "xmax":20.},
     # "n_TagJet_kt4_charged_constituents":  {"name":"n_TagJet_kt4_charged_constituents",  "title":"kt4 jet charged constituents",  "bin":20, "xmin":0., "xmax":20.},
     # "n_TagJet_kt4_neutral_constituents":  {"name":"n_TagJet_kt4_neutral_constituents",  "title":"kt4 jet neutral constituents",  "bin":20, "xmin":0., "xmax":20.},
@@ -164,8 +164,10 @@ histoList = {
     "RecoH_y":                  {"name":"RecoH_y",                  "title":"Reco H rapidity",               "bin":40, "xmin":-4., "xmax":4.},
     "RecoH_mass":               {"name":"RecoH_mass",               "title":"Reco H mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 
-    "V1_mass":               {"name":"V1_mass",               "title":"V1 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
-    "V2_mass":               {"name":"V2_mass",               "title":"V2 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
+    "V1_mass":                  {"name":"V1_mass",                  "title":"V1 mass [GeV]",                 "bin":75, "xmin":0 ,"xmax":200},
+    "V2_mass":                  {"name":"V2_mass",                  "title":"V2 mass [GeV]",                 "bin":75, "xmin":0 ,"xmax":200},
+    
+    "RecoH2_mass":               {"name":"RecoH2_mass",               "title":"Reco H2 mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 
     "Recoil_mass":              {"name":"Recoil_mass",              "title":"Recoil mass [GeV]",             "bin":75, "xmin":0 ,"xmax":200},
 

@@ -108,9 +108,9 @@ variables = [
             "TagJet_kt4_theta",
             "TagJet_kt4_e",
             "TagJet_kt4_mass",
-            "TagJet_kt4_charge",
-            "TagJet_kt4_flavor",
-            "n_TagJet_kt4",
+            # "TagJet_kt4_charge",
+            # "TagJet_kt4_flavor",
+            # "n_TagJet_kt4",
             # "n_TagJet_kt4_constituents",
             # "n_TagJet_kt4_charged_constituents",
             # "n_TagJet_kt4_neutral_constituents",
@@ -141,6 +141,8 @@ variables = [
 
             "V1_mass",
             "V2_mass",
+
+            "RecoH2_mass",
 
             "Recoil_mass",
         ]

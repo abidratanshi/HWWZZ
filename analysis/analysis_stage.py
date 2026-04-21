@@ -215,7 +215,7 @@ class RDFanalysis():
                 # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
                 .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
                 .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-                .Filter("abs(Recoil_mass - 125.0) < 20")
+                .Filter("abs(Recoil_mass - 125.0) < 15")
 
                 # Z properties
                 .Define("RecoZ_px",    "RecoZ_p4.Px()")
@@ -253,25 +253,31 @@ class RDFanalysis():
             "Bz": "magFieldBz",
         }
 
-        # EXCLUSIVE 4 JETS=
+        # EXCLUSIVE 4 JETS
         jetClusteringHelper_kt4  = ExclusiveJetClusteringHelper(
             collections["PFParticles"], 4, "kt4"
         )
         df2 = jetClusteringHelper_kt4.define(df2)
 
-        # define jet flavour tagging parameters
-        jetFlavourHelper_kt4 = JetFlavourHelper(
-            collections,
-            jetClusteringHelper_kt4.jets,
-            jetClusteringHelper_kt4.constituents,
-            "kt4",
-        )
+        # # define jet flavour tagging parameters
+        # jetFlavourHelper_kt4 = JetFlavourHelper(
+        #     collections,
+        #     jetClusteringHelper_kt4.jets,
+        #     jetClusteringHelper_kt4.constituents,
+        #     "kt4",
+        # )
         
-        # define observables for tagger
-        df2 = jetFlavourHelper_kt4.define(df2)
+        # # define observables for tagger
+        # df2 = jetFlavourHelper_kt4.define(df2)
 
-        # tagger inference
-        df2 = jetFlavourHelper_kt4.inference(weaver_preproc, weaver_model, df2)
+        # # tagger inference
+        # df2 = jetFlavourHelper_kt4.inference(weaver_preproc, weaver_model, df2)
+
+        # EXCLUSIVE 2 JETS
+        jetClusteringHelper_kt2  = ExclusiveJetClusteringHelper(
+            collections["PFParticles"], 2, "kt2"
+        )
+        df2 = jetClusteringHelper_kt2.define(df2)
 
         df2 = (df2
                 .Define("TagJet_kt4_px",     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt4.jets))
@@ -284,9 +290,9 @@ class RDFanalysis():
                 .Define("TagJet_kt4_theta",  "JetClusteringUtils::get_theta({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_e",      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_mass",   "JetClusteringUtils::get_m({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_charge", "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                .Define("TagJet_kt4_flavor", "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt4.jets))
-                .Define("n_TagJet_kt4",      "return int(TagJet_kt4_flavor.size())")
+                # .Define("TagJet_kt4_charge", "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                # .Define("TagJet_kt4_flavor", "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt4.jets))
+                # .Define("n_TagJet_kt4",      "return int(TagJet_kt4_flavor.size())")
                 # .Define("n_TagJet_kt4_constituents",  "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt4.constituents))
                 # .Define("n_TagJet_kt4_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt4.constituents))
                 # .Define("n_TagJet_kt4_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt4.constituents))
@@ -324,6 +330,16 @@ class RDFanalysis():
                 .Define("RecoH_theta", "RecoH_p4.Theta()")
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",  "RecoH_p4.M()")
+
+                # Reconstructing H from 2 jets instead of 4
+                .Define("TagJet_kt2_px",     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_py",     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_pz",     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_e",      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt2.jets))
+                .Define("Jets2_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt2_px, TagJet_kt2_py, TagJet_kt2_pz, TagJet_kt2_e)")
+                .Define("RecoH2_p4", "Jets2_p4[0] + Jets2_p4[1]")
+                .Define("RecoH2_mass",  "RecoH2_p4.M()")
+               
 
         )
         return df2
@@ -412,9 +428,9 @@ class RDFanalysis():
             "TagJet_kt4_theta",          
             "TagJet_kt4_e",     
             "TagJet_kt4_mass",        
-            "TagJet_kt4_charge",       
-            "TagJet_kt4_flavor", 
-            "n_TagJet_kt4",
+            # "TagJet_kt4_charge",       
+            # "TagJet_kt4_flavor", 
+            # "n_TagJet_kt4",
             # "n_TagJet_kt4_constituents",   
             # "n_TagJet_kt4_charged_constituents",   
             # "n_TagJet_kt4_neutral_constituents",               
@@ -445,6 +461,8 @@ class RDFanalysis():
 
             "V1_mass",
             "V2_mass",
+
+            "RecoH2_mass",
 
             "Recoil_mass",
         ]
