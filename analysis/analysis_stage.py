@@ -58,54 +58,99 @@ class RDFanalysis():
                 #################
                 # Gen particles #
                 #################
+                #### PDG IDs ####
+                #### e  = 11 ####
+                #### mu = 13 ####
+                #### Z  = 23 ####
+                #### W  = 24 ####
+                #### H  = 25 ####
+                #################
 
                 .Alias("Particle0", "Particle#0.index")
                 .Alias("Particle1", "Particle#1.index")
                 .Alias("MCRecoAssociations0", "MCRecoAssociations#0.index")
                 .Alias("MCRecoAssociations1", "MCRecoAssociations#1.index")
 
-                # all final state gen electrons and positrons
-                # # gen status==1 means final state particle (FS)
-                # .Define("GenElectron_PID",         "FCCAnalyses::MCParticle::sel_pdgID(11, true)(Particle)")
-                # .Define("FSGenElectron",           "FCCAnalyses::MCParticle::sel_genStatus(1)(GenElectron_PID)") 
-                # .Define("n_FSGenElectron",         "FCCAnalyses::MCParticle::get_n(FSGenElectron)")
-                # .Define("FSGenElectron_e",         "FCCAnalyses::MCParticle::get_e(FSGenElectron)")
-                # .Define("FSGenElectron_p",         "FCCAnalyses::MCParticle::get_p(FSGenElectron)")
-                # .Define("FSGenElectron_pt",        "FCCAnalyses::MCParticle::get_pt(FSGenElectron)")
-                # .Define("FSGenElectron_px",        "FCCAnalyses::MCParticle::get_px(FSGenElectron)")
-                # .Define("FSGenElectron_py",        "FCCAnalyses::MCParticle::get_py(FSGenElectron)")
-                # .Define("FSGenElectron_pz",        "FCCAnalyses::MCParticle::get_pz(FSGenElectron)")
-                # .Define("FSGenElectron_y",         "FCCAnalyses::MCParticle::get_y(FSGenElectron)") # rapidity
-                # .Define("FSGenElectron_eta",       "FCCAnalyses::MCParticle::get_eta(FSGenElectron)") # pseudorapidity
-                # .Define("FSGenElectron_theta",     "FCCAnalyses::MCParticle::get_theta(FSGenElectron)")
-                # .Define("FSGenElectron_phi",       "FCCAnalyses::MCParticle::get_phi(FSGenElectron)") # polar angle in the transverse plane phi
-                # .Define("FSGenElectron_charge",    "FCCAnalyses::MCParticle::get_charge(FSGenElectron)")
-                # .Define("FSGenElectron_mass",      "FCCAnalyses::MCParticle::get_mass(FSGenElectron)")
-                # .Define("FSGenElectron_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenElectron,Particle,Particle0)")
-                # .Define("FSGenElectron_vertex_x",  "FCCAnalyses::MCParticle::get_vertex_x( FSGenElectron )")
-                # .Define("FSGenElectron_vertex_y",  "FCCAnalyses::MCParticle::get_vertex_y( FSGenElectron )")
-                # .Define("FSGenElectron_vertex_z",  "FCCAnalyses::MCParticle::get_vertex_z( FSGenElectron )")
+                # all final state (FS) gen electrons and positrons
+                .Define("GenElectron_PID",         "FCCAnalyses::MCParticle::sel_pdgID(11, true)(Particle)")
+                .Define("FSGenElectron",           "FCCAnalyses::MCParticle::sel_genStatus(1)(GenElectron_PID)") # genStatus==1 denotes FS particle
+                .Define("n_FSGenElectron",         "FCCAnalyses::MCParticle::get_n(FSGenElectron)")
+                .Define("FSGenElectron_e",         "FCCAnalyses::MCParticle::get_e(FSGenElectron)")
+                .Define("FSGenElectron_p",         "FCCAnalyses::MCParticle::get_p(FSGenElectron)")
+                .Define("FSGenElectron_pt",        "FCCAnalyses::MCParticle::get_pt(FSGenElectron)")
+                .Define("FSGenElectron_px",        "FCCAnalyses::MCParticle::get_px(FSGenElectron)")
+                .Define("FSGenElectron_py",        "FCCAnalyses::MCParticle::get_py(FSGenElectron)")
+                .Define("FSGenElectron_pz",        "FCCAnalyses::MCParticle::get_pz(FSGenElectron)")
+                .Define("FSGenElectron_y",         "FCCAnalyses::MCParticle::get_y(FSGenElectron)") # rapidity
+                .Define("FSGenElectron_eta",       "FCCAnalyses::MCParticle::get_eta(FSGenElectron)") # pseudorapidity
+                .Define("FSGenElectron_theta",     "FCCAnalyses::MCParticle::get_theta(FSGenElectron)")
+                .Define("FSGenElectron_phi",       "FCCAnalyses::MCParticle::get_phi(FSGenElectron)") # polar angle in the transverse plane phi
+                .Define("FSGenElectron_charge",    "FCCAnalyses::MCParticle::get_charge(FSGenElectron)")
+                .Define("FSGenElectron_mass",      "FCCAnalyses::MCParticle::get_mass(FSGenElectron)")
+                .Define("FSGenElectron_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenElectron,Particle,Particle0)")
+                .Define("FSGenElectron_vertex_x",  "FCCAnalyses::MCParticle::get_vertex_x( FSGenElectron )")
+                .Define("FSGenElectron_vertex_y",  "FCCAnalyses::MCParticle::get_vertex_y( FSGenElectron )")
+                .Define("FSGenElectron_vertex_z",  "FCCAnalyses::MCParticle::get_vertex_z( FSGenElectron )")
                 
-                # # all final state gen muons 
-                # .Define("GenMuon_PID",         "FCCAnalyses::MCParticle::sel_pdgID(13, true)(Particle)")
-                # .Define("FSGenMuon",           "FCCAnalyses::MCParticle::sel_genStatus(1)(GenMuon_PID)")
-                # .Define("n_FSGenMuon",         "FCCAnalyses::MCParticle::get_n(FSGenMuon)")
-                # .Define("FSGenMuon_e",         "FCCAnalyses::MCParticle::get_e(FSGenMuon)")
-                # .Define("FSGenMuon_p",         "FCCAnalyses::MCParticle::get_p(FSGenMuon)")
-                # .Define("FSGenMuon_pt",        "FCCAnalyses::MCParticle::get_pt(FSGenMuon)")
-                # .Define("FSGenMuon_px",        "FCCAnalyses::MCParticle::get_px(FSGenMuon)")
-                # .Define("FSGenMuon_py",        "FCCAnalyses::MCParticle::get_py(FSGenMuon)")
-                # .Define("FSGenMuon_pz",        "FCCAnalyses::MCParticle::get_pz(FSGenMuon)")
-                # .Define("FSGenMuon_y",         "FCCAnalyses::MCParticle::get_y(FSGenMuon)")
-                # .Define("FSGenMuon_eta",       "FCCAnalyses::MCParticle::get_eta(FSGenMuon)")
-                # .Define("FSGenMuon_theta",     "FCCAnalyses::MCParticle::get_theta(FSGenMuon)")
-                # .Define("FSGenMuon_phi",       "FCCAnalyses::MCParticle::get_phi(FSGenMuon)")
-                # .Define("FSGenMuon_charge",    "FCCAnalyses::MCParticle::get_charge(FSGenMuon)")
-                # .Define("FSGenMuon_mass",      "FCCAnalyses::MCParticle::get_mass(FSGenMuon)")
-                # .Define("FSGenMuon_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenMuon,Particle,Particle0)")
-                # .Define("FSGenMuon_vertex_x",  "FCCAnalyses::MCParticle::get_vertex_x( FSGenMuon )")
-                # .Define("FSGenMuon_vertex_y",  "FCCAnalyses::MCParticle::get_vertex_y( FSGenMuon )")
-                # .Define("FSGenMuon_vertex_z",  "FCCAnalyses::MCParticle::get_vertex_z( FSGenMuon )")
+                # all final state gen muons 
+                .Define("GenMuon_PID",         "FCCAnalyses::MCParticle::sel_pdgID(13, true)(Particle)")
+                .Define("FSGenMuon",           "FCCAnalyses::MCParticle::sel_genStatus(1)(GenMuon_PID)")
+                .Define("n_FSGenMuon",         "FCCAnalyses::MCParticle::get_n(FSGenMuon)")
+                .Define("FSGenMuon_e",         "FCCAnalyses::MCParticle::get_e(FSGenMuon)")
+                .Define("FSGenMuon_p",         "FCCAnalyses::MCParticle::get_p(FSGenMuon)")
+                .Define("FSGenMuon_pt",        "FCCAnalyses::MCParticle::get_pt(FSGenMuon)")
+                .Define("FSGenMuon_px",        "FCCAnalyses::MCParticle::get_px(FSGenMuon)")
+                .Define("FSGenMuon_py",        "FCCAnalyses::MCParticle::get_py(FSGenMuon)")
+                .Define("FSGenMuon_pz",        "FCCAnalyses::MCParticle::get_pz(FSGenMuon)")
+                .Define("FSGenMuon_y",         "FCCAnalyses::MCParticle::get_y(FSGenMuon)")
+                .Define("FSGenMuon_eta",       "FCCAnalyses::MCParticle::get_eta(FSGenMuon)")
+                .Define("FSGenMuon_theta",     "FCCAnalyses::MCParticle::get_theta(FSGenMuon)")
+                .Define("FSGenMuon_phi",       "FCCAnalyses::MCParticle::get_phi(FSGenMuon)")
+                .Define("FSGenMuon_charge",    "FCCAnalyses::MCParticle::get_charge(FSGenMuon)")
+                .Define("FSGenMuon_mass",      "FCCAnalyses::MCParticle::get_mass(FSGenMuon)")
+                .Define("FSGenMuon_parentPDG", "FCCAnalyses::MCParticle::get_leptons_origin(FSGenMuon,Particle,Particle0)")
+                .Define("FSGenMuon_vertex_x",  "FCCAnalyses::MCParticle::get_vertex_x( FSGenMuon )")
+                .Define("FSGenMuon_vertex_y",  "FCCAnalyses::MCParticle::get_vertex_y( FSGenMuon )")
+                .Define("FSGenMuon_vertex_z",  "FCCAnalyses::MCParticle::get_vertex_z( FSGenMuon )")
+
+                # gen electrons from Z
+                .Define("GenElectron_fromZ", "FCCAnalyses::MCParticle::sel_parent_pdgID(23, true)(FSGenElectron, Particle, Particle0)")
+                .Define("n_GenElectron_fromZ", "FCCAnalyses::MCParticle::get_n(GenElectron_fromZ)")
+            
+                .Define("GenMuon_fromZ",     "FCCAnalyses::MCParticle::sel_parent_pdgID(23, true)(FSGenMuon, Particle, Particle0)")
+            
+                
+                .Define("n_GenMuon_fromZ",     "FCCAnalyses::MCParticle::get_n(GenMuon_fromZ)")
+
+                # selection for Z -> 2L
+                .Filter("(n_GenElectron_fromZ == 2) || (n_GenMuon_fromZ == 2)")
+                .Filter("(n_GenElectron_fromZ == 2 && GenElectron_charge[0] != GenElectron_charge[1]) || "
+                        "(n_GenMuon_fromZ == 2 && GenMuon_charge[0] != GenMuon_charge[1])")
+
+                # building generator level Z
+                .Define("GenElectron_fromZ_px", "FCCAnalyses::MCParticle::get_px(GenElectron_fromZ)")
+                .Define("GenElectron_fromZ_py", "FCCAnalyses::MCParticle::get_py(GenElectron_fromZ)")
+                .Define("GenElectron_fromZ_pz", "FCCAnalyses::MCParticle::get_pz(GenElectron_fromZ)")
+                .Define("GenElectron_fromZ_e",  "FCCAnalyses::MCParticle::get_e(GenElectron_fromZ)")
+                
+                .Define("GenMuon_fromZ_px", "FCCAnalyses::MCParticle::get_px(GenMuon_fromZ)")
+                .Define("GenMuon_fromZ_py", "FCCAnalyses::MCParticle::get_py(GenMuon_fromZ)")
+                .Define("GenMuon_fromZ_pz", "FCCAnalyses::MCParticle::get_pz(GenMuon_fromZ)")
+                .Define("GenMuon_fromZ_e",  "FCCAnalyses::MCParticle::get_e(GenMuon_fromZ)")
+
+                .Define("GenZ_p4", "(n_GenElectron_fromZ == 2) ? "
+                    "TLorentzVector(GenElectron_fromZ_px[0], GenElectron_fromZ_py[0], GenElectron_fromZ_pz[0], GenElectron_fromZ_e[0]) + "
+                    "TLorentzVector(GenElectron_fromZ_px[1], GenElectron_fromZ_py[1], GenElectron_fromZ_pz[1], GenElectron_fromZ_e[1]) : "
+                    "TLorentzVector(GenMuon_fromZ_px[0], GenMuon_fromZ_py[0], GenMuon_fromZ_pz[0], GenMuon_fromZ_e[0]) + "
+                    "TLorentzVector(GenMuon_fromZ_px[1], GenMuon_fromZ_py[1], GenMuon_fromZ_pz[1], GenMuon_fromZ_e[1])")
+
+                # Higgs
+                .Define("GenH", "FCCAnalyses::MCParticle::sel_pdgID(25, true)(Particle)")
+                .Define("GenH_mass", "FCCAnalyses::MCParticle::get_mass(GenH)")
+
+                # DEFINE THIS AT THE END
+                #.Define("H_mass_residual_4jet", "RecoH_mass - GenH_mass[0]")
+                #.Define("H_mass_residual_2jet", "RecoH2_mass - GenH_mass[0]")
 
                 ##################
                 # Reco particles #
@@ -215,7 +260,7 @@ class RDFanalysis():
                 # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
                 .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
                 .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-                .Filter("abs(Recoil_mass - 125.0) < 15")
+                .Filter("abs(Recoil_mass - 125.0) < 10")
 
                 # Z properties
                 .Define("RecoZ_px",    "RecoZ_p4.Px()")
@@ -259,56 +304,44 @@ class RDFanalysis():
         )
         df2 = jetClusteringHelper_kt4.define(df2)
 
-        # # define jet flavour tagging parameters
-        # jetFlavourHelper_kt4 = JetFlavourHelper(
-        #     collections,
-        #     jetClusteringHelper_kt4.jets,
-        #     jetClusteringHelper_kt4.constituents,
-        #     "kt4",
-        # )
-        
-        # # define observables for tagger
-        # df2 = jetFlavourHelper_kt4.define(df2)
-
-        # # tagger inference
-        # df2 = jetFlavourHelper_kt4.inference(weaver_preproc, weaver_model, df2)
-
-        # EXCLUSIVE 2 JETS
-        jetClusteringHelper_kt2  = ExclusiveJetClusteringHelper(
-            collections["PFParticles"], 2, "kt2"
+        # define jet flavour tagging parameters
+        jetFlavourHelper_kt4 = JetFlavourHelper(
+            collections,
+            jetClusteringHelper_kt4.jets,
+            jetClusteringHelper_kt4.constituents,
+            "kt4",
         )
-        df2 = jetClusteringHelper_kt2.define(df2)
+        
+        # define observables for tagger
+        df2 = jetFlavourHelper_kt4.define(df2)
+
+        # tagger inference
+        df2 = jetFlavourHelper_kt4.inference(weaver_preproc, weaver_model, df2)
 
         df2 = (df2
-                .Define("TagJet_kt4_px",     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_py",     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_pz",     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_p",      "JetClusteringUtils::get_p({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_pt",     "JetClusteringUtils::get_pt({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_phi",    "JetClusteringUtils::get_phi({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_eta",    "JetClusteringUtils::get_eta({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_theta",  "JetClusteringUtils::get_theta({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_e",      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt4.jets))
-                .Define("TagJet_kt4_mass",   "JetClusteringUtils::get_m({})".format(jetClusteringHelper_kt4.jets))
-                # .Define("TagJet_kt4_charge", "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                # .Define("TagJet_kt4_flavor", "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt4.jets))
-                # .Define("n_TagJet_kt4",      "return int(TagJet_kt4_flavor.size())")
-                # .Define("n_TagJet_kt4_constituents",  "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                # .Define("n_TagJet_kt4_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                # .Define("n_TagJet_kt4_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt4.constituents))
-                # .Define("TagJet_kt4_cleanup", "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt4.constituents)) 
+                .Define("TagJet_kt4_px",                     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_py",                     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_pz",                     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_p",                      "JetClusteringUtils::get_p({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_pt",                     "JetClusteringUtils::get_pt({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_phi",                    "JetClusteringUtils::get_phi({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_eta",                    "JetClusteringUtils::get_eta({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_theta",                  "JetClusteringUtils::get_theta({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_e",                      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_mass",                   "JetClusteringUtils::get_m({})".format(jetClusteringHelper_kt4.jets))
+                .Define("TagJet_kt4_charge",                 "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                .Define("TagJet_kt4_flavor",                 "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt4.jets))
+                .Define("n_TagJet_kt4",                      "return int(TagJet_kt4_flavor.size())")
+                .Define("n_TagJet_kt4_constituents",         "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                .Define("n_TagJet_kt4_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                .Define("n_TagJet_kt4_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt4.constituents))
+                .Define("TagJet_kt4_cleanup",                "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt4.constituents)) 
 
                 # array of TLVs for all 4 jets
                 .Define("Jets_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt4_px, TagJet_kt4_py, TagJet_kt4_pz, TagJet_kt4_e)")
 
                 # get best jet pairings
                 .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
-
-		        # just to see the result, this can show what the individual bosons end up being
-                .Define("V1_mass", "(Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]]).M()")
-                .Define("V2_mass", "(Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]).M()")
-	        	# constraining one to be offshell 
-                # .Filter("(V1_mass < 60 || V2_mass < 60)")
 
                 # reconstructing H from 4 jets
                 .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
@@ -327,26 +360,76 @@ class RDFanalysis():
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",  "RecoH_p4.M()")
 
-                # Reconstructing H from 2 jets instead of 4
-                .Define("TagJet_kt2_px",     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_py",     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_pz",     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_e",      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt2.jets))
+              )
+
+        # EXCLUSIVE 2 JETS
+        jetClusteringHelper_kt2  = ExclusiveJetClusteringHelper(
+            collections["PFParticles"], 2, "kt2"
+        )
+        df2 = jetClusteringHelper_kt2.define(df2)
+
+        # define jet flavour tagging parameters
+        jetFlavourHelper_kt2 = JetFlavourHelper(
+            collections,
+            jetClusteringHelper_kt2.jets,
+            jetClusteringHelper_kt2.constituents,
+            "kt2",
+        )
+        
+        # define observables for tagger
+        df2 = jetFlavourHelper_kt2.define(df2)
+
+        # tagger inference
+        df2 = jetFlavourHelper_kt2.inference(weaver_preproc, weaver_model, df2)
+        
+        df2 = (df2
+
+                .Define("TagJet_kt2_px",                     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_py",                     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_pz",                     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_p",                      "JetClusteringUtils::get_p({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_pt",                     "JetClusteringUtils::get_pt({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_phi",                    "JetClusteringUtils::get_phi({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_eta",                    "JetClusteringUtils::get_eta({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_theta",                  "JetClusteringUtils::get_theta({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_e",                      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_mass",                   "JetClusteringUtils::get_m({})".format(jetClusteringHelper_kt2.jets))
+                .Define("TagJet_kt2_charge",                 "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt2.constituents))
+                .Define("TagJet_kt2_flavor",                 "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt2.jets))
+                .Define("n_TagJet_kt2",                      "return int(TagJet_kt2_flavor.size())")
+                .Define("n_TagJet_kt2_constituents",         "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt2.constituents))
+                .Define("n_TagJet_kt2_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt2.constituents))
+                .Define("n_TagJet_kt2_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt2.constituents))
+                .Define("TagJet_kt2_cleanup",                "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt2.constituents)) 
+
+                # array of TLVs for 2 jets
                 .Define("Jets2_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt2_px, TagJet_kt2_py, TagJet_kt2_pz, TagJet_kt2_e)")
+
+                # Reconstructing H from 2 jets instead of 4
                 .Define("RecoH2_p4", "Jets2_p4[0] + Jets2_p4[1]")
+
+                # H2 properties
+                .Define("RecoH2_px",    "RecoH2_p4.Px()")
+                .Define("RecoH2_py",    "RecoH2_p4.Py()")
+                .Define("RecoH2_pz",    "RecoH2_p4.Pz()")
+                .Define("RecoH2_p",     "RecoH2_p4.P()")
+                .Define("RecoH2_pt",    "RecoH2_p4.Pt()")
+                .Define("RecoH2_e",     "RecoH2_p4.E()")
+                .Define("RecoH2_eta",   "RecoH2_p4.Eta()")
+                .Define("RecoH2_phi",   "RecoH2_p4.Phi()")
+                .Define("RecoH2_theta", "RecoH2_p4.Theta()")
+                .Define("RecoH2_y",     "RecoH2_p4.Rapidity()")
                 .Define("RecoH2_mass",  "RecoH2_p4.M()")
 
                 # checking to see the difference between the two Higgs reconstruction methods
-                .Define("d_RecoH_mass", "RecoH_p4.M() - RecoH2_p4.M()")
-               
+                .Define("d_RecoH_mass", "RecoH_mass - RecoH2_mass")
 
         )
         return df2
 
     def output():
-        
         branchList = [
-
+            
             "n_RecoElectrons",
             "RecoElectron_e",
             "RecoElectron_p",
@@ -417,23 +500,6 @@ class RDFanalysis():
             "RecoPhoton_charge",
             "RecoPhoton_mass",
 
-            "TagJet_kt4_px", 
-            "TagJet_kt4_py",    
-            "TagJet_kt4_pz",      
-            "TagJet_kt4_p",  
-            "TagJet_kt4_pt",    
-            "TagJet_kt4_phi", 
-            "TagJet_kt4_eta",     
-            "TagJet_kt4_theta",          
-            "TagJet_kt4_e",     
-            "TagJet_kt4_mass",        
-            # "TagJet_kt4_charge",       
-            # "TagJet_kt4_flavor", 
-            # "n_TagJet_kt4",
-            # "n_TagJet_kt4_constituents",   
-            # "n_TagJet_kt4_charged_constituents",   
-            # "n_TagJet_kt4_neutral_constituents",               
-            
             "RecoZ_px",
             "RecoZ_py",
             "RecoZ_pz",
@@ -445,6 +511,25 @@ class RDFanalysis():
             "RecoZ_theta",
             "RecoZ_y",
             "RecoZ_mass",
+
+            "Recoil_mass",
+
+            "TagJet_kt4_px", 
+            "TagJet_kt4_py",    
+            "TagJet_kt4_pz",      
+            "TagJet_kt4_p",  
+            "TagJet_kt4_pt",    
+            "TagJet_kt4_phi", 
+            "TagJet_kt4_eta",     
+            "TagJet_kt4_theta",          
+            "TagJet_kt4_e",     
+            "TagJet_kt4_mass",        
+            "TagJet_kt4_charge",       
+            "TagJet_kt4_flavor",
+            "n_TagJet_kt4",
+            "n_TagJet_kt4_constituents",
+            "n_TagJet_kt4_charged_constituents",
+            "n_TagJet_kt4_neutral_constituents",
 
             "RecoH_px",
             "RecoH_py",
@@ -458,16 +543,37 @@ class RDFanalysis():
             "RecoH_y",
             "RecoH_mass",
 
-            "V1_mass",
-            "V2_mass",
-
+            "TagJet_kt2_px",
+            "TagJet_kt2_py",
+            "TagJet_kt2_pz",
+            "TagJet_kt2_p",
+            "TagJet_kt2_pt",
+            "TagJet_kt2_phi",
+            "TagJet_kt2_eta",
+            "TagJet_kt2_theta",
+            "TagJet_kt2_e",
+            "TagJet_kt2_mass",
+            "TagJet_kt2_charge",
+            "TagJet_kt2_flavor",
+            "n_TagJet_kt2",
+            "n_TagJet_kt2_constituents",
+            "n_TagJet_kt2_charged_constituents",
+            "n_TagJet_kt2_neutral_constituents",
+            
+            "RecoH2_px",
+            "RecoH2_py",
+            "RecoH2_pz",
+            "RecoH2_p",
+            "RecoH2_pt",
+            "RecoH2_e",
+            "RecoH2_eta",
+            "RecoH2_phi",
+            "RecoH2_theta",
+            "RecoH2_y",
             "RecoH2_mass",
             
             "d_RecoH_mass",
 
-            "Recoil_mass",
-
-            
         ]
 
         return branchList

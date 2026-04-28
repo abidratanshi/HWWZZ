@@ -27,7 +27,7 @@ splitLeg       = True # split legend for backgrounds and signals
 
 
 variables = [
-
+    
             "n_RecoElectrons",
             "RecoElectron_e",
             "RecoElectron_p",
@@ -98,23 +98,6 @@ variables = [
             "RecoPhoton_charge",
             "RecoPhoton_mass",
 
-            "TagJet_kt4_px",
-            "TagJet_kt4_py",
-            "TagJet_kt4_pz",
-            "TagJet_kt4_p",
-            "TagJet_kt4_pt",
-            "TagJet_kt4_phi",
-            "TagJet_kt4_eta",
-            "TagJet_kt4_theta",
-            "TagJet_kt4_e",
-            "TagJet_kt4_mass",
-            # "TagJet_kt4_charge",
-            # "TagJet_kt4_flavor",
-            # "n_TagJet_kt4",
-            # "n_TagJet_kt4_constituents",
-            # "n_TagJet_kt4_charged_constituents",
-            # "n_TagJet_kt4_neutral_constituents",
-
             "RecoZ_px",
             "RecoZ_py",
             "RecoZ_pz",
@@ -126,6 +109,25 @@ variables = [
             "RecoZ_theta",
             "RecoZ_y",
             "RecoZ_mass",
+
+            "Recoil_mass",
+
+            "TagJet_kt4_px", 
+            "TagJet_kt4_py",    
+            "TagJet_kt4_pz",      
+            "TagJet_kt4_p",  
+            "TagJet_kt4_pt",    
+            "TagJet_kt4_phi", 
+            "TagJet_kt4_eta",     
+            "TagJet_kt4_theta",          
+            "TagJet_kt4_e",     
+            "TagJet_kt4_mass",        
+            "TagJet_kt4_charge",       
+            "TagJet_kt4_flavor",
+            "n_TagJet_kt4",
+            "n_TagJet_kt4_constituents",
+            "n_TagJet_kt4_charged_constituents",
+            "n_TagJet_kt4_neutral_constituents",
 
             "RecoH_px",
             "RecoH_py",
@@ -139,14 +141,37 @@ variables = [
             "RecoH_y",
             "RecoH_mass",
 
-            "V1_mass",
-            "V2_mass",
-
+            "TagJet_kt2_px",
+            "TagJet_kt2_py",
+            "TagJet_kt2_pz",
+            "TagJet_kt2_p",
+            "TagJet_kt2_pt",
+            "TagJet_kt2_phi",
+            "TagJet_kt2_eta",
+            "TagJet_kt2_theta",
+            "TagJet_kt2_e",
+            "TagJet_kt2_mass",
+            "TagJet_kt2_charge",
+            "TagJet_kt2_flavor",
+            "n_TagJet_kt2",
+            "n_TagJet_kt2_constituents",
+            "n_TagJet_kt2_charged_constituents",
+            "n_TagJet_kt2_neutral_constituents",
+            
+            "RecoH2_px",
+            "RecoH2_py",
+            "RecoH2_pz",
+            "RecoH2_p",
+            "RecoH2_pt",
+            "RecoH2_e",
+            "RecoH2_eta",
+            "RecoH2_phi",
+            "RecoH2_theta",
+            "RecoH2_y",
             "RecoH2_mass",
-
+            
             "d_RecoH_mass",
-
-            "Recoil_mass",
+    
         ]
 
 selections = {}
