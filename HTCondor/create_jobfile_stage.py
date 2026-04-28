@@ -100,9 +100,9 @@ processList = {
     'wzp6_ee_mumuH_HZZ_ecm365': {},
 
     # Background
-    'p8_ee_WW_ecm365': {'chunks':10},
-    'p8_ee_ZZ_ecm365': {'chunks':10},
-    'p8_ee_tt_ecm365': {'chunks':10},
+    'p8_ee_WW_ecm365': {}, #{'chunks':10},
+    'p8_ee_ZZ_ecm365': {}, #{'chunks':10},
+    'p8_ee_tt_ecm365': {}, #{'chunks':10},
 }
 
 inputDir =  '/ceph/sgiappic/HiggsCP/winter23/'
