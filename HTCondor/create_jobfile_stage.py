@@ -15,7 +15,7 @@ def create_condor_config(nCPUs: int,
     cfg += 'output           = $(output_dir)out/condor_$(ClusterId).$(ProcId).out\n'
     cfg += 'error            = $(output_dir)err/condor_$(ClusterId).$(ProcId).err\n'
     cfg += 'max_retries      = 3\n'
-    cfg += '+JobFlavour      = "longlunch"\n'
+    cfg += '+JobFlavour      = "workday"\n'
     cfg += 'request_memory   = '+str(memory)+' MB\n'
     cfg += 'request_cpus     = '+str(nCPUs)+'\n'
     cfg += 'requirements     = (TARGET.ProvidesCPU && TARGET.ProvidesEKPResources)\n'
@@ -100,9 +100,9 @@ processList = {
     'wzp6_ee_mumuH_HZZ_ecm365': {},
 
     # Background
-    'p8_ee_WW_ecm365': {}, #{'chunks':10},
-    'p8_ee_ZZ_ecm365': {}, #{'chunks':10},
-    'p8_ee_tt_ecm365': {}, #{'chunks':10},
+    'p8_ee_WW_ecm365': {'chunks':25},
+    'p8_ee_ZZ_ecm365': {'chunks':25},
+    'p8_ee_tt_ecm365': {'chunks':25},
 }
 
 inputDir =  '/ceph/sgiappic/HiggsCP/winter23/'

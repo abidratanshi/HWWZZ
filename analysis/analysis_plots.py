@@ -27,7 +27,20 @@ splitLeg       = True # split legend for backgrounds and signals
 
 
 variables = [
-    
+
+            #################
+            # Gen particles #
+            #################
+
+            "GenElectron_dR",
+            "GenMuon_dR",
+            "GenZ_mass",
+            "GenH_mass",
+
+            ##################
+            # Reco particles #
+            ##################
+
             "n_RecoElectrons",
             "RecoElectron_e",
             "RecoElectron_p",
@@ -171,7 +184,10 @@ variables = [
             "RecoH2_mass",
             
             "d_RecoH_mass",
-    
+            "d_RecoH2_GenH_mass",
+            "d_RecoH4_GenH_mass",
+            
+
         ]
 
 selections = {}
