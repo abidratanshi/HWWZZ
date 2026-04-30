@@ -100,17 +100,17 @@ processList = {
     'wzp6_ee_mumuH_HZZ_ecm365': {},
 
     # Background
-    'p8_ee_WW_ecm365': {'chunks':25},
-    'p8_ee_ZZ_ecm365': {'chunks':25},
-    'p8_ee_tt_ecm365': {'chunks':25},
+    # 'p8_ee_WW_ecm365': {'chunks':25},
+    # 'p8_ee_ZZ_ecm365': {'chunks':25},
+    # 'p8_ee_tt_ecm365': {'chunks':25},
 }
 
 inputDir =  '/ceph/sgiappic/HiggsCP/winter23/'
-output =    '/ceph/aratanshi/HTCondor/' # output directory of submission files, needs to be different to have unique submission files
-outputDir = '/ceph/aratanshi/stage_output/' # output directory of stage samples
-localDir =  '/work/aratanshi/HWWZZ/analysis/'
+output =    '/ceph/aratanshi/HTCondor/gen/' # output directory of submission files, needs to be different to have unique submission files
+outputDir = '/ceph/aratanshi/stage_gen_output/' # output directory of stage samples
+localDir =  '/work/aratanshi/HWWZZ/analysis/gen/'
 sourceDir = '/work/aratanshi/FCCAnalyses/'
-Filename =  'analysis_stage.py'
+Filename =  'analysis_stage_gen.py'
 
 nCPUS = 1
 Memory = 10000

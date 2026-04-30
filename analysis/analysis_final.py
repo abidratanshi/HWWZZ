@@ -52,19 +52,6 @@ cutList = {
 # "bin" the number of bins of the histogram,
 # "xmin" the minimum x-axis value and "xmax" the maximum x-axis value.
 histoList = {
-    
-    #################
-    # Gen particles #
-    #################
-
-    "GenElectron_dR":                     {"name":"GenElectron_dR",                "title":"delta R GenElectron",            "bin":80,      "xmin":0.,      "xmax":150},
-    "GenMuon_dR":                         {"name":"GenMuon_dR",                    "title":"delta R GenMuon",                "bin":80,      "xmin":0.,      "xmax":150},
-    "GenZ_mass":                          {"name":"GenZ_mass",                          "title":"Gen Z mass [GeV]",               "bin":80,      "xmin":0.,      "xmax":150},
-    "GenH_mass":                          {"name":"GenH_mass",                          "title":"Gen H mass [GeV]",               "bin":75,      "xmin":0,        "xmax":200},
-    
-    ##################
-    # Reco particles #
-    ##################
 
     "n_RecoElectrons":                    {"name":"n_RecoElectrons",                     "title":"Number of reco electrons",        "bin":5,       "xmin":-0.5,     "xmax":4.5},
     "RecoElectron_e":                     {"name":"RecoElectron_e",                      "title":"Reco electron energy [GeV]",      "bin":50,      "xmin":0,        "xmax":100},
@@ -209,6 +196,4 @@ histoList = {
     "RecoH4_mass":                        {"name":"RecoH4_mass",                         "title":"Reco H4 mass [GeV]",              "bin":75,      "xmin":0,        "xmax":200},
 
     "d_RecoH_mass":                       {"name":"d_RecoH_mass",                        "title":"delta Reco H mass [GeV]",         "bin":75,      "xmin":0,        "xmax":200},
-    "d_RecoH2_GenH_mass":                 {"name":"d_RecoH2_GenH_mass",   "title":"delta Reco-H Gen-H mass (2 jets) [GeV]",         "bin":75,      "xmin":0,        "xmax":200},
-    "d_RecoH4_GenH_mass":                 {"name":"d_RecoH4_GenH_mass",   "title":"delta Reco-H Gen-H mass (4 jets) [GeV]",         "bin":75,      "xmin":0,        "xmax":200},
 }
