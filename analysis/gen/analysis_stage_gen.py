@@ -19,7 +19,7 @@ processList = {
 # directories
 inputDir = "/ceph/sgiappic/HiggsCP/winter23"
 outputDir = "/ceph/aratanshi/stage_gen_output"
-# includePaths = ["functions.h"]
+includePaths = ["../functions.h"]
 
 nCPUS = 8
 
@@ -73,7 +73,7 @@ class RDFanalysis():
 
             # generated electrons
             .Define("GenElectron",        "FCCAnalyses::MCParticle::sel_pdgID(11, true)(Particle)")
-            .Define("n_GenElectrons",      "FCCAnalyses::MCParticle::get_n(GenElectron)")
+            .Define("n_GenElectron",      "FCCAnalyses::MCParticle::get_n(GenElectron)")
             .Define("GenElectron_e",      "FCCAnalyses::MCParticle::get_e(GenElectron)")
             .Define("GenElectron_p",      "FCCAnalyses::MCParticle::get_p(GenElectron)")
             .Define("GenElectron_pt",     "FCCAnalyses::MCParticle::get_pt(GenElectron)")
@@ -89,7 +89,7 @@ class RDFanalysis():
 
             # generated muons
             .Define("GenMuon",        "FCCAnalyses::MCParticle::sel_pdgID(13, true)(Particle)")
-            .Define("n_GenMuons",      "FCCAnalyses::MCParticle::get_n(GenMuon)")
+            .Define("n_GenMuon",      "FCCAnalyses::MCParticle::get_n(GenMuon)")
             .Define("GenMuon_e",      "FCCAnalyses::MCParticle::get_e(GenMuon)")
             .Define("GenMuon_p",      "FCCAnalyses::MCParticle::get_p(GenMuon)")
             .Define("GenMuon_pt",     "FCCAnalyses::MCParticle::get_pt(GenMuon)")
@@ -102,102 +102,89 @@ class RDFanalysis():
             .Define("GenMuon_phi",    "FCCAnalyses::MCParticle::get_phi(GenMuon)")
             .Define("GenMuon_charge", "FCCAnalyses::MCParticle::get_charge(GenMuon)")
             .Define("GenMuon_mass",   "FCCAnalyses::MCParticle::get_mass(GenMuon)")
+
+            # merge electrons and muons
+            .Define("GenLepton",        "FCCAnalyses::MCParticle::mergeParticles(GenElectron, GenMuon)")
+            .Define("n_GenLepton",      "FCCAnalyses::MCParticle::get_n(GenLepton)")
+            .Define("GenLepton_e",      "FCCAnalyses::MCParticle::get_e(GenLepton)")
+            .Define("GenLepton_p",      "FCCAnalyses::MCParticle::get_p(GenLepton)")
+            .Define("GenLepton_pt",     "FCCAnalyses::MCParticle::get_pt(GenLepton)")
+            .Define("GenLepton_px",     "FCCAnalyses::MCParticle::get_px(GenLepton)")
+            .Define("GenLepton_py",     "FCCAnalyses::MCParticle::get_py(GenLepton)")
+            .Define("GenLepton_pz",     "FCCAnalyses::MCParticle::get_pz(GenLepton)")
+            .Define("GenLepton_y",      "FCCAnalyses::MCParticle::get_y(GenLepton)")
+            .Define("GenLepton_eta",    "FCCAnalyses::MCParticle::get_eta(GenLepton)")
+            .Define("GenLepton_theta",  "FCCAnalyses::MCParticle::get_theta(GenLepton)")
+            .Define("GenLepton_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton)")
+            .Define("GenLepton_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton)")
+            .Define("GenLepton_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton)")
+
+            # ---------------------------------
+            #
+            # Considering two types of leptons:
+            #
+            # intermediate
+            # final state
+            #
+            # ---------------------------------
+
+            # INTERMEDIATE
+            # these are leptons before FSR, sequentially chosen such that they do not come from Z,W,e,mu respectively
+            .Define("GenLepton_int_1", "FCCAnalyses::MCParticle::sel_parentID(23, false, true)(GenLepton, Particle, Particle0)") 
+            .Define("GenLepton_int_2", "FCCAnalyses::MCParticle::sel_parentID(24, false, true)(GenLepton_int_1, Particle, Particle0)")
+            .Define("GenLepton_int_3", "FCCAnalyses::MCParticle::sel_parentID(11, false, true)(GenLepton_int_2, Particle, Particle0)")
+            .Define("GenLepton_int",   "FCCAnalyses::MCParticle::sel_parentID(13, false, true)(GenLepton_int_3, Particle, Particle0)")
         
-            # final state generated electrons (genStatus==1 denotes FS particle)
-            .Define("FSGenElectron",        "FCCAnalyses::MCParticle::sel_genStatus(1)(GenElectron)")
-            .Define("n_FSGenElectrons",      "FCCAnalyses::MCParticle::get_n(FSGenElectron)")
-            .Define("FSGenElectron_e",      "FCCAnalyses::MCParticle::get_e(FSGenElectron)")
-            .Define("FSGenElectron_p",      "FCCAnalyses::MCParticle::get_p(FSGenElectron)")
-            .Define("FSGenElectron_pt",     "FCCAnalyses::MCParticle::get_pt(FSGenElectron)")
-            .Define("FSGenElectron_px",     "FCCAnalyses::MCParticle::get_px(FSGenElectron)")
-            .Define("FSGenElectron_py",     "FCCAnalyses::MCParticle::get_py(FSGenElectron)")
-            .Define("FSGenElectron_pz",     "FCCAnalyses::MCParticle::get_pz(FSGenElectron)")
-            .Define("FSGenElectron_y",      "FCCAnalyses::MCParticle::get_y(FSGenElectron)")
-            .Define("FSGenElectron_eta",    "FCCAnalyses::MCParticle::get_eta(FSGenElectron)")
-            .Define("FSGenElectron_theta",  "FCCAnalyses::MCParticle::get_theta(FSGenElectron)")
-            .Define("FSGenElectron_phi",    "FCCAnalyses::MCParticle::get_phi(FSGenElectron)")
-            .Define("FSGenElectron_charge", "FCCAnalyses::MCParticle::get_charge(FSGenElectron)")
-            .Define("FSGenElectron_mass",   "FCCAnalyses::MCParticle::get_mass(FSGenElectron)")
-            
-            # final state generated muons 
-            .Define("FSGenMuon",        "FCCAnalyses::MCParticle::sel_genStatus(1)(GenMuon)")
-            .Define("n_FSGenMuons",      "FCCAnalyses::MCParticle::get_n(FSGenMuon)")
-            .Define("FSGenMuon_e",      "FCCAnalyses::MCParticle::get_e(FSGenMuon)")
-            .Define("FSGenMuon_p",      "FCCAnalyses::MCParticle::get_p(FSGenMuon)")
-            .Define("FSGenMuon_pt",     "FCCAnalyses::MCParticle::get_pt(FSGenMuon)")
-            .Define("FSGenMuon_px",     "FCCAnalyses::MCParticle::get_px(FSGenMuon)")
-            .Define("FSGenMuon_py",     "FCCAnalyses::MCParticle::get_py(FSGenMuon)")
-            .Define("FSGenMuon_pz",     "FCCAnalyses::MCParticle::get_pz(FSGenMuon)")
-            .Define("FSGenMuon_y",      "FCCAnalyses::MCParticle::get_y(FSGenMuon)")
-            .Define("FSGenMuon_eta",    "FCCAnalyses::MCParticle::get_eta(FSGenMuon)")
-            .Define("FSGenMuon_theta",  "FCCAnalyses::MCParticle::get_theta(FSGenMuon)")
-            .Define("FSGenMuon_phi",    "FCCAnalyses::MCParticle::get_phi(FSGenMuon)")
-            .Define("FSGenMuon_charge", "FCCAnalyses::MCParticle::get_charge(FSGenMuon)")
-            .Define("FSGenMuon_mass",   "FCCAnalyses::MCParticle::get_mass(FSGenMuon)")
-            
-            # generated electrons from Z
-            .Define("GenElectron_Z",        "FCCAnalyses::MCParticle::sel_parentID(23, true, true)(GenElectron, Particle, Particle0)")
-            .Define("n_GenElectrons_Z",     "FCCAnalyses::MCParticle::get_n(GenElectron_Z)")
-            .Define("GenElectron_Z_e",      "FCCAnalyses::MCParticle::get_e(GenElectron_Z)")
-            .Define("GenElectron_Z_p",      "FCCAnalyses::MCParticle::get_p(GenElectron_Z)")
-            .Define("GenElectron_Z_pt",     "FCCAnalyses::MCParticle::get_pt(GenElectron_Z)")
-            .Define("GenElectron_Z_px",     "FCCAnalyses::MCParticle::get_px(GenElectron_Z)")
-            .Define("GenElectron_Z_py",     "FCCAnalyses::MCParticle::get_py(GenElectron_Z)")
-            .Define("GenElectron_Z_pz",     "FCCAnalyses::MCParticle::get_pz(GenElectron_Z)")
-            .Define("GenElectron_Z_y",      "FCCAnalyses::MCParticle::get_y(GenElectron_Z)")
-            .Define("GenElectron_Z_eta",    "FCCAnalyses::MCParticle::get_eta(GenElectron_Z)")
-            .Define("GenElectron_Z_theta",  "FCCAnalyses::MCParticle::get_theta(GenElectron_Z)")
-            .Define("GenElectron_Z_phi",    "FCCAnalyses::MCParticle::get_phi(GenElectron_Z)")
-            .Define("GenElectron_Z_charge", "FCCAnalyses::MCParticle::get_charge(GenElectron_Z)")
-            .Define("GenElectron_Z_mass",   "FCCAnalyses::MCParticle::get_mass(GenElectron_Z)")
+            .Define("GenLepton_int_e",      "FCCAnalyses::MCParticle::get_e(GenLepton_int)")
+            .Define("GenLepton_int_pt",     "FCCAnalyses::MCParticle::get_pt(GenLepton_int)")
+            .Define("GenLepton_int_px",     "FCCAnalyses::MCParticle::get_px(GenLepton_int)")
+            .Define("GenLepton_int_py",     "FCCAnalyses::MCParticle::get_py(GenLepton_int)")
+            .Define("GenLepton_int_pz",     "FCCAnalyses::MCParticle::get_pz(GenLepton_int)")
+            .Define("GenLepton_int_eta",    "FCCAnalyses::MCParticle::get_eta(GenLepton_int)")
+            .Define("GenLepton_int_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton_int)")
+            .Define("GenLepton_int_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton_int)")
+            .Define("GenLepton_int_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton_int)")
+            .Define("GenLepton_int_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_int_eta, GenLepton_int_phi)")
+                        
+            # FINAL STATE
+            # result after FSR
+            # leptons chosen such that they do not come from Z,W
+            .Define("GenLepton_FS_1", "FCCAnalyses::MCParticle::sel_parentID(23, false, true)(GenLepton, Particle, Particle0)")
+            .Define("GenLepton_FS_2", "FCCAnalyses::MCParticle::sel_parentID(24, false, true)(GenLepton_FS_1, Particle, Particle0)")
+            # keep only leptons coming from leptons (FSR) e,mu respectively
+            .Define("GenLepton_FS_3", "FCCAnalyses::MCParticle::sel_parentID(11, true, true)(GenLepton_FS_2, Particle, Particle0)")
+            .Define("GenLepton_FS_4", "FCCAnalyses::MCParticle::sel_parentID(13, true, true)(GenLepton_FS_2, Particle, Particle0)")
+            # merge because lepton flavor does not matter now
+            .Define("GenLepton_FS",   "FCCAnalyses::MCParticle::mergeParticles(GenLepton_FS_3, GenLepton_FS_4)")
 
-            # generated muons from Z
-            .Define("GenMuon_Z",        "FCCAnalyses::MCParticle::sel_parentID(23, true, true)(GenMuon, Particle, Particle0)")
-            .Define("n_GenMuons_Z",     "FCCAnalyses::MCParticle::get_n(GenMuon_Z)")
-            .Define("GenMuon_Z_e",      "FCCAnalyses::MCParticle::get_e(GenMuon_Z)")
-            .Define("GenMuon_Z_p",      "FCCAnalyses::MCParticle::get_p(GenMuon_Z)")
-            .Define("GenMuon_Z_pt",     "FCCAnalyses::MCParticle::get_pt(GenMuon_Z)")
-            .Define("GenMuon_Z_px",     "FCCAnalyses::MCParticle::get_px(GenMuon_Z)")
-            .Define("GenMuon_Z_py",     "FCCAnalyses::MCParticle::get_py(GenMuon_Z)")
-            .Define("GenMuon_Z_pz",     "FCCAnalyses::MCParticle::get_pz(GenMuon_Z)")
-            .Define("GenMuon_Z_y",      "FCCAnalyses::MCParticle::get_y(GenMuon_Z)")
-            .Define("GenMuon_Z_eta",    "FCCAnalyses::MCParticle::get_eta(GenMuon_Z)")
-            .Define("GenMuon_Z_theta",  "FCCAnalyses::MCParticle::get_theta(GenMuon_Z)")
-            .Define("GenMuon_Z_phi",    "FCCAnalyses::MCParticle::get_phi(GenMuon_Z)")
-            .Define("GenMuon_Z_charge", "FCCAnalyses::MCParticle::get_charge(GenMuon_Z)")
-            .Define("GenMuon_Z_mass",   "FCCAnalyses::MCParticle::get_mass(GenMuon_Z)")
+            .Define("GenLepton_FS_e",      "FCCAnalyses::MCParticle::get_e(GenLepton_FS)")
+            .Define("GenLepton_FS_pt",     "FCCAnalyses::MCParticle::get_pt(GenLepton_FS)")
+            .Define("GenLepton_FS_px",     "FCCAnalyses::MCParticle::get_px(GenLepton_FS)")
+            .Define("GenLepton_FS_py",     "FCCAnalyses::MCParticle::get_py(GenLepton_FS)")
+            .Define("GenLepton_FS_pz",     "FCCAnalyses::MCParticle::get_pz(GenLepton_FS)")
+            .Define("GenLepton_FS_eta",    "FCCAnalyses::MCParticle::get_eta(GenLepton_FS)")
+            .Define("GenLepton_FS_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton_FS)")
+            .Define("GenLepton_FS_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton_FS)")
+            .Define("GenLepton_FS_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton_FS)")
+            .Define("GenLepton_FS_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_FS_eta, GenLepton_FS_phi)")
 
-            # selection for Z -> 2L
-            .Filter("(n_GenElectrons_Z == 2 && GenElectron_Z_charge[0] != GenElectron_Z_charge[1]) || "
-                    "(n_GenMuons_Z == 2 && GenMuon_Z_charge[0] != GenMuon_Z_charge[1])")
-
-            # lepton momenta
-            .Define("GenElectron_p4", "TLorentzVector(GenElectron_Z_px[0], GenElectron_Z_py[0], GenElectron_Z_pz[0], GenElectron_Z_e[0]) + "
-                                      "TLorentzVector(GenElectron_Z_px[1], GenElectron_Z_py[1], GenElectron_Z_pz[1], GenElectron_Z_e[1])")
+            # generated Z from intermediate leptons
+            .Filter("GenLepton_int.size() >= 2")
+            .Filter("GenLepton_int_charge[0] != GenLepton_int_charge[1]")
+            .Define("GenZ_int_p4", "TLorentzVector(GenLepton_int_px[0], GenLepton_int_py[0], GenLepton_int_pz[0], GenLepton_int_e[0]) + "
+                                   "TLorentzVector(GenLepton_int_px[1], GenLepton_int_py[1], GenLepton_int_pz[1], GenLepton_int_e[1])")
         
-            .Define("GenMuon_p4", "TLorentzVector(GenMuon_Z_px[0], GenMuon_Z_py[0], GenMuon_Z_pz[0], GenMuon_Z_e[0]) + "
-                                  "TLorentzVector(GenMuon_Z_px[1], GenMuon_Z_py[1], GenMuon_Z_pz[1], GenMuon_Z_e[1])")
-
-            # angular separation
-            .Define("GenElectron_dR", "sqrt(pow(GenElectron_Z_eta[0] - GenElectron_Z_eta[1], 2) + "
-                                           "pow(GenElectron_Z_phi[0] - GenElectron_Z_phi[1], 2))")
-            .Define("GenMuon_dR", "sqrt(pow(GenMuon_Z_eta[0] - GenMuon_Z_eta[1], 2) + pow(GenMuon_Z_phi[0] - GenMuon_Z_phi[1], 2))")
-
-            # generated Z
-            .Define("GenZ_p4", "(n_GenElectrons_Z == 2) ? GenElectron_p4 : GenMuon_p4")
-
-            # Z properties
-            .Define("GenZ_px",    "GenZ_p4.Px()")
-            .Define("GenZ_py",    "GenZ_p4.Py()")
-            .Define("GenZ_pz",    "GenZ_p4.Pz()")
-            .Define("GenZ_p",     "GenZ_p4.P()")
-            .Define("GenZ_pt",    "GenZ_p4.Pt()")
-            .Define("GenZ_e",     "GenZ_p4.E()")
-            .Define("GenZ_eta",   "GenZ_p4.Eta()")
-            .Define("GenZ_phi",   "GenZ_p4.Phi()")
-            .Define("GenZ_theta", "GenZ_p4.Theta()")
-            .Define("GenZ_y",     "GenZ_p4.Rapidity()")
-            .Define("GenZ_mass",  "GenZ_p4.M()")
+            .Define("GenZ_int_px",    "GenZ_int_p4.Px()")
+            .Define("GenZ_int_py",    "GenZ_int_p4.Py()")
+            .Define("GenZ_int_pz",    "GenZ_int_p4.Pz()")
+            .Define("GenZ_int_p",     "GenZ_int_p4.P()")
+            .Define("GenZ_int_pt",    "GenZ_int_p4.Pt()")
+            .Define("GenZ_int_e",     "GenZ_int_p4.E()")
+            .Define("GenZ_int_eta",   "GenZ_int_p4.Eta()")
+            .Define("GenZ_int_phi",   "GenZ_int_p4.Phi()")
+            .Define("GenZ_int_theta", "GenZ_int_p4.Theta()")
+            .Define("GenZ_int_y",     "GenZ_int_p4.Rapidity()")
+            .Define("GenZ_int_mass",  "GenZ_int_p4.M()")
 
             # generated Higgs
             .Define("GenH",        "FCCAnalyses::MCParticle::sel_pdgID(25, true)(Particle)")
@@ -211,7 +198,6 @@ class RDFanalysis():
             .Define("GenH_eta",    "FCCAnalyses::MCParticle::get_eta(GenH)")
             .Define("GenH_theta",  "FCCAnalyses::MCParticle::get_theta(GenH)")
             .Define("GenH_phi",    "FCCAnalyses::MCParticle::get_phi(GenH)")
-            .Define("GenH_charge", "FCCAnalyses::MCParticle::get_charge(GenH)")
             .Define("GenH_mass",   "FCCAnalyses::MCParticle::get_mass(GenH)")
 
         )
@@ -220,62 +206,20 @@ class RDFanalysis():
     def output():
         branchList = [
 
-            "n_GenElectrons",     
-            "GenElectron_e",     
-            "GenElectron_p",     
-            "GenElectron_pt",    
-            "GenElectron_px",    
-            "GenElectron_py",    
-            "GenElectron_pz",    
-            "GenElectron_y",     
-            "GenElectron_eta",   
-            "GenElectron_theta", 
-            "GenElectron_phi",   
-            "GenElectron_charge",
-            "GenElectron_mass",  
+            "n_GenLepton",
+            "GenLepton_pt",
+            "GenLepton_eta",
             
-            "n_GenMuons",     
-            "GenMuon_e",     
-            "GenMuon_p",     
-            "GenMuon_pt",    
-            "GenMuon_px",    
-            "GenMuon_py",    
-            "GenMuon_pz",    
-            "GenMuon_y",     
-            "GenMuon_eta",   
-            "GenMuon_theta", 
-            "GenMuon_phi",   
-            "GenMuon_charge",
-            "GenMuon_mass",  
+            "GenLepton_int_pt",
+            "GenLepton_int_mass",
+            "GenLepton_int_dR",
             
-            "GenElectron_dR",
-            "GenMuon_dR",
-
-            "GenZ_px",   
-            "GenZ_py",   
-            "GenZ_pz",   
-            "GenZ_p",    
-            "GenZ_pt",   
-            "GenZ_e",    
-            "GenZ_eta",  
-            "GenZ_phi",  
-            "GenZ_theta",
-            "GenZ_y",    
-            "GenZ_mass", 
-
-            "n_GenH",     
-            "GenH_e",     
-            "GenH_p",     
-            "GenH_pt",    
-            "GenH_px",    
-            "GenH_py",    
-            "GenH_pz",    
-            "GenH_y",     
-            "GenH_eta",   
-            "GenH_theta", 
-            "GenH_phi",   
-            "GenH_charge",
-            "GenH_mass",  
+            "GenLepton_FS_pt",
+            "GenLepton_FS_mass",
+            "GenLepton_FS_dR",
+            
+            "GenZ_int_mass",
+            "GenH_mass",
             
         ]
 

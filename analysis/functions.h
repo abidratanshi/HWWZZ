@@ -84,39 +84,17 @@ std::vector<int> FindBestJetPairing(ROOT::VecOps::RVec<TLorentzVector> jets) {
     return {best_i, best_j, best_k, best_l};
 }
 
-// this function checks if the higgs candidate is built only from jets or from the leptonic Z as well
-int CheckHiggsTopology(ROOT::VecOps::RVec<TLorentzVector> jets, TLorentzVector Z_lep, std::vector<int> pairing) {
-
-    double mH = 125.0;
-
-    int i = pairing[0];
-    int j = pairing[1];
-    int k = pairing[2];
-    int l = pairing[3];
-
-    // build the two bosons from jets
-    TLorentzVector V1 = jets[i] + jets[j];
-    TLorentzVector V2 = jets[k] + jets[l];
-
-    // higgs from jets only (signal hypothesis)
-    double m_jets = (V1 + V2).M();
-
-    // fake higgs using leptonic Z + jet pair
-    double m_ZV1  = (Z_lep + V1).M();
-    double m_ZV2  = (Z_lep + V2).M();
-
-    // compare how close each is to 125 GeV
-    double d_jets = std::abs(m_jets - mH);
-    double d_ZV1  = std::abs(m_ZV1  - mH);
-    double d_ZV2  = std::abs(m_ZV2  - mH);
-
-    // if jets-only combination is best then accept event
-    if (d_jets < d_ZV1 && d_jets < d_ZV2) {
-        return 1;
-    }
-
-    // otherwise reject event
-    return 0;
+// compute angular separation between the first two particles in a collection
+static float deltaR(ROOT::VecOps::RVec<float> eta, ROOT::VecOps::RVec<float> phi) {
+    
+    if (eta.size() < 2 || phi.size() < 2) return -1.0;
+    
+    double dphi = std::fabs(phi[0] - phi[1]);
+    if (dphi > M_PI) dphi = 2*M_PI - dphi;
+    
+    double deta = eta[0] - eta[1];
+    
+    return std::sqrt(deta*deta + dphi*dphi);
 }
 
 

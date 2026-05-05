@@ -19,7 +19,7 @@ processList = {
 # directories
 inputDir = "/ceph/sgiappic/HiggsCP/winter23"
 outputDir = "/ceph/aratanshi/stage_output"
-includePaths = ["functions.h"]
+includePaths = ["../functions.h"]
 
 nCPUS = 8
 
