@@ -12,9 +12,8 @@ delphesVersion = '3.4.2'
 energy         = 365
 collider       = 'FCC-ee'
 inputDir       = "/ceph/aratanshi/final_output/"
-# outdir         = "/web/aratanshi/public_html/plots"
-outdir         = "/ceph/aratanshi/plots/"
-
+outdir         = "/web/aratanshi/public_html/plots/reco"
+# outdir         = "/ceph/aratanshi/plots/"
 
 formats        = ['png','pdf']
 # formats        = ['png']

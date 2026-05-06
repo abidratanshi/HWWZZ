@@ -84,16 +84,132 @@ std::vector<int> FindBestJetPairing(ROOT::VecOps::RVec<TLorentzVector> jets) {
     return {best_i, best_j, best_k, best_l};
 }
 
-// compute angular separation between the first two particles in a collection
-static float deltaR(ROOT::VecOps::RVec<float> eta, ROOT::VecOps::RVec<float> phi) {
+
+// this function takes the leptons and finds the best pair to have come from a Z
+std::vector<int> FindBestZLeptonPair(ROOT::VecOps::RVec<edm4hep::MCParticleData> leptons) {
+
+    double mZ = 91.1876;
+    double best_diff = 1e9;
+
+    int best_i = -1;
+    int best_j = -1;
+
+    int n = leptons.size();
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+
+            // require opposite charge
+            if (leptons[i].charge * leptons[j].charge >= 0) continue;
+
+            // get momenta
+            double px1 = leptons[i].momentum.x;
+            double py1 = leptons[i].momentum.y;
+            double pz1 = leptons[i].momentum.z;
+            double m1  = leptons[i].mass;
+
+            double px2 = leptons[j].momentum.x;
+            double py2 = leptons[j].momentum.y;
+            double pz2 = leptons[j].momentum.z;
+            double m2  = leptons[j].mass;
+
+            // compute energies
+            double E1 = std::sqrt(px1*px1 + py1*py1 + pz1*pz1 + m1*m1);
+            double E2 = std::sqrt(px2*px2 + py2*py2 + pz2*pz2 + m2*m2);
+
+            TLorentzVector l1, l2;
+            l1.SetPxPyPzE(px1, py1, pz1, E1);
+            l2.SetPxPyPzE(px2, py2, pz2, E2);
+
+            double mass = (l1 + l2).M();
+            double diff = std::fabs(mass - mZ);
+
+            if (diff < best_diff) {
+                best_diff = diff;
+                best_i = i;
+                best_j = j;
+            }
+        }
+    }
+
+    return {best_i, best_j};
+}
+
+TLorentzVector BuildZFromPair(ROOT::VecOps::RVec<edm4hep::MCParticleData> leptons,
+                             std::vector<int> idx) {
+
+    if (idx.size() < 2 || idx[0] < 0 || idx[1] < 0)
+        return TLorentzVector(0,0,0,0);
+
+    // first lepton
+    double px1 = leptons[idx[0]].momentum.x;
+    double py1 = leptons[idx[0]].momentum.y;
+    double pz1 = leptons[idx[0]].momentum.z;
+    double m1  = leptons[idx[0]].mass;
+
+    // second lepton
+    double px2 = leptons[idx[1]].momentum.x;
+    double py2 = leptons[idx[1]].momentum.y;
+    double pz2 = leptons[idx[1]].momentum.z;
+    double m2  = leptons[idx[1]].mass;
+
+    // energies
+    double E1 = std::sqrt(px1*px1 + py1*py1 + pz1*pz1 + m1*m1);
+    double E2 = std::sqrt(px2*px2 + py2*py2 + pz2*pz2 + m2*m2);
+
+    TLorentzVector l1, l2;
+    l1.SetPxPyPzE(px1, py1, pz1, E1);
+    l2.SetPxPyPzE(px2, py2, pz2, E2);
+
+    return l1 + l2;
+}
+
+
+
+// // compute angular separation between the first two particles in a collection
+// static float deltaR(ROOT::VecOps::RVec<float> eta, ROOT::VecOps::RVec<float> phi) {
     
-    if (eta.size() < 2 || phi.size() < 2) return -1.0;
+//     if (eta.size() < 2 || phi.size() < 2) return -1.0;
     
-    double dphi = std::fabs(phi[0] - phi[1]);
+//     double dphi = std::fabs(phi[0] - phi[1]);
+//     if (dphi > M_PI) dphi = 2*M_PI - dphi;
+    
+//     double deta = eta[0] - eta[1];
+    
+//     return std::sqrt(deta*deta + dphi*dphi);
+// }
+
+float deltaR_pair(ROOT::VecOps::RVec<edm4hep::MCParticleData> leptons,
+                  std::vector<int> idx) {
+
+    if (idx.size() < 2 || idx[0] < 0 || idx[1] < 0)
+        return -1.;
+
+    auto &p1 = leptons[idx[0]];
+    auto &p2 = leptons[idx[1]];
+
+    double px1 = p1.momentum.x;
+    double py1 = p1.momentum.y;
+    double pz1 = p1.momentum.z;
+
+    double px2 = p2.momentum.x;
+    double py2 = p2.momentum.y;
+    double pz2 = p2.momentum.z;
+
+    double phi1 = std::atan2(py1, px1);
+    double phi2 = std::atan2(py2, px2);
+
+    double p1_mag = std::sqrt(px1*px1 + py1*py1 + pz1*pz1);
+    double p2_mag = std::sqrt(px2*px2 + py2*py2 + pz2*pz2);
+
+    double eta1 = 0.5 * std::log((p1_mag + pz1)/(p1_mag - pz1));
+    double eta2 = 0.5 * std::log((p2_mag + pz2)/(p2_mag - pz2));
+
+    double dphi = std::fabs(phi1 - phi2);
     if (dphi > M_PI) dphi = 2*M_PI - dphi;
-    
-    double deta = eta[0] - eta[1];
-    
+
+    double deta = eta1 - eta2;
+
     return std::sqrt(deta*deta + dphi*dphi);
 }
 

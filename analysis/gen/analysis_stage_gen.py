@@ -144,7 +144,7 @@ class RDFanalysis():
             .Define("GenLepton_int_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton_int)")
             .Define("GenLepton_int_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton_int)")
             .Define("GenLepton_int_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton_int)")
-            .Define("GenLepton_int_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_int_eta, GenLepton_int_phi)")
+            # .Define("GenLepton_int_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_int_eta, GenLepton_int_phi)") 
                         
             # FINAL STATE
             # result after FSR
@@ -166,13 +166,16 @@ class RDFanalysis():
             .Define("GenLepton_FS_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton_FS)")
             .Define("GenLepton_FS_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton_FS)")
             .Define("GenLepton_FS_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton_FS)")
-            .Define("GenLepton_FS_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_FS_eta, GenLepton_FS_phi)")
+            # .Define("GenLepton_FS_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_FS_eta, GenLepton_FS_phi)")
 
             # generated Z from intermediate leptons
-            .Filter("GenLepton_int.size() >= 2")
-            .Filter("GenLepton_int_charge[0] != GenLepton_int_charge[1]")
-            .Define("GenZ_int_p4", "TLorentzVector(GenLepton_int_px[0], GenLepton_int_py[0], GenLepton_int_pz[0], GenLepton_int_e[0]) + "
-                                   "TLorentzVector(GenLepton_int_px[1], GenLepton_int_py[1], GenLepton_int_pz[1], GenLepton_int_e[1])")
+            # .Filter("GenLepton_int.size() >= 2")
+            # .Filter("GenLepton_int_charge[0] != GenLepton_int_charge[1]")
+            # .Define("GenZ_int_p4", "TLorentzVector(GenLepton_int_px[0], GenLepton_int_py[0], GenLepton_int_pz[0], GenLepton_int_e[0]) + "
+            #                        "TLorentzVector(GenLepton_int_px[1], GenLepton_int_py[1], GenLepton_int_pz[1], GenLepton_int_e[1])")
+            .Define("GenZ_int_idx", "FCCAnalyses::ZHfunctions::FindBestZLeptonPair(GenLepton_int)") # finds best lepton pair and gets those indicies
+            # .Filter("GenZ_int_idx[0] >= 0 && GenZ_int_idx[1] >= 0") # removes the cases where none were found above
+            .Define("GenZ_int_p4", "FCCAnalyses::ZHfunctions::BuildZFromPair(GenLepton_int, GenZ_int_idx)")
         
             .Define("GenZ_int_px",    "GenZ_int_p4.Px()")
             .Define("GenZ_int_py",    "GenZ_int_p4.Py()")
@@ -186,6 +189,18 @@ class RDFanalysis():
             .Define("GenZ_int_y",     "GenZ_int_p4.Rapidity()")
             .Define("GenZ_int_mass",  "GenZ_int_p4.M()")
 
+            # angular seperation
+            .Define("GenLepton_int_dR", "FCCAnalyses::ZHfunctions::deltaR_pair(GenLepton_int, GenZ_int_idx)")
+
+
+            ############# trying the above code block but with all GenLeptons and not just the intermediate ones ##########################
+            .Define("GenZ_idx", "FCCAnalyses::ZHfunctions::FindBestZLeptonPair(GenLepton)") # finds best lepton pair and gets those indicies
+            # .Filter("GenZ_idx[0] >= 0 && GenZ_idx[1] >= 0") # removes the cases where none were found above
+            .Define("GenZ_p4", "FCCAnalyses::ZHfunctions::BuildZFromPair(GenLepton, GenZ_idx)")
+            .Define("GenZ_mass",  "GenZ_p4.M()")
+            .Define("GenLepton_dR", "FCCAnalyses::ZHfunctions::deltaR_pair(GenLepton, GenZ_idx)")
+            #####################################################################################################################
+            
             # generated Higgs
             .Define("GenH",        "FCCAnalyses::MCParticle::sel_pdgID(25, true)(Particle)")
             .Define("GenH_e",      "FCCAnalyses::MCParticle::get_e(GenH)")
@@ -216,10 +231,13 @@ class RDFanalysis():
             
             "GenLepton_FS_pt",
             "GenLepton_FS_mass",
-            "GenLepton_FS_dR",
+            # "GenLepton_FS_dR",
             
             "GenZ_int_mass",
             "GenH_mass",
+
+            "GenZ_mass",
+            "GenLepton_dR",
             
         ]
 

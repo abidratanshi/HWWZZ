@@ -63,9 +63,11 @@ histoList = {
 
     "GenLepton_FS_pt":       {"name":"GenLepton_FS_pt",      "title":"Gen final state lepton p_{T} [GeV]",          "bin":50,      "xmin":0,        "xmax":100},
     "GenLepton_FS_mass":     {"name":"GenLepton_FS_mass",      "title":"Gen intermediate lepton p_{T} [GeV]",       "bin":20,      "xmin":0,        "xmax":1},
-    "GenLepton_FS_dR":       {"name":"GenLepton_FS_dR",       "title":"Gen final state lepton dR",                   "bin":75,      "xmin":0.,      "xmax":100},
+    # "GenLepton_FS_dR":       {"name":"GenLepton_FS_dR",       "title":"Gen final state lepton dR",                   "bin":75,      "xmin":0.,      "xmax":100},
 
     "GenZ_int_mass":         {"name":"GenZ_int_mass",          "title":"Gen Z (from intermediate leptons) mass [GeV]",    "bin":80,      "xmin":0.,      "xmax":150},
     "GenH_mass":             {"name":"GenH_mass",              "title":"Gen H mass [GeV]",                                  "bin":75,      "xmin":0,        "xmax":200},
-    
+
+    "GenZ_mass":             {"name":"GenZ_mass",               "title":"Gen Z mass [GeV]",                       "bin":80,      "xmin":0.,      "xmax":150},
+    "GenLepton_dR":          {"name":"GenLepton_dR",            "title":"Gen lepton dR",                          "bin":75,      "xmin":0.,      "xmax":100},
 }

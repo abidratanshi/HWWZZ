@@ -27,21 +27,24 @@ stackbkg       = ['nostack']
 splitLeg       = True # split legend for backgrounds and signals
 
 variables = [
-    
-    "n_GenLepton",
-    "GenLepton_pt",
-    "GenLepton_eta",
-    
-    "GenLepton_int_pt",
-    "GenLepton_int_mass",
-    "GenLepton_int_dR",
-    
-    "GenLepton_FS_pt",
-    "GenLepton_FS_mass",
-    "GenLepton_FS_dR",
-    
-    "GenZ_int_mass",
-    "GenH_mass",
+
+            "n_GenLepton",
+            "GenLepton_pt",
+            "GenLepton_eta",
+            
+            "GenLepton_int_pt",
+            "GenLepton_int_mass",
+            "GenLepton_int_dR",
+            
+            "GenLepton_FS_pt",
+            "GenLepton_FS_mass",
+            # "GenLepton_FS_dR",
+            
+            "GenZ_int_mass",
+            "GenH_mass",
+
+            "GenZ_mass",
+            "GenLepton_dR",
             
         ]
 
