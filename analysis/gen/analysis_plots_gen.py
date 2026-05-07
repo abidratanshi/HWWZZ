@@ -31,11 +31,13 @@ variables = [
             "n_GenLepton",
             "GenLepton_pt",
             "GenLepton_eta",
-            
+
+            "n_GenLepton_int",
             "GenLepton_int_pt",
             "GenLepton_int_mass",
             "GenLepton_int_dR",
-            
+
+            "n_GenLepton_FS",
             "GenLepton_FS_pt",
             "GenLepton_FS_mass",
             # "GenLepton_FS_dR",

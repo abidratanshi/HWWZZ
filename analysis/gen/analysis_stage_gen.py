@@ -134,7 +134,8 @@ class RDFanalysis():
             .Define("GenLepton_int_2", "FCCAnalyses::MCParticle::sel_parentID(24, false, true)(GenLepton_int_1, Particle, Particle0)")
             .Define("GenLepton_int_3", "FCCAnalyses::MCParticle::sel_parentID(11, false, true)(GenLepton_int_2, Particle, Particle0)")
             .Define("GenLepton_int",   "FCCAnalyses::MCParticle::sel_parentID(13, false, true)(GenLepton_int_3, Particle, Particle0)")
-        
+
+            .Define("n_GenLepton_int",      "FCCAnalyses::MCParticle::get_n(GenLepton_int)")
             .Define("GenLepton_int_e",      "FCCAnalyses::MCParticle::get_e(GenLepton_int)")
             .Define("GenLepton_int_pt",     "FCCAnalyses::MCParticle::get_pt(GenLepton_int)")
             .Define("GenLepton_int_px",     "FCCAnalyses::MCParticle::get_px(GenLepton_int)")
@@ -157,6 +158,7 @@ class RDFanalysis():
             # merge because lepton flavor does not matter now
             .Define("GenLepton_FS",   "FCCAnalyses::MCParticle::mergeParticles(GenLepton_FS_3, GenLepton_FS_4)")
 
+            .Define("n_GenLepton_FS",      "FCCAnalyses::MCParticle::get_n(GenLepton_FS)")
             .Define("GenLepton_FS_e",      "FCCAnalyses::MCParticle::get_e(GenLepton_FS)")
             .Define("GenLepton_FS_pt",     "FCCAnalyses::MCParticle::get_pt(GenLepton_FS)")
             .Define("GenLepton_FS_px",     "FCCAnalyses::MCParticle::get_px(GenLepton_FS)")
@@ -224,11 +226,13 @@ class RDFanalysis():
             "n_GenLepton",
             "GenLepton_pt",
             "GenLepton_eta",
-            
+
+            "n_GenLepton_int",
             "GenLepton_int_pt",
             "GenLepton_int_mass",
             "GenLepton_int_dR",
-            
+
+            "n_GenLepton_FS",
             "GenLepton_FS_pt",
             "GenLepton_FS_mass",
             # "GenLepton_FS_dR",
