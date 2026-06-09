@@ -217,6 +217,23 @@ class RDFanalysis():
             .Define("GenH_phi",    "FCCAnalyses::MCParticle::get_phi(GenH)")
             .Define("GenH_mass",   "FCCAnalyses::MCParticle::get_mass(GenH)")
 
+
+            ####### ancestry check #######
+            
+            # check what the parents of the chosen leptons actually are
+            .Define("GenZ_lepton0_parentID", "FCCAnalyses::ZHfunctions::get_parentID(GenLepton_int, GenZ_int_idx[0], Particle, Particle0)")
+            .Define("GenZ_lepton1_parentID", "FCCAnalyses::ZHfunctions::get_parentID(GenLepton_int, GenZ_int_idx[1], Particle, Particle0)")
+            
+            # see if both leptons from a true Z
+            .Define("GenZ_from_trueZ", "GenZ_lepton0_parentID == 23 && GenZ_lepton1_parentID == 23")
+            # or if its Z contamination, atleast one lepton from H
+            .Define("GenZ_from_falseZ", "GenZ_lepton0_parentID == 25 || GenZ_lepton1_parentID == 25")
+
+            # conditionally assign the Z mass based on the ancestry flag
+            # returns GenZ_int_mass when condition is true, -1.0 otherwise
+            .Define("GenZ_trueZ_mass",  "GenZ_from_trueZ  ? GenZ_int_mass : -1.0")
+            .Define("GenZ_falseZ_mass", "GenZ_from_falseZ ? GenZ_int_mass : -1.0")
+               
         )
         return df2
 
@@ -242,6 +259,9 @@ class RDFanalysis():
 
             "GenZ_mass",
             "GenLepton_dR",
+
+            "GenZ_trueZ_mass",
+            "GenZ_falseZ_mass",
             
         ]
 

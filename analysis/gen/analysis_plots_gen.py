@@ -47,6 +47,9 @@ variables = [
 
             "GenZ_mass",
             "GenLepton_dR",
+
+            "GenZ_trueZ_mass",
+            "GenZ_falseZ_mass",
             
         ]
 

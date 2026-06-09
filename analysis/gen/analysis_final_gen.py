@@ -72,4 +72,8 @@ histoList = {
 
     "GenZ_mass":             {"name":"GenZ_mass",               "title":"Gen Z mass [GeV]",                       "bin":80,      "xmin":0.,      "xmax":150},
     "GenLepton_dR":          {"name":"GenLepton_dR",            "title":"Gen lepton dR",                          "bin":75,      "xmin":0.,      "xmax":25},
+
+    "GenZ_trueZ_mass":      {"name":"GenZ_trueZ_mass",          "title":"Gen Z (from true Z) mass [GeV]",    "bin":80,      "xmin":-10.,      "xmax":150},
+    "GenZ_falseZ_mass":     {"name":"GenZ_falseZ_mass",          "title":"Gen Z (from false Z) mass [GeV]",    "bin":80,      "xmin":-10.,      "xmax":150},
+
 }

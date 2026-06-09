@@ -7,8 +7,8 @@ df = ROOT.RDataFrame("events", files)
 
 # event counts
 n_total = df.Count()
-n4 = df.Filter("abs(RecoH4_mass - 125.0) < 20").Count()
-n2 = df.Filter("abs(RecoH2_mass - 125.0) < 20").Count()
+n4 = df.Filter("abs(RecoH4_mass - 125.0) < 30").Count()
+n2 = df.Filter("abs(RecoH2_mass - 125.0) < 30").Count()
 
 # efficiencies
 eff4 = n4.GetValue() / n_total.GetValue()

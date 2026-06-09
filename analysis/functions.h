@@ -214,6 +214,30 @@ float deltaR_pair(ROOT::VecOps::RVec<edm4hep::MCParticleData> leptons,
 }
 
 
+// Returns the PDG ID of the parent of the particle at position `idx`
+// in the provided particle collection, using the Particle0 association table.
+// Returns -999 if the parent cannot be found.
+int get_parentID(
+    const ROOT::VecOps::RVec<edm4hep::MCParticleData>& particles,
+    int idx,
+    const ROOT::VecOps::RVec<edm4hep::MCParticleData>& allParticles,
+    const ROOT::VecOps::RVec<int>& parentIndices)
+{
+    if (idx < 0 || idx >= (int)particles.size()) return -999;
+
+    const auto& particle = particles[idx];
+
+    for (int i = particle.parents_begin; i < particle.parents_end; i++) {
+        int parentIdx = parentIndices[i];
+        if (parentIdx >= 0 && parentIdx < (int)allParticles.size()) {
+            return allParticles[parentIdx].PDG;
+        }
+    }
+
+    return -999;
+}
+
+
 // --------------------------------------------------------------------------------------------------------------------------
 
 
