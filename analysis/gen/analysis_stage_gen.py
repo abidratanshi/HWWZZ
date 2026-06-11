@@ -145,17 +145,15 @@ class RDFanalysis():
             .Define("GenLepton_int_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton_int)")
             .Define("GenLepton_int_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton_int)")
             .Define("GenLepton_int_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton_int)")
-            # .Define("GenLepton_int_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_int_eta, GenLepton_int_phi)") 
                         
-            # FINAL STATE
-            # result after FSR
+            # FINAL STATE (from Final State Radiation)
             # leptons chosen such that they do not come from Z,W
             .Define("GenLepton_FS_1", "FCCAnalyses::MCParticle::sel_parentID(23, false, true)(GenLepton, Particle, Particle0)")
             .Define("GenLepton_FS_2", "FCCAnalyses::MCParticle::sel_parentID(24, false, true)(GenLepton_FS_1, Particle, Particle0)")
-            # keep only leptons coming from leptons (FSR) e,mu respectively
+            # keep only leptons coming from leptons e,mu respectively
             .Define("GenLepton_FS_3", "FCCAnalyses::MCParticle::sel_parentID(11, true, true)(GenLepton_FS_2, Particle, Particle0)")
             .Define("GenLepton_FS_4", "FCCAnalyses::MCParticle::sel_parentID(13, true, true)(GenLepton_FS_2, Particle, Particle0)")
-            # merge because lepton flavor does not matter now
+            # merge because lepton flavor does not matter right now
             .Define("GenLepton_FS",   "FCCAnalyses::MCParticle::mergeParticles(GenLepton_FS_3, GenLepton_FS_4)")
 
             .Define("n_GenLepton_FS",      "FCCAnalyses::MCParticle::get_n(GenLepton_FS)")
@@ -168,15 +166,9 @@ class RDFanalysis():
             .Define("GenLepton_FS_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton_FS)")
             .Define("GenLepton_FS_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton_FS)")
             .Define("GenLepton_FS_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton_FS)")
-            # .Define("GenLepton_FS_dR",     "FCCAnalyses::ZHfunctions::deltaR(GenLepton_FS_eta, GenLepton_FS_phi)")
 
             # generated Z from intermediate leptons
-            # .Filter("GenLepton_int.size() >= 2")
-            # .Filter("GenLepton_int_charge[0] != GenLepton_int_charge[1]")
-            # .Define("GenZ_int_p4", "TLorentzVector(GenLepton_int_px[0], GenLepton_int_py[0], GenLepton_int_pz[0], GenLepton_int_e[0]) + "
-            #                        "TLorentzVector(GenLepton_int_px[1], GenLepton_int_py[1], GenLepton_int_pz[1], GenLepton_int_e[1])")
             .Define("GenZ_int_idx", "FCCAnalyses::ZHfunctions::FindBestZLeptonPair(GenLepton_int)") # finds best lepton pair and gets those indicies
-            # .Filter("GenZ_int_idx[0] >= 0 && GenZ_int_idx[1] >= 0") # removes the cases where none were found above
             .Define("GenZ_int_p4", "FCCAnalyses::ZHfunctions::BuildZFromPair(GenLepton_int, GenZ_int_idx)")
         
             .Define("GenZ_int_px",    "GenZ_int_p4.Px()")
@@ -190,56 +182,56 @@ class RDFanalysis():
             .Define("GenZ_int_theta", "GenZ_int_p4.Theta()")
             .Define("GenZ_int_y",     "GenZ_int_p4.Rapidity()")
             .Define("GenZ_int_mass",  "GenZ_int_p4.M()")
-
             # angular seperation
             .Define("GenLepton_int_dR", "FCCAnalyses::ZHfunctions::deltaR_pair(GenLepton_int, GenZ_int_idx)")
 
+            # # generated Higgs
+            # .Define("GenH",        "FCCAnalyses::MCParticle::sel_pdgID(25, true)(Particle)")
+            # .Define("GenH_e",      "FCCAnalyses::MCParticle::get_e(GenH)")
+            # .Define("GenH_p",      "FCCAnalyses::MCParticle::get_p(GenH)")
+            # .Define("GenH_pt",     "FCCAnalyses::MCParticle::get_pt(GenH)")
+            # .Define("GenH_px",     "FCCAnalyses::MCParticle::get_px(GenH)")
+            # .Define("GenH_py",     "FCCAnalyses::MCParticle::get_py(GenH)")
+            # .Define("GenH_pz",     "FCCAnalyses::MCParticle::get_pz(GenH)")
+            # .Define("GenH_y",      "FCCAnalyses::MCParticle::get_y(GenH)")
+            # .Define("GenH_eta",    "FCCAnalyses::MCParticle::get_eta(GenH)")
+            # .Define("GenH_theta",  "FCCAnalyses::MCParticle::get_theta(GenH)")
+            # .Define("GenH_phi",    "FCCAnalyses::MCParticle::get_phi(GenH)")
+            # .Define("GenH_mass",   "FCCAnalyses::MCParticle::get_mass(GenH)")
 
-            ############# trying the above code block but with all GenLeptons and not just the intermediate ones ##########################
-            .Define("GenZ_idx", "FCCAnalyses::ZHfunctions::FindBestZLeptonPair(GenLepton)") # finds best lepton pair and gets those indicies
-            # .Filter("GenZ_idx[0] >= 0 && GenZ_idx[1] >= 0") # removes the cases where none were found above
-            .Define("GenZ_p4", "FCCAnalyses::ZHfunctions::BuildZFromPair(GenLepton, GenZ_idx)")
-            .Define("GenZ_mass",  "GenZ_p4.M()")
-            .Define("GenLepton_dR", "FCCAnalyses::ZHfunctions::deltaR_pair(GenLepton, GenZ_idx)")
-            #####################################################################################################################
+
+            ######### Production Z #########
             
-            # generated Higgs
-            .Define("GenH",        "FCCAnalyses::MCParticle::sel_pdgID(25, true)(Particle)")
-            .Define("GenH_e",      "FCCAnalyses::MCParticle::get_e(GenH)")
-            .Define("GenH_p",      "FCCAnalyses::MCParticle::get_p(GenH)")
-            .Define("GenH_pt",     "FCCAnalyses::MCParticle::get_pt(GenH)")
-            .Define("GenH_px",     "FCCAnalyses::MCParticle::get_px(GenH)")
-            .Define("GenH_py",     "FCCAnalyses::MCParticle::get_py(GenH)")
-            .Define("GenH_pz",     "FCCAnalyses::MCParticle::get_pz(GenH)")
-            .Define("GenH_y",      "FCCAnalyses::MCParticle::get_y(GenH)")
-            .Define("GenH_eta",    "FCCAnalyses::MCParticle::get_eta(GenH)")
-            .Define("GenH_theta",  "FCCAnalyses::MCParticle::get_theta(GenH)")
-            .Define("GenH_phi",    "FCCAnalyses::MCParticle::get_phi(GenH)")
-            .Define("GenH_mass",   "FCCAnalyses::MCParticle::get_mass(GenH)")
-
-
-            ####### ancestry check #######
+            # isolating the leptons belonging to the production Z
+            .Define("GenLepton_ZProd",        "FCCAnalyses::ZHfunctions::GetZProductionLeptons(GenLepton, Particle, Particle0)")
+            .Define("n_GenLepton_ZProd",      "FCCAnalyses::MCParticle::get_n(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_e",      "FCCAnalyses::MCParticle::get_e(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_pt",     "FCCAnalyses::MCParticle::get_pt(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_px",     "FCCAnalyses::MCParticle::get_px(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_py",     "FCCAnalyses::MCParticle::get_py(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_pz",     "FCCAnalyses::MCParticle::get_pz(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_eta",    "FCCAnalyses::MCParticle::get_eta(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_phi",    "FCCAnalyses::MCParticle::get_phi(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_charge", "FCCAnalyses::MCParticle::get_charge(GenLepton_ZProd)")
+            .Define("GenLepton_ZProd_mass",   "FCCAnalyses::MCParticle::get_mass(GenLepton_ZProd)")
             
-            # check what the parents of the chosen leptons actually are
-            .Define("GenZ_lepton0_parentID", "FCCAnalyses::ZHfunctions::get_parentID(GenLepton_int, GenZ_int_idx[0], Particle, Particle0)")
-            .Define("GenZ_lepton1_parentID", "FCCAnalyses::ZHfunctions::get_parentID(GenLepton_int, GenZ_int_idx[1], Particle, Particle0)")
+            # feeding these specific leptons into the pairing/building functions
+            .Define("GenZ_ZProd_idx", "FCCAnalyses::ZHfunctions::FindBestZLeptonPair(GenLepton_ZProd)") 
+            .Define("GenZ_ZProd_p4",  "FCCAnalyses::ZHfunctions::BuildZFromPair(GenLepton_ZProd, GenZ_ZProd_idx)")
             
-            # see if both leptons from a true Z
-            .Define("GenZ_from_trueZ", "GenZ_lepton0_parentID == 23 && GenZ_lepton1_parentID == 23")
-            # or if its Z contamination, atleast one lepton from H
-            .Define("GenZ_from_falseZ", "GenZ_lepton0_parentID == 25 || GenZ_lepton1_parentID == 25")
+            # physical properties of the production Z
+            .Define("GenZ_ZProd_pt", "GenZ_ZProd_p4.Pt()")
+            .Define("GenZ_ZProd_mass", "GenZ_ZProd_p4.M()")
+            # dR for prod Z leptons
+            .Define("GenLepton_ZProd_dR", "FCCAnalyses::ZHfunctions::deltaR_pair(GenLepton_ZProd, GenZ_ZProd_idx)")
+            
 
-            # conditionally assign the Z mass based on the ancestry flag
-            # returns GenZ_int_mass when condition is true, -1.0 otherwise
-            .Define("GenZ_trueZ_mass",  "GenZ_from_trueZ  ? GenZ_int_mass : -1.0")
-            .Define("GenZ_falseZ_mass", "GenZ_from_falseZ ? GenZ_int_mass : -1.0")
-               
+              
         )
         return df2
 
     def output():
         branchList = [
-
             "n_GenLepton",
             "GenLepton_pt",
             "GenLepton_eta",
@@ -252,17 +244,17 @@ class RDFanalysis():
             "n_GenLepton_FS",
             "GenLepton_FS_pt",
             "GenLepton_FS_mass",
-            # "GenLepton_FS_dR",
-            
+
+            "GenZ_int_pt",
             "GenZ_int_mass",
-            "GenH_mass",
 
-            "GenZ_mass",
-            "GenLepton_dR",
-
-            "GenZ_trueZ_mass",
-            "GenZ_falseZ_mass",
+            "n_GenLepton_ZProd",
+            "GenLepton_ZProd_pt",
+            "GenLepton_ZProd_mass",
+            "GenLepton_ZProd_dR",
             
+            "GenZ_ZProd_pt",
+            "GenZ_ZProd_mass",            
         ]
 
         return branchList

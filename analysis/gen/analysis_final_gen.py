@@ -64,16 +64,17 @@ histoList = {
 
     "n_GenLepton_FS":        {"name":"n_GenLepton_FS",          "title":"Number of gen FS leptons",                 "bin":50,       "xmin":0,     "xmax":25},
     "GenLepton_FS_pt":       {"name":"GenLepton_FS_pt",      "title":"Gen final state lepton p_{T} [GeV]",          "bin":50,      "xmin":0,        "xmax":100},
-    "GenLepton_FS_mass":     {"name":"GenLepton_FS_mass",      "title":"Gen intermediate lepton p_{T} [GeV]",       "bin":20,      "xmin":0,        "xmax":1},
-    # "GenLepton_FS_dR":       {"name":"GenLepton_FS_dR",       "title":"Gen final state lepton dR",                   "bin":75,      "xmin":0.,      "xmax":100},
+    "GenLepton_FS_mass":     {"name":"GenLepton_FS_mass",      "title":"Gen final state lepton mass [GeV]",       "bin":20,      "xmin":0,        "xmax":1},
 
-    "GenZ_int_mass":         {"name":"GenZ_int_mass",          "title":"Gen Z (from intermediate leptons) mass [GeV]",    "bin":80,      "xmin":0.,      "xmax":150},
-    "GenH_mass":             {"name":"GenH_mass",              "title":"Gen H mass [GeV]",                                  "bin":75,      "xmin":0,        "xmax":200},
+    "GenZ_int_pt":           {"name":"GenZ_int_pt",          "title":"Gen Z intermediate p_{T} [GeV]",                      "bin":50,      "xmin":0,       "xmax":100},
+    "GenZ_int_mass":         {"name":"GenZ_int_mass",          "title":"Gen Z (from intermediate leptons) mass [GeV]",      "bin":80,      "xmin":0.,      "xmax":150},
 
-    "GenZ_mass":             {"name":"GenZ_mass",               "title":"Gen Z mass [GeV]",                       "bin":80,      "xmin":0.,      "xmax":150},
-    "GenLepton_dR":          {"name":"GenLepton_dR",            "title":"Gen lepton dR",                          "bin":75,      "xmin":0.,      "xmax":25},
-
-    "GenZ_trueZ_mass":      {"name":"GenZ_trueZ_mass",          "title":"Gen Z (from true Z) mass [GeV]",    "bin":80,      "xmin":-10.,      "xmax":150},
-    "GenZ_falseZ_mass":     {"name":"GenZ_falseZ_mass",          "title":"Gen Z (from false Z) mass [GeV]",    "bin":80,      "xmin":-10.,      "xmax":150},
+    "n_GenLepton_ZProd":     {"name":"n_GenLepton_ZProd",        "title":"Number of (prod Z) gen leptons",   "bin":50,       "xmin":0,     "xmax":25},
+    "GenLepton_ZProd_pt":    {"name":"GenLepton_ZProd_pt",       "title":"(Prod Z) lepton pT [GeV]",         "bin":50,      "xmin":0,        "xmax":100},
+    "GenLepton_ZProd_mass":  {"name":"GenLepton_ZProd_mass",     "title":"(Prod Z) lepton mass [GeV]",       "bin":80,      "xmin":0,        "xmax":150},
+    "GenLepton_ZProd_dR":    {"name":"GenLepton_ZProd_dR",       "title":"(Prod Z) lepton dR",               "bin":75,      "xmin":0,        "xmax":7},
+    
+    "GenZ_ZProd_pt":        {"name":"GenZ_ZProd_pt",       "title":"Gen Z (production) pT [GeV]",         "bin":50,      "xmin":0,        "xmax":100},
+    "GenZ_ZProd_mass":      {"name":"GenZ_ZProd_mass",     "title":"Gen Z (production) mass [GeV]",       "bin":80,      "xmin":0,        "xmax":150},
 
 }

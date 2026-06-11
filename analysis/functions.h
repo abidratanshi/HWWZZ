@@ -213,30 +213,51 @@ float deltaR_pair(ROOT::VecOps::RVec<edm4hep::MCParticleData> leptons,
     return std::sqrt(deta*deta + dphi*dphi);
 }
 
-
-// Returns the PDG ID of the parent of the particle at position `idx`
-// in the provided particle collection, using the Particle0 association table.
-// Returns -999 if the parent cannot be found.
-int get_parentID(
-    const ROOT::VecOps::RVec<edm4hep::MCParticleData>& particles,
-    int idx,
-    const ROOT::VecOps::RVec<edm4hep::MCParticleData>& allParticles,
-    const ROOT::VecOps::RVec<int>& parentIndices)
+// this function filters a collection of leptons and returns only those originating from the production Z
+ROOT::VecOps::RVec<edm4hep::MCParticleData> GetZProductionLeptons(
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> leptons, // lepton collection
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> all_mc,  // full MC particle collection
+    ROOT::VecOps::RVec<int> ind_p) // parent indices map
 {
-    if (idx < 0 || idx >= (int)particles.size()) return -999;
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> result;
+    result.reserve(leptons.size());
 
-    const auto& particle = particles[idx];
+    for (size_t i = 0; i < leptons.size(); ++i) {
+        auto & p = leptons[i];
+        bool from_higgs_decay = false;
 
-    for (int i = particle.parents_begin; i < particle.parents_end; i++) {
-        int parentIdx = parentIndices[i];
-        if (parentIdx >= 0 && parentIdx < (int)allParticles.size()) {
-            return allParticles[parentIdx].PDG;
+        // looping through the parents of the current lepton
+        for (unsigned j = p.parents_begin; j != p.parents_end; ++j) {
+            int index_p = ind_p.at(j);
+            auto & parent = all_mc.at(index_p);
+            int pdg_parent = std::abs(parent.PDG);
+
+            // check if parent is a Z boson (23) or W boson (24)
+            if (pdg_parent == 23 || pdg_parent == 24) {
+                
+                // looping through parents of this boson (grandparents of the lepton)
+                for (unsigned k = parent.parents_begin; k != parent.parents_end; ++k) {
+                    int index_gp = ind_p.at(k);
+                    int pdg_grandparent = std::abs(all_mc.at(index_gp).PDG);
+
+                    // if the grandparent is a Higgs, flag it
+                    if (pdg_grandparent == 25) {
+                        from_higgs_decay = true;
+                        break; // found a Higgs grandparent, no need to check other grandparents
+                    }
+                }
+            }
+            if (from_higgs_decay) break; // no need to check other parents
+        }
+
+        // Reversal: if it did not come from a Higgs decay chain, it must belong to the production Z
+        if (!from_higgs_decay) {
+            result.emplace_back(p);
         }
     }
 
-    return -999;
+    return result;
 }
-
 
 // --------------------------------------------------------------------------------------------------------------------------
 

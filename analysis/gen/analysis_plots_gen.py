@@ -40,16 +40,17 @@ variables = [
             "n_GenLepton_FS",
             "GenLepton_FS_pt",
             "GenLepton_FS_mass",
-            # "GenLepton_FS_dR",
-            
+
+            "GenZ_int_pt",
             "GenZ_int_mass",
-            "GenH_mass",
 
-            "GenZ_mass",
-            "GenLepton_dR",
-
-            "GenZ_trueZ_mass",
-            "GenZ_falseZ_mass",
+            "n_GenLepton_ZProd",
+            "GenLepton_ZProd_pt",
+            "GenLepton_ZProd_mass",
+            "GenLepton_ZProd_dR",
+            
+            "GenZ_ZProd_pt",
+            "GenZ_ZProd_mass",         
             
         ]
 
