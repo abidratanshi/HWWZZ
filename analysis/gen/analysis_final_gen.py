@@ -55,7 +55,7 @@ histoList = {
     
     "n_GenLepton":           {"name":"n_GenLepton",          "title":"Number of gen leptons",                   "bin":50,       "xmin":0,     "xmax":25},
     "GenLepton_pt":          {"name":"GenLepton_pt",          "title":"Gen lepton p_{T} [GeV]",                 "bin":50,      "xmin":0,        "xmax":100},
-    "GenLepton_eta":         {"name":"GenLepton_eta",         "title":"Gen lepton #eta",                        "bin":32,      "xmin":-3.2,     "xmax":3.2},
+    "GenLepton_eta":         {"name":"GenLepton_eta",         "title":"Gen lepton #eta",                        "bin":32,      "xmin":0,     "xmax":6.3},
 
     "n_GenLepton_int":        {"name":"n_GenLepton_int",     "title":"Number of gen intermediate leptons",        "bin":50,       "xmin":0,     "xmax":25},
     "GenLepton_int_pt":      {"name":"GenLepton_int_pt",    "title":"Gen intermediate lepton p_{T} [GeV]",       "bin":50,      "xmin":0,        "xmax":100},
@@ -69,12 +69,16 @@ histoList = {
     "GenZ_int_pt":           {"name":"GenZ_int_pt",          "title":"Gen Z intermediate p_{T} [GeV]",                      "bin":50,      "xmin":0,       "xmax":100},
     "GenZ_int_mass":         {"name":"GenZ_int_mass",          "title":"Gen Z (from intermediate leptons) mass [GeV]",      "bin":80,      "xmin":0.,      "xmax":150},
 
-    "n_GenLepton_ZProd":     {"name":"n_GenLepton_ZProd",        "title":"Number of (prod Z) gen leptons",   "bin":50,       "xmin":0,     "xmax":25},
-    "GenLepton_ZProd_pt":    {"name":"GenLepton_ZProd_pt",       "title":"(Prod Z) lepton pT [GeV]",         "bin":50,      "xmin":0,        "xmax":100},
-    "GenLepton_ZProd_mass":  {"name":"GenLepton_ZProd_mass",     "title":"(Prod Z) lepton mass [GeV]",       "bin":80,      "xmin":0,        "xmax":150},
-    "GenLepton_ZProd_dR":    {"name":"GenLepton_ZProd_dR",       "title":"(Prod Z) lepton dR",               "bin":75,      "xmin":0,        "xmax":7},
+    "n_GenLepton_ZProd":     {"name":"n_GenLepton_ZProd",        "title":"Number of (prod Z) gen leptons",     "bin":50,      "xmin":0,        "xmax":25},
+    "GenLepton_ZProd_pt":    {"name":"GenLepton_ZProd_pt",       "title":"(Prod Z) lepton pT [GeV]",           "bin":50,      "xmin":0,        "xmax":100},
+    "GenLepton_ZProd_eta":   {"name":"GenLepton_ZProd_eta",       "title":"(Prod Z) lepton eta [GeV]",         "bin":32,      "xmin":-6.3,     "xmax":6.3},
+    "GenLepton_ZProd_phi":   {"name":"GenLepton_ZProd_phi",       "title":"(Prod Z) lepton phi [GeV]",         "bin":50,      "xmin":-3.2,        "xmax":3.2},
+    "GenLepton_ZProd_mass":  {"name":"GenLepton_ZProd_mass",     "title":"(Prod Z) lepton mass [GeV]",         "bin":80,      "xmin":0,        "xmax":150},
+    "GenLepton_ZProd_dR":    {"name":"GenLepton_ZProd_dR",       "title":"(Prod Z) lepton dR",                 "bin":75,      "xmin":0,        "xmax":7},
     
     "GenZ_ZProd_pt":        {"name":"GenZ_ZProd_pt",       "title":"Gen Z (production) pT [GeV]",         "bin":50,      "xmin":0,        "xmax":100},
     "GenZ_ZProd_mass":      {"name":"GenZ_ZProd_mass",     "title":"Gen Z (production) mass [GeV]",       "bin":80,      "xmin":0,        "xmax":150},
+
+    "GenHiggs_recoil_mass": {"name":"GenHiggs_recoil_mass",     "title":"GenH recoil mass [GeV]",       "bin":100,      "xmin":0,        "xmax":250},
 
 }

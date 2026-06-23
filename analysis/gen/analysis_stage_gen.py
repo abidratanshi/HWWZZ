@@ -5,10 +5,10 @@ import urllib.request
 processList = {
 
     # Signal
-    'wzp6_ee_eeH_HWW_ecm365':   {'fraction':0.05},
-    'wzp6_ee_mumuH_HWW_ecm365': {'fraction':0.05},
-    'wzp6_ee_eeH_HZZ_ecm365':   {'fraction':0.05},
-    'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.07},
+    'wzp6_ee_eeH_HWW_ecm365':   {'fraction':0.001},
+    'wzp6_ee_mumuH_HWW_ecm365': {'fraction':0.001},
+    'wzp6_ee_eeH_HZZ_ecm365':   {'fraction':0.001},
+    'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.001},
 
     # Background
     # 'p8_ee_WW_ecm365': {'fraction':0.00005},
@@ -185,22 +185,12 @@ class RDFanalysis():
             # angular seperation
             .Define("GenLepton_int_dR", "FCCAnalyses::ZHfunctions::deltaR_pair(GenLepton_int, GenZ_int_idx)")
 
-            # # generated Higgs
-            # .Define("GenH",        "FCCAnalyses::MCParticle::sel_pdgID(25, true)(Particle)")
-            # .Define("GenH_e",      "FCCAnalyses::MCParticle::get_e(GenH)")
-            # .Define("GenH_p",      "FCCAnalyses::MCParticle::get_p(GenH)")
-            # .Define("GenH_pt",     "FCCAnalyses::MCParticle::get_pt(GenH)")
-            # .Define("GenH_px",     "FCCAnalyses::MCParticle::get_px(GenH)")
-            # .Define("GenH_py",     "FCCAnalyses::MCParticle::get_py(GenH)")
-            # .Define("GenH_pz",     "FCCAnalyses::MCParticle::get_pz(GenH)")
-            # .Define("GenH_y",      "FCCAnalyses::MCParticle::get_y(GenH)")
-            # .Define("GenH_eta",    "FCCAnalyses::MCParticle::get_eta(GenH)")
-            # .Define("GenH_theta",  "FCCAnalyses::MCParticle::get_theta(GenH)")
-            # .Define("GenH_phi",    "FCCAnalyses::MCParticle::get_phi(GenH)")
-            # .Define("GenH_mass",   "FCCAnalyses::MCParticle::get_mass(GenH)")
-
 
             ######### Production Z #########
+
+            # keeping only 2 leptons in the event
+            # .Filter("(n_GenLepton == 2 && GenLepton_charge[0] != GenLepton_charge[1])")
+            # .Filter("(n_GenLepton_FS == 2 && GenLepton_FS_charge[0] != GenLepton_FS_charge[1])")
             
             # isolating the leptons belonging to the production Z
             .Define("GenLepton_ZProd",        "FCCAnalyses::ZHfunctions::GetZProductionLeptons(GenLepton, Particle, Particle0)")
@@ -224,9 +214,12 @@ class RDFanalysis():
             .Define("GenZ_ZProd_mass", "GenZ_ZProd_p4.M()")
             # dR for prod Z leptons
             .Define("GenLepton_ZProd_dR", "FCCAnalyses::ZHfunctions::deltaR_pair(GenLepton_ZProd, GenZ_ZProd_idx)")
-            
 
-              
+            ######### Recoil mass #########
+            
+            .Define("p4_initial", "TLorentzVector(0., 0., 0., 365.0)")            
+            .Define("GenHiggs_recoil_mass", "(p4_initial - GenZ_ZProd_p4).M()")
+            
         )
         return df2
 
@@ -250,11 +243,15 @@ class RDFanalysis():
 
             "n_GenLepton_ZProd",
             "GenLepton_ZProd_pt",
+            "GenLepton_ZProd_eta",
+            "GenLepton_ZProd_phi",
             "GenLepton_ZProd_mass",
             "GenLepton_ZProd_dR",
             
             "GenZ_ZProd_pt",
-            "GenZ_ZProd_mass",            
+            "GenZ_ZProd_mass",  
+
+            "GenHiggs_recoil_mass",
         ]
 
         return branchList

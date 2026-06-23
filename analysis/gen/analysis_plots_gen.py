@@ -46,11 +46,15 @@ variables = [
 
             "n_GenLepton_ZProd",
             "GenLepton_ZProd_pt",
+            "GenLepton_ZProd_eta",
+            "GenLepton_ZProd_phi",
             "GenLepton_ZProd_mass",
             "GenLepton_ZProd_dR",
             
             "GenZ_ZProd_pt",
-            "GenZ_ZProd_mass",         
+            "GenZ_ZProd_mass",
+
+            "GenHiggs_recoil_mass",
             
         ]
 
