@@ -81,4 +81,13 @@ histoList = {
 
     "GenHiggs_recoil_mass": {"name":"GenHiggs_recoil_mass",     "title":"GenH recoil mass [GeV]",       "bin":100,      "xmin":0,        "xmax":250},
 
+
+
+    "n_GenQuarks_HiggsDecay": {"name":"n_GenQuarks_HiggsDecay",     "title":"Number of gen quarks from H decay",    "bin":6,       "xmin":-0.5,     "xmax":5.5},
+    "GenVa_mass":             {"name":"GenVa_mass",                 "title":"Gen on-shell boson mass [GeV]",      "bin":80,      "xmin":0.,      "xmax":150},
+    "GenVa_energy":           {"name":"GenVa_energy",               "title":"Gen on-shell boson energy [GeV]",      "bin":80,      "xmin":0.,      "xmax":150},
+    "GenVb_mass":             {"name":"GenVb_mass",                 "title":"Gen off-shell boson mass [GeV]",      "bin":80,      "xmin":0.,      "xmax":150},
+    "GenVb_energy":           {"name":"GenVb_energy",               "title":"Gen off-shell boson energy [GeV]",      "bin":80,      "xmin":0.,      "xmax":150},
+    "GenVb_energy_fraction":  {"name":"GenVb_energy_fraction",      "title":"Gen off-shell boson energy fraction [GeV]",      "bin":80,      "xmin":0.,      "xmax":1},
+
 }

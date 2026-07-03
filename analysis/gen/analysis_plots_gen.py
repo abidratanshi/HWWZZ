@@ -27,7 +27,6 @@ stackbkg       = ['nostack']
 splitLeg       = True # split legend for backgrounds and signals
 
 variables = [
-
             "n_GenLepton",
             "GenLepton_pt",
             "GenLepton_eta",
@@ -52,9 +51,19 @@ variables = [
             "GenLepton_ZProd_dR",
             
             "GenZ_ZProd_pt",
-            "GenZ_ZProd_mass",
+            "GenZ_ZProd_mass",  
 
             "GenHiggs_recoil_mass",
+
+
+            "n_GenQuarks_HiggsDecay",
+            "GenVa_mass",
+            "GenVa_energy",
+            "GenVb_mass",
+            "GenVb_energy",
+            "GenVb_energy_fraction",
+
+
             
         ]
 

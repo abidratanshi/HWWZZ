@@ -24,10 +24,10 @@ processList = {
     'wzp6_ee_eeH_HZZ_ecm365':   {},
     'wzp6_ee_mumuH_HZZ_ecm365': {},
 
-    # Background
-    'p8_ee_WW_ecm365': {},
-    'p8_ee_ZZ_ecm365': {},
-    'p8_ee_tt_ecm365': {},
+    # # Background
+    # 'p8_ee_WW_ecm365': {'chunks':10},
+    # 'p8_ee_ZZ_ecm365': {'chunks':10},
+    # 'p8_ee_tt_ecm365': {'chunks':10},
 }
 
 # Dictionary for prettier names of processes (optional, they don't do anything, maybe only in table)
@@ -43,6 +43,9 @@ procDictAdd = {}
 cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
+
+    "sel_bump": "RecoH4_mass > 85 && RecoH4_mass < 95",
+    "sel_peak": "RecoH4_mass > 115 && RecoH4_mass < 135",
 }
 
 # Dictionary for the ouput variable/hitograms
@@ -177,8 +180,8 @@ histoList = {
     "TagJet_kt4_phi":                     {"name":"TagJet_kt4_phi",                      "title":"kt4 jet #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "TagJet_kt4_mass":                    {"name":"TagJet_kt4_mass",                     "title":"kt4 jet mass [GeV]",              "bin":20,      "xmin":0.,       "xmax":200.},
     "TagJet_kt4_charge":                  {"name":"TagJet_kt4_charge",                   "title":"kt4 jet charge",                  "bin":10,      "xmin":-5.,      "xmax":5.},
-    "TagJet_kt4_flavor":                  {"name":"TagJet_kt4_flavor",                   "title":"kt4 jet flavor",                  "bin":10,      "xmin":-5.,      "xmax":5.},
-    "n_TagJet_kt4":                       {"name":"n_TagJet_kt4",                        "title":"Number of kt4 jet",               "bin":5,       "xmin":-0.5,     "xmax":4.5},
+    "TagJet_kt4_flavor":                  {"name":"TagJet_kt4_flavor",                   "title":"kt4 jet flavor",                  "bin":50,      "xmin":0,        "xmax":25.},
+    "n_TagJet_kt4":                       {"name":"n_TagJet_kt4",                        "title":"Number of kt4 jet",               "bin":5,       "xmin":-0.5,     "xmax":5.5},
     "n_TagJet_kt4_constituents":          {"name":"n_TagJet_kt4_constituents",           "title":"kt4 jet constituents",            "bin":20,      "xmin":0.,       "xmax":20.},
     "n_TagJet_kt4_charged_constituents":  {"name":"n_TagJet_kt4_charged_constituents",   "title":"kt4 jet charged constituents",    "bin":20,      "xmin":0.,       "xmax":20.},
     "n_TagJet_kt4_neutral_constituents":  {"name":"n_TagJet_kt4_neutral_constituents",   "title":"kt4 jet neutral constituents",    "bin":20,      "xmin":0.,       "xmax":20.},
@@ -196,4 +199,28 @@ histoList = {
     "RecoH4_mass":                        {"name":"RecoH4_mass",                         "title":"Reco H4 mass [GeV]",              "bin":75,      "xmin":60,        "xmax":180},
 
     "d_RecoH_mass":                       {"name":"d_RecoH_mass",                        "title":"delta Reco H mass [GeV]",         "bin":75,      "xmin":0,        "xmax":200},
+
+
+
+    "JetE_balance_ratio":            {"name":"JetE_balance_ratio",             "title":"jet E balance ratio [GeV]",             "bin":75,      "xmin":0,        "xmax":1},
+    "JetE_softpair_frac":            {"name":"JetE_softpair_frac",             "title":"jet E softpair fraction [GeV]",         "bin":75,      "xmin":0,        "xmax":1},
+
+
+
+    "RecoVa_mass":             {"name":"RecoVa_mass",                        "title":"Reco Va (on-shell) mass [GeV]",          "bin":75,      "xmin":60,       "xmax":120},
+    "RecoVb_mass":             {"name":"RecoVb_mass",                        "title":"Reco Vb (off-shell) mass [GeV]",         "bin":75,      "xmin":0,        "xmax":80},
+
+
+
+    "RecoVa_dR":               {"name":"RecoVa_dR",                        "title":"dR between Va (on-shell) pair jets",         "bin":75,      "xmin":0,        "xmax":20},
+    "RecoVb_dR":               {"name":"RecoVb_dR",                        "title":"dR between Vb (off-shell) pair jets",         "bin":75,      "xmin":0,        "xmax":20},
+
+
+
+    "n_ReconstructedParticles":            {"name":"n_ReconstructedParticles",           "title":"Number of reconstructed particles",                    "bin":5,       "xmin":-0.5,     "xmax":4.5},    
+    "n_ReconstructedParticles_no_Z":       {"name":"n_ReconstructedParticles_no_Z",      "title":"Number of reco particles after removing Z leptons",    "bin":5,       "xmin":-0.5,     "xmax":4.5},
+    "n_Z_leptons_removed":                 {"name":"n_Z_leptons_removed",                "title":"Number of Z leptons removed",                          "bin":5,       "xmin":-0.5,     "xmax":4.5},
+
+
+    
 }

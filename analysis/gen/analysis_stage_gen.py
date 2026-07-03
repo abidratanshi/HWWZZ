@@ -187,10 +187,6 @@ class RDFanalysis():
 
 
             ######### Production Z #########
-
-            # keeping only 2 leptons in the event
-            # .Filter("(n_GenLepton == 2 && GenLepton_charge[0] != GenLepton_charge[1])")
-            # .Filter("(n_GenLepton_FS == 2 && GenLepton_FS_charge[0] != GenLepton_FS_charge[1])")
             
             # isolating the leptons belonging to the production Z
             .Define("GenLepton_ZProd",        "FCCAnalyses::ZHfunctions::GetZProductionLeptons(GenLepton, Particle, Particle0)")
@@ -217,8 +213,37 @@ class RDFanalysis():
 
             ######### Recoil mass #########
             
-            .Define("p4_initial", "TLorentzVector(0., 0., 0., 365.0)")            
+            .Define("p4_initial", "TLorentzVector(0., 0., 0., 365.0)")
             .Define("GenHiggs_recoil_mass", "(p4_initial - GenZ_ZProd_p4).M()")
+
+
+
+
+
+
+        
+            ######### Higgs decay system: H -> Z Z* or W W* -> 4 quarks #########
+
+            # all quarks in the event
+            .Define("GenQuarks", "FCCAnalyses::ZHfunctions::sel_quarks(Particle)")
+
+            # quarks specifically from the Higgs decay chain (not production Z)
+            .Define("GenQuarks_HiggsDecay", "FCCAnalyses::ZHfunctions::GetHiggsDecayProducts(GenQuarks, Particle, Particle0)")
+            .Define("n_GenQuarks_HiggsDecay", "FCCAnalyses::MCParticle::get_n(GenQuarks_HiggsDecay)")
+
+            # on-shell/off-shell V* system built from truth Higgs-decay quarks
+            # returns [Va_mass, Va_energy, Vb_mass, Vb_energy]
+            # Va = on-shell (heavier), Vb = off-shell (lighter)
+            .Define("GenHiggsVVstar", "FCCAnalyses::ZHfunctions::GetHiggsVVstarSystem(GenQuarks_HiggsDecay)")
+            .Define("GenVa_mass",   "GenHiggsVVstar[0]")
+            .Define("GenVa_energy", "GenHiggsVVstar[1]")
+            .Define("GenVb_mass",   "GenHiggsVVstar[2]")
+            .Define("GenVb_energy", "GenHiggsVVstar[3]")
+
+            # fraction of total Higgs-decay energy carried by the off-shell V*
+            # small values => off-shell system is "starved" of energy
+            .Define("GenVb_energy_fraction", 
+                    "(GenVa_energy + GenVb_energy > 0) ? GenVb_energy / (GenVa_energy + GenVb_energy) : -1.")
             
         )
         return df2
@@ -252,6 +277,17 @@ class RDFanalysis():
             "GenZ_ZProd_mass",  
 
             "GenHiggs_recoil_mass",
+
+
+            "n_GenQuarks_HiggsDecay",
+            "GenVa_mass",
+            "GenVa_energy",
+            "GenVb_mass",
+            "GenVb_energy",
+            "GenVb_energy_fraction",
+
+
+            
         ]
 
         return branchList

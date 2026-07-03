@@ -166,6 +166,78 @@ TLorentzVector BuildZFromPair(ROOT::VecOps::RVec<edm4hep::MCParticleData> lepton
 }
 
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// reco-level analog of FindBestZLeptonPair
+//finds the best OS lepton pair consistent with the Z mass
+std::vector<int> FindBestZLeptonPair_reco(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> leptons) {
+
+    double mZ = 91.1876;
+    double best_diff = 1e9;
+
+    int best_i = -1;
+    int best_j = -1;
+
+    int n = leptons.size();
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+
+            // require opposite charge
+            if (leptons[i].charge * leptons[j].charge >= 0) continue;
+
+            TLorentzVector l1, l2;
+            l1.SetPxPyPzE(leptons[i].momentum.x, leptons[i].momentum.y,
+                          leptons[i].momentum.z, leptons[i].energy);
+            l2.SetPxPyPzE(leptons[j].momentum.x, leptons[j].momentum.y,
+                          leptons[j].momentum.z, leptons[j].energy);
+
+            double mass = (l1 + l2).M();
+            double diff = std::fabs(mass - mZ);
+
+            if (diff < best_diff) {
+                best_diff = diff;
+                best_i = i;
+                best_j = j;
+            }
+        }
+    }
+
+    return {best_i, best_j};
+}
+
+// reco-level analog of BuildZFromPair
+TLorentzVector BuildZFromPair_reco(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> leptons,
+                                    std::vector<int> idx) {
+
+    if (idx.size() < 2 || idx[0] < 0 || idx[1] < 0)
+        return TLorentzVector(0,0,0,0);
+
+    TLorentzVector l1, l2;
+    l1.SetPxPyPzE(leptons[idx[0]].momentum.x, leptons[idx[0]].momentum.y,
+                  leptons[idx[0]].momentum.z, leptons[idx[0]].energy);
+    l2.SetPxPyPzE(leptons[idx[1]].momentum.x, leptons[idx[1]].momentum.y,
+                  leptons[idx[1]].momentum.z, leptons[idx[1]].energy);
+
+    return l1 + l2;
+}
+
+
+// returns the two leptons selected as the Z pair, for removal from the event
+ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> GetZLeptons_reco(
+    ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> leptons,
+    std::vector<int> idx) {
+
+    ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> result;
+
+    if (idx.size() < 2 || idx[0] < 0 || idx[1] < 0)
+        return result; // empty if no valid pair found
+
+    result.emplace_back(leptons[idx[0]]);
+    result.emplace_back(leptons[idx[1]]);
+
+    return result;
+}
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // // compute angular separation between the first two particles in a collection
 // static float deltaR(ROOT::VecOps::RVec<float> eta, ROOT::VecOps::RVec<float> phi) {
@@ -259,6 +331,264 @@ ROOT::VecOps::RVec<edm4hep::MCParticleData> GetZProductionLeptons(
 
     return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================================
+// DIAGNOSTIC ADDITIONS: isolating the Higgs-decay system (H -> Z Z* -> qq qq)
+// and checking reco-level jet energy balance, to investigate the 90 GeV bump
+// in RecoH4_mass for H->ZZ* events.
+// ============================================================================
+
+// this function filters a collection of MC particles and returns only those
+// originating from the HIGGS decay chain (i.e. NOT the production Z).
+// this is the mirror image of GetZProductionLeptons: instead of keeping
+// particles that do NOT come from H, we keep particles that DO come from H.
+// works for both leptons and quarks, since it only looks at PDG codes of
+// parents/grandparents, not the particle's own flavor.
+ROOT::VecOps::RVec<edm4hep::MCParticleData> GetHiggsDecayProducts(
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> particles, // candidate decay products (e.g. quarks)
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> all_mc,    // full MC particle collection
+    ROOT::VecOps::RVec<int> ind_p)                          // parent indices map
+{
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> result;
+    result.reserve(particles.size());
+
+    for (size_t i = 0; i < particles.size(); ++i) {
+        auto & p = particles[i];
+        bool from_higgs_decay = false;
+
+        // looping through the parents of the current particle
+        for (unsigned j = p.parents_begin; j != p.parents_end; ++j) {
+            int index_p = ind_p.at(j);
+            auto & parent = all_mc.at(index_p);
+            int pdg_parent = std::abs(parent.PDG);
+
+            // check if parent is a Z boson (23) or W boson (24)
+            if (pdg_parent == 23 || pdg_parent == 24) {
+
+                // looping through parents of this boson (grandparents of the particle)
+                for (unsigned k = parent.parents_begin; k != parent.parents_end; ++k) {
+                    int index_gp = ind_p.at(k);
+                    int pdg_grandparent = std::abs(all_mc.at(index_gp).PDG);
+
+                    // if the grandparent is a Higgs, flag it
+                    if (pdg_grandparent == 25) {
+                        from_higgs_decay = true;
+                        break;
+                    }
+                }
+            }
+            if (from_higgs_decay) break;
+        }
+
+        if (from_higgs_decay) {
+            result.emplace_back(p);
+        }
+    }
+
+    return result;
+}
+
+
+// selects stable, visible (non-neutrino) final-state quarks from the Higgs
+// decay chain. PDG IDs 1-6 = d,u,s,c,b,t quarks.
+ROOT::VecOps::RVec<edm4hep::MCParticleData> sel_quarks(
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> particles)
+{
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> result;
+    result.reserve(particles.size());
+
+    for (size_t i = 0; i < particles.size(); ++i) {
+        int pdg = std::abs(particles[i].PDG);
+        if (pdg >= 1 && pdg <= 6) {
+            result.emplace_back(particles[i]);
+        }
+    }
+    return result;
+}
+
+
+// builds a TLorentzVector for a single MCParticleData entry (helper)
+TLorentzVector MCParticleToP4(const edm4hep::MCParticleData & p) {
+    double px = p.momentum.x;
+    double py = p.momentum.y;
+    double pz = p.momentum.z;
+    double m  = p.mass;
+    double E  = std::sqrt(px*px + py*py + pz*pz + m*m);
+
+    TLorentzVector v;
+    v.SetPxPyPzE(px, py, pz, E);
+    return v;
+}
+
+
+// for H -> V V* -> 4 quarks (V = W or Z), this finds the best pairing of the
+// 4 Higgs-decay quarks into two dijet systems, using the SAME scoring logic
+// as FindBestJetPairing but at gen level (truth quarks instead of reco jets).
+// returns {Va_mass, Va_energy, Vb_mass, Vb_energy} where Va = on-shell (heavier),
+// Vb = off-shell (lighter). This lets you check the TRUE on-shell/off-shell
+// mass and energy split before any detector/clustering effects.
+std::vector<double> GetHiggsVVstarSystem(
+    ROOT::VecOps::RVec<edm4hep::MCParticleData> higgs_quarks)
+{
+    // default failure value
+    std::vector<double> fail = {-1., -1., -1., -1.};
+
+    if (higgs_quarks.size() != 4) return fail;
+
+    double best_score = 1e9;
+    int best_i=-1, best_j=-1, best_k=-1, best_l=-1;
+
+    int n = 4;
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+
+            std::vector<int> rest;
+            for (int x = 0; x < n; x++) {
+                if (x != i && x != j) rest.push_back(x);
+            }
+            int k = rest[0];
+            int l = rest[1];
+
+            TLorentzVector V1 = MCParticleToP4(higgs_quarks[i]) + MCParticleToP4(higgs_quarks[j]);
+            TLorentzVector V2 = MCParticleToP4(higgs_quarks[k]) + MCParticleToP4(higgs_quarks[l]);
+
+            TLorentzVector Va = V1;
+            TLorentzVector Vb = V2;
+            if (V2.M() > V1.M()) { Va = V2; Vb = V1; }
+
+            double mV = 85.0;
+            double mVstar = 40.0;
+            double alpha = 0.35;
+            double score = std::pow(Va.M() - mV, 2) + alpha * std::pow(Vb.M() - mVstar, 2);
+
+            if (score < best_score) {
+                best_score = score;
+                best_i = i; best_j = j; best_k = k; best_l = l;
+            }
+        }
+    }
+
+    TLorentzVector V1 = MCParticleToP4(higgs_quarks[best_i]) + MCParticleToP4(higgs_quarks[best_j]);
+    TLorentzVector V2 = MCParticleToP4(higgs_quarks[best_k]) + MCParticleToP4(higgs_quarks[best_l]);
+
+    TLorentzVector Va = V1;
+    TLorentzVector Vb = V2;
+    if (V2.M() > V1.M()) { Va = V2; Vb = V1; }
+
+    return { Va.M(), Va.E(), Vb.M(), Vb.E() };
+}
+
+
+// ============================================================================
+// RECO-LEVEL: jet energy balance diagnostics for the kt4 (exclusive 4-jet)
+// clustering. Used to check whether the 90 GeV RecoH4_mass bump comes from
+// "2 hard jets carrying the on-shell boson + 2 soft/noise-dominated jets".
+// ============================================================================
+
+// returns jet energies sorted descending: [E_hardest, ..., E_softest]
+ROOT::VecOps::RVec<float> SortedJetEnergies(ROOT::VecOps::RVec<TLorentzVector> jets) {
+    ROOT::VecOps::RVec<float> energies;
+    for (auto & j : jets) energies.push_back(j.E());
+    std::sort(energies.begin(), energies.end(), std::greater<float>());
+    return energies;
+}
+
+// ratio of softest jet energy to hardest jet energy.
+// values close to 0 => very lopsided event (2 hard + 2 soft signature)
+// values close to 1 => all 4 jets carry comparable energy
+float JetEnergyBalance_softest_over_hardest(ROOT::VecOps::RVec<TLorentzVector> jets) {
+    if (jets.size() < 2) return -1.;
+    ROOT::VecOps::RVec<float> e = SortedJetEnergies(jets);
+    if (e[0] <= 0) return -1.;
+    return e[e.size()-1] / e[0];
+}
+
+// sum of the energies of the two SOFTEST jets, divided by total event energy
+// from these 4 jets. Small values => the two softest jets are contributing
+// very little to the total 4-jet mass -- i.e. the "off-shell" pairing slot
+// is starved of real energy.
+float JetEnergyBalance_softpair_fraction(ROOT::VecOps::RVec<TLorentzVector> jets) {
+    if (jets.size() < 4) return -1.;
+    ROOT::VecOps::RVec<float> e = SortedJetEnergies(jets);
+    double total = e[0] + e[1] + e[2] + e[3];
+    if (total <= 0) return -1.;
+    double soft_pair = e[2] + e[3]; // two softest
+    return soft_pair / total;
+}
+
+
+
+
+
+// given 4 jets and the BestPairing indices [i,j,k,l] from FindBestJetPairing,
+// returns {Va_mass, Vb_mass} where Va = on-shell (heavier), Vb = off-shell (lighter).
+// This re-derives Va/Vb the same way FindBestJetPairing internally does,
+// so the masses are guaranteed consistent with whichever pairing it selected.
+std::vector<double> GetPairedBosonMasses(ROOT::VecOps::RVec<TLorentzVector> jets,
+                                          std::vector<int> pairing) {
+
+    if (pairing.size() < 4 || pairing[0] < 0) return {-1., -1.};
+
+    TLorentzVector V1 = jets[pairing[0]] + jets[pairing[1]];
+    TLorentzVector V2 = jets[pairing[2]] + jets[pairing[3]];
+
+    TLorentzVector Va = V1;
+    TLorentzVector Vb = V2;
+    if (V2.M() > V1.M()) { Va = V2; Vb = V1; }
+
+    return { Va.M(), Vb.M() };
+}
+
+
+
+
+
+
+
+// given 4 jets and the BestPairing indices [i,j,k,l], returns the angular
+// separation (deltaR) between the two jets WITHIN each pairing:
+// {dR(i,j) -- the Va pair, dR(k,l) -- the Vb pair}
+// Small dR means the two jets in that pair are genuinely close/correlated
+// (consistent with coming from the same parent boson). Large dR could mean
+// the pairing algorithm grouped together jets that don't really belong together.
+std::vector<double> GetPairedJetsDeltaR(ROOT::VecOps::RVec<TLorentzVector> jets,
+                                          std::vector<int> pairing) {
+
+    if (pairing.size() < 4 || pairing[0] < 0) return {-1., -1.};
+
+    double dR_Va_jets = jets[pairing[0]].DeltaR(jets[pairing[1]]);
+    double dR_Vb_jets  = jets[pairing[2]].DeltaR(jets[pairing[3]]);
+
+    // need to know which pair ended up being "Va" (heavier) vs "Vb" (lighter)
+    // to stay consistent with GetPairedBosonMasses' labeling
+    TLorentzVector V1 = jets[pairing[0]] + jets[pairing[1]];
+    TLorentzVector V2 = jets[pairing[2]] + jets[pairing[3]];
+
+    if (V2.M() > V1.M()) {
+        // V2 (k,l) is actually the heavier/on-shell one -> swap labels
+        return { dR_Vb_jets, dR_Va_jets };
+    }
+    return { dR_Va_jets, dR_Vb_jets };
+}
+
+
+
+
+
 
 // --------------------------------------------------------------------------------------------------------------------------
 
