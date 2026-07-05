@@ -172,7 +172,7 @@ class RDFanalysis():
             # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
             .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
             .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-            # .Filter("abs(Recoil_mass - 125.0) < 20")
+            .Filter("abs(Recoil_mass - 125.0) < 20")
 
             # Z properties
             .Define("RecoZ_px",    "RecoZ_p4.Px()")
@@ -187,14 +187,12 @@ class RDFanalysis():
             .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
             .Define("RecoZ_mass",  "RecoZ_p4.M()")
         
-
             # remove Z leptons from rest of particles in order to recluster the jets
             .Define("Z_leptons", "(n_RecoElectrons_sel == 2) ? RecoElectrons_sel : RecoMuons_sel")
             .Define("ReconstructedParticles_no_Z", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Z_leptons)")
 
             # .Define("Z_leptons", "FCCAnalyses::ZHfunctions::GetZLeptons_reco(RecoLeptons_sel, RecoZ_idx)")
             # .Define("ReconstructedParticles_no_Z", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Z_leptons)")
-
 
             .Define("n_ReconstructedParticles",       "ReconstructedParticle::get_n(ReconstructedParticles)")
             .Define("n_ReconstructedParticles_no_Z",  "ReconstructedParticle::get_n(ReconstructedParticles_no_Z)")
@@ -320,16 +318,6 @@ class RDFanalysis():
 
                 # array of TLVs for all 4 jets
                 .Define("Jets4_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt4_px, TagJet_kt4_py, TagJet_kt4_pz, TagJet_kt4_e)")
-
-
-
-                # jet energy balance diagnostics: is the off-shell pairing slot
-                # starved of real energy? (2 hard + 2 soft jets signature)
-                .Define("JetE_balance_ratio", "FCCAnalyses::ZHfunctions::JetEnergyBalance_softest_over_hardest(Jets4_p4)")
-                .Define("JetE_softpair_frac", "FCCAnalyses::ZHfunctions::JetEnergyBalance_softpair_fraction(Jets4_p4)")
-
-
-            
 
                 # get best jet pairings
                 .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets4_p4)")
@@ -519,11 +507,6 @@ class RDFanalysis():
             "RecoH4_mass",
             
             "d_RecoH_mass",
-
-
-
-            "JetE_balance_ratio",
-            "JetE_softpair_frac",
 
 
             "RecoVa_mass",

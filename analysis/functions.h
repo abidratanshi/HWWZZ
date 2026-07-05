@@ -493,45 +493,6 @@ std::vector<double> GetHiggsVVstarSystem(
 }
 
 
-// ============================================================================
-// RECO-LEVEL: jet energy balance diagnostics for the kt4 (exclusive 4-jet)
-// clustering. Used to check whether the 90 GeV RecoH4_mass bump comes from
-// "2 hard jets carrying the on-shell boson + 2 soft/noise-dominated jets".
-// ============================================================================
-
-// returns jet energies sorted descending: [E_hardest, ..., E_softest]
-ROOT::VecOps::RVec<float> SortedJetEnergies(ROOT::VecOps::RVec<TLorentzVector> jets) {
-    ROOT::VecOps::RVec<float> energies;
-    for (auto & j : jets) energies.push_back(j.E());
-    std::sort(energies.begin(), energies.end(), std::greater<float>());
-    return energies;
-}
-
-// ratio of softest jet energy to hardest jet energy.
-// values close to 0 => very lopsided event (2 hard + 2 soft signature)
-// values close to 1 => all 4 jets carry comparable energy
-float JetEnergyBalance_softest_over_hardest(ROOT::VecOps::RVec<TLorentzVector> jets) {
-    if (jets.size() < 2) return -1.;
-    ROOT::VecOps::RVec<float> e = SortedJetEnergies(jets);
-    if (e[0] <= 0) return -1.;
-    return e[e.size()-1] / e[0];
-}
-
-// sum of the energies of the two SOFTEST jets, divided by total event energy
-// from these 4 jets. Small values => the two softest jets are contributing
-// very little to the total 4-jet mass -- i.e. the "off-shell" pairing slot
-// is starved of real energy.
-float JetEnergyBalance_softpair_fraction(ROOT::VecOps::RVec<TLorentzVector> jets) {
-    if (jets.size() < 4) return -1.;
-    ROOT::VecOps::RVec<float> e = SortedJetEnergies(jets);
-    double total = e[0] + e[1] + e[2] + e[3];
-    if (total <= 0) return -1.;
-    double soft_pair = e[2] + e[3]; // two softest
-    return soft_pair / total;
-}
-
-
-
 
 
 // given 4 jets and the BestPairing indices [i,j,k,l] from FindBestJetPairing,
@@ -565,8 +526,7 @@ std::vector<double> GetPairedBosonMasses(ROOT::VecOps::RVec<TLorentzVector> jets
 // Small dR means the two jets in that pair are genuinely close/correlated
 // (consistent with coming from the same parent boson). Large dR could mean
 // the pairing algorithm grouped together jets that don't really belong together.
-std::vector<double> GetPairedJetsDeltaR(ROOT::VecOps::RVec<TLorentzVector> jets,
-                                          std::vector<int> pairing) {
+std::vector<double> GetPairedJetsDeltaR(ROOT::VecOps::RVec<TLorentzVector> jets, std::vector<int> pairing) {
 
     if (pairing.size() < 4 || pairing[0] < 0) return {-1., -1.};
 

@@ -201,12 +201,6 @@ histoList = {
     "d_RecoH_mass":                       {"name":"d_RecoH_mass",                        "title":"delta Reco H mass [GeV]",         "bin":75,      "xmin":0,        "xmax":200},
 
 
-
-    "JetE_balance_ratio":            {"name":"JetE_balance_ratio",             "title":"jet E balance ratio [GeV]",             "bin":75,      "xmin":0,        "xmax":1},
-    "JetE_softpair_frac":            {"name":"JetE_softpair_frac",             "title":"jet E softpair fraction [GeV]",         "bin":75,      "xmin":0,        "xmax":1},
-
-
-
     "RecoVa_mass":             {"name":"RecoVa_mass",                        "title":"Reco Va (on-shell) mass [GeV]",          "bin":75,      "xmin":60,       "xmax":120},
     "RecoVb_mass":             {"name":"RecoVb_mass",                        "title":"Reco Vb (off-shell) mass [GeV]",         "bin":75,      "xmin":0,        "xmax":80},
 

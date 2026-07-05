@@ -174,11 +174,6 @@ variables = [
             "d_RecoH_mass",
 
 
-
-            "JetE_balance_ratio",
-            "JetE_softpair_frac",
-
-
             "RecoVa_mass",
             "RecoVb_mass",
 
