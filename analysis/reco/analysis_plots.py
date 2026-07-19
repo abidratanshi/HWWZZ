@@ -19,8 +19,8 @@ formats        = ['png','pdf']
 # formats        = ['png']
 # formats        = ['pdf']
 
-#yaxis          = ['lin','log']
-yaxis          = ['log']
+yaxis          = ['lin','log']
+# yaxis          = ['log']
 
 stacksig       = ['nostack']
 stackbkg       = ['stack']
@@ -113,34 +113,6 @@ variables = [
 
             "Recoil_mass",
 
-            "TagJet_kt2_px",
-            "TagJet_kt2_py",
-            "TagJet_kt2_pz",
-            "TagJet_kt2_p",
-            "TagJet_kt2_pt",
-            "TagJet_kt2_phi",
-            "TagJet_kt2_eta",
-            "TagJet_kt2_theta",
-            "TagJet_kt2_e",
-            "TagJet_kt2_mass",
-            "TagJet_kt2_charge",
-            "TagJet_kt2_flavor",
-            "n_TagJet_kt2",
-            "n_TagJet_kt2_constituents",
-            "n_TagJet_kt2_charged_constituents",
-            "n_TagJet_kt2_neutral_constituents",
-            
-            "RecoH2_px",
-            "RecoH2_py",
-            "RecoH2_pz",
-            "RecoH2_p",
-            "RecoH2_pt",
-            "RecoH2_e",
-            "RecoH2_eta",
-            "RecoH2_phi",
-            "RecoH2_theta",
-            "RecoH2_y",
-            "RecoH2_mass",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
@@ -159,29 +131,23 @@ variables = [
             "n_TagJet_kt4_charged_constituents",
             "n_TagJet_kt4_neutral_constituents",
 
-            "RecoH4_px",
-            "RecoH4_py",
-            "RecoH4_pz",
-            "RecoH4_p",
-            "RecoH4_pt",
-            "RecoH4_e",
-            "RecoH4_eta",
-            "RecoH4_phi",
-            "RecoH4_theta",
-            "RecoH4_y",
-            "RecoH4_mass",
-            
-            "d_RecoH_mass",
-
+            "RecoH_px",
+            "RecoH_py",
+            "RecoH_pz",
+            "RecoH_p",
+            "RecoH_pt",
+            "RecoH_e",
+            "RecoH_eta",
+            "RecoH_phi",
+            "RecoH_theta",
+            "RecoH_y",
+            "RecoH_mass",
 
             "RecoVa_mass",
             "RecoVb_mass",
 
-
             "RecoVa_dR",
             "RecoVb_dR",
-
-
 
             "n_ReconstructedParticles",     
             "n_ReconstructedParticles_no_Z",

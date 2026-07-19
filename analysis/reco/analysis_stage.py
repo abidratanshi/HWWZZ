@@ -216,67 +216,6 @@ class RDFanalysis():
             "Bz": "magFieldBz",
         }
 
-        # EXCLUSIVE 2 JETS
-        jetClusteringHelper_kt2  = ExclusiveJetClusteringHelper(
-            collections["PFParticles"], 2, "kt2"
-        )
-        df2 = jetClusteringHelper_kt2.define(df2)
-
-        # define jet flavour tagging parameters
-        jetFlavourHelper_kt2 = JetFlavourHelper(
-            collections,
-            jetClusteringHelper_kt2.jets,
-            jetClusteringHelper_kt2.constituents,
-            "kt2",
-        )
-        
-        # define observables for tagger
-        df2 = jetFlavourHelper_kt2.define(df2)
-
-        # tagger inference
-        df2 = jetFlavourHelper_kt2.inference(weaver_preproc, weaver_model, df2)
-        
-        df2 = (df2
-
-                .Define("TagJet_kt2_px",                     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_py",                     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_pz",                     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_p",                      "JetClusteringUtils::get_p({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_pt",                     "JetClusteringUtils::get_pt({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_phi",                    "JetClusteringUtils::get_phi({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_eta",                    "JetClusteringUtils::get_eta({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_theta",                  "JetClusteringUtils::get_theta({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_e",                      "JetClusteringUtils::get_e({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_mass",                   "JetClusteringUtils::get_m({})".format(jetClusteringHelper_kt2.jets))
-                .Define("TagJet_kt2_charge",                 "JetConstituentsUtils::get_charge_constituents({})".format(jetClusteringHelper_kt2.constituents))
-                .Define("TagJet_kt2_flavor",                 "JetTaggingUtils::get_flavour({}, Particle)".format(jetClusteringHelper_kt2.jets))
-                .Define("n_TagJet_kt2",                      "return int(TagJet_kt2_flavor.size())")
-                .Define("n_TagJet_kt2_constituents",         "JetConstituentsUtils::get_n_constituents({})".format(jetClusteringHelper_kt2.constituents))
-                .Define("n_TagJet_kt2_charged_constituents", "JetConstituentsUtils::get_ncharged_constituents({})".format(jetClusteringHelper_kt2.constituents))
-                .Define("n_TagJet_kt2_neutral_constituents", "JetConstituentsUtils::get_nneutral_constituents({})".format(jetClusteringHelper_kt2.constituents))
-                .Define("TagJet_kt2_cleanup",                "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt2.constituents)) 
-
-                # array of TLVs for 2 jets
-                .Define("Jets2_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt2_px, TagJet_kt2_py, TagJet_kt2_pz, TagJet_kt2_e)")
-
-                # Reconstructing H from 2 jets
-                .Define("RecoH2_p4", "Jets2_p4[0] + Jets2_p4[1]")
-
-                # H properties
-                .Define("RecoH2_px",    "RecoH2_p4.Px()")
-                .Define("RecoH2_py",    "RecoH2_p4.Py()")
-                .Define("RecoH2_pz",    "RecoH2_p4.Pz()")
-                .Define("RecoH2_p",     "RecoH2_p4.P()")
-                .Define("RecoH2_pt",    "RecoH2_p4.Pt()")
-                .Define("RecoH2_e",     "RecoH2_p4.E()")
-                .Define("RecoH2_eta",   "RecoH2_p4.Eta()")
-                .Define("RecoH2_phi",   "RecoH2_p4.Phi()")
-                .Define("RecoH2_theta", "RecoH2_p4.Theta()")
-                .Define("RecoH2_y",     "RecoH2_p4.Rapidity()")
-                .Define("RecoH2_mass",  "RecoH2_p4.M()")
-               
-              )
-
         # EXCLUSIVE 4 JETS
         jetClusteringHelper_kt4  = ExclusiveJetClusteringHelper(
             collections["PFParticles"], 4, "kt4"
@@ -317,47 +256,47 @@ class RDFanalysis():
                 .Define("TagJet_kt4_cleanup",                "JetConstituentsUtils::cleanup_taggedjet({})".format(jetClusteringHelper_kt4.constituents)) 
 
                 # array of TLVs for all 4 jets
-                .Define("Jets4_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt4_px, TagJet_kt4_py, TagJet_kt4_pz, TagJet_kt4_e)")
+                .Define("Jets_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt4_px, TagJet_kt4_py, TagJet_kt4_pz, TagJet_kt4_e)")
 
-                # get best jet pairings
-                .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets4_p4)")
+                # # get best jet pairings
+                # .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
 
+                # gets best jet pairing from function which includes all objects now instead of just the 4 jets as before
+                .Define("BestPairing", "FCCAnalyses::ZHfunctions::ReconstructZH(RecoZ_p4, Jets_p4)")
+            
                 # reconstructing H from 4 jets
-                .Define("RecoH4_p4", "Jets4_p4[BestPairing[0]] + Jets4_p4[BestPairing[1]] + "
-                                     "Jets4_p4[BestPairing[2]] + Jets4_p4[BestPairing[3]]")
+                .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
+                                    "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
 
                 # H properties
-                .Define("RecoH4_px",    "RecoH4_p4.Px()")
-                .Define("RecoH4_py",    "RecoH4_p4.Py()")
-                .Define("RecoH4_pz",    "RecoH4_p4.Pz()")
-                .Define("RecoH4_p",     "RecoH4_p4.P()")
-                .Define("RecoH4_pt",    "RecoH4_p4.Pt()")
-                .Define("RecoH4_e",     "RecoH4_p4.E()")
-                .Define("RecoH4_eta",   "RecoH4_p4.Eta()")
-                .Define("RecoH4_phi",   "RecoH4_p4.Phi()")
-                .Define("RecoH4_theta", "RecoH4_p4.Theta()")
-                .Define("RecoH4_y",     "RecoH4_p4.Rapidity()")
-                .Define("RecoH4_mass",  "RecoH4_p4.M()")
-
-                # comparing between the two Higgs reconstruction methods (2 vs. 4 jets)
-                .Define("d_RecoH_mass", "RecoH2_mass - RecoH4_mass")
+                .Define("RecoH_px",    "RecoH_p4.Px()")
+                .Define("RecoH_py",    "RecoH_p4.Py()")
+                .Define("RecoH_pz",    "RecoH_p4.Pz()")
+                .Define("RecoH_p",     "RecoH_p4.P()")
+                .Define("RecoH_pt",    "RecoH_p4.Pt()")
+                .Define("RecoH_e",     "RecoH_p4.E()")
+                .Define("RecoH_eta",   "RecoH_p4.Eta()")
+                .Define("RecoH_phi",   "RecoH_p4.Phi()")
+                .Define("RecoH_theta", "RecoH_p4.Theta()")
+                .Define("RecoH_y",     "RecoH_p4.Rapidity()")
+                .Define("RecoH_mass",  "RecoH_p4.M()")
 
 
             
                 # masses of the on-shell (Va) and off-shell (Vb) pairings,
                 # consistent with whichever pairing FindBestJetPairing selected
-                .Define("PairedBosonMasses", "FCCAnalyses::ZHfunctions::GetPairedBosonMasses(Jets4_p4, BestPairing)")
+                .Define("PairedBosonMasses", "FCCAnalyses::ZHfunctions::GetPairedBosonMasses(Jets_p4, BestPairing)")
                 .Define("RecoVa_mass", "PairedBosonMasses[0]")  # on-shell pairing mass
                 .Define("RecoVb_mass", "PairedBosonMasses[1]")  # off-shell pairing mass
 
 
                 # angular separation between the 2 jets within each pairing
-                .Define("PairedJetsDeltaR", "FCCAnalyses::ZHfunctions::GetPairedJetsDeltaR(Jets4_p4, BestPairing)")
+                .Define("PairedJetsDeltaR", "FCCAnalyses::ZHfunctions::GetPairedJetsDeltaR(Jets_p4, BestPairing)")
                 .Define("RecoVa_dR", "PairedJetsDeltaR[0]")  # dR between the on-shell pair's jets
                 .Define("RecoVb_dR", "PairedJetsDeltaR[1]")  # dR between the off-shell pair's jets
 
                 
-                #
+                # 
         )
         return df2
 
@@ -448,34 +387,6 @@ class RDFanalysis():
 
             "Recoil_mass",
 
-            "TagJet_kt2_px",
-            "TagJet_kt2_py",
-            "TagJet_kt2_pz",
-            "TagJet_kt2_p",
-            "TagJet_kt2_pt",
-            "TagJet_kt2_phi",
-            "TagJet_kt2_eta",
-            "TagJet_kt2_theta",
-            "TagJet_kt2_e",
-            "TagJet_kt2_mass",
-            "TagJet_kt2_charge",
-            "TagJet_kt2_flavor",
-            "n_TagJet_kt2",
-            "n_TagJet_kt2_constituents",
-            "n_TagJet_kt2_charged_constituents",
-            "n_TagJet_kt2_neutral_constituents",
-            
-            "RecoH2_px",
-            "RecoH2_py",
-            "RecoH2_pz",
-            "RecoH2_p",
-            "RecoH2_pt",
-            "RecoH2_e",
-            "RecoH2_eta",
-            "RecoH2_phi",
-            "RecoH2_theta",
-            "RecoH2_y",
-            "RecoH2_mass",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
@@ -494,29 +405,23 @@ class RDFanalysis():
             "n_TagJet_kt4_charged_constituents",
             "n_TagJet_kt4_neutral_constituents",
 
-            "RecoH4_px",
-            "RecoH4_py",
-            "RecoH4_pz",
-            "RecoH4_p",
-            "RecoH4_pt",
-            "RecoH4_e",
-            "RecoH4_eta",
-            "RecoH4_phi",
-            "RecoH4_theta",
-            "RecoH4_y",
-            "RecoH4_mass",
-            
-            "d_RecoH_mass",
-
+            "RecoH_px",
+            "RecoH_py",
+            "RecoH_pz",
+            "RecoH_p",
+            "RecoH_pt",
+            "RecoH_e",
+            "RecoH_eta",
+            "RecoH_phi",
+            "RecoH_theta",
+            "RecoH_y",
+            "RecoH_mass",
 
             "RecoVa_mass",
             "RecoVb_mass",
 
-
             "RecoVa_dR",
             "RecoVb_dR",
-
-
 
             "n_ReconstructedParticles",     
             "n_ReconstructedParticles_no_Z",

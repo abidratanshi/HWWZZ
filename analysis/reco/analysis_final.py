@@ -6,7 +6,7 @@ intLumi = 3e6 # pb^-1
 
 # Scale event yields by intLumi and cross section (optional)
 # if scaling, both the number of events in the table and in the histograms will be scaled
-doScale = True
+doScale = False
 
 #Save event yields in a table (optional)
 saveTabular = False
@@ -44,8 +44,8 @@ cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
 
-    "sel_bump": "RecoH4_mass > 85 && RecoH4_mass < 95",
-    "sel_peak": "RecoH4_mass > 115 && RecoH4_mass < 135",
+    "sel_bump": "RecoH_mass > 85 && RecoH_mass < 95",
+    "sel_peak": "RecoH_mass > 115 && RecoH_mass < 135",
 }
 
 # Dictionary for the ouput variable/hitograms
@@ -139,35 +139,6 @@ histoList = {
     "RecoZ_mass":                         {"name":"RecoZ_mass",                          "title":"Reco Z mass [GeV]",               "bin":70,      "xmin":40.,      "xmax":140},
                 
     "Recoil_mass":                        {"name":"Recoil_mass",                         "title":"Recoil mass [GeV]",               "bin":40,      "xmin":105,        "xmax":145},
-
-    "TagJet_kt2_e":                       {"name":"TagJet_kt2_e",                        "title":"kt2 jet energy [GeV]",            "bin":50,      "xmin":0,        "xmax":100},
-    "TagJet_kt2_p":                       {"name":"TagJet_kt2_p",                        "title":"kt2 jet p [GeV]",                 "bin":50,      "xmin":0,        "xmax":100},
-    "TagJet_kt2_pt":                      {"name":"TagJet_kt2_pt",                       "title":"kt2 jet p_{T} [GeV]",             "bin":50,      "xmin":0,        "xmax":100},
-    "TagJet_kt2_px":                      {"name":"TagJet_kt2_px",                       "title":"kt2 jet p_{x} [GeV]",             "bin":50,      "xmin":-100,     "xmax":100},
-    "TagJet_kt2_py":                      {"name":"TagJet_kt2_py",                       "title":"kt2 jet p_{y} [GeV]",             "bin":50,      "xmin":-100,     "xmax":100},
-    "TagJet_kt2_pz":                      {"name":"TagJet_kt2_pz",                       "title":"kt2 jet p_{z} [GeV]",             "bin":50,      "xmin":-100,     "xmax":100},
-    "TagJet_kt2_eta":                     {"name":"TagJet_kt2_eta",                      "title":"kt2 jet #eta",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
-    "TagJet_kt2_theta":                   {"name":"TagJet_kt2_theta",                    "title":"kt2 jet #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
-    "TagJet_kt2_phi":                     {"name":"TagJet_kt2_phi",                      "title":"kt2 jet #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
-    "TagJet_kt2_mass":                    {"name":"TagJet_kt2_mass",                     "title":"kt2 jet mass [GeV]",              "bin":20,      "xmin":0.,       "xmax":200.},
-    "TagJet_kt2_charge":                  {"name":"TagJet_kt2_charge",                   "title":"kt2 jet charge",                  "bin":10,      "xmin":-5.,      "xmax":5.},
-    "TagJet_kt2_flavor":                  {"name":"TagJet_kt2_flavor",                   "title":"kt2 jet flavor",                  "bin":10,      "xmin":-5.,      "xmax":5.},
-    "n_TagJet_kt2":                       {"name":"n_TagJet_kt2",                        "title":"Number of kt2 jet",               "bin":5,       "xmin":-0.5,     "xmax":4.5},
-    "n_TagJet_kt2_constituents":          {"name":"n_TagJet_kt2_constituents",           "title":"kt2 jet constituents",            "bin":20,      "xmin":0.,       "xmax":20.},
-    "n_TagJet_kt2_charged_constituents":  {"name":"n_TagJet_kt2_charged_constituents",   "title":"kt2 jet charged constituents",    "bin":20,      "xmin":0.,       "xmax":20.},
-    "n_TagJet_kt2_neutral_constituents":  {"name":"n_TagJet_kt2_neutral_constituents",   "title":"kt2 jet neutral constituents",    "bin":20,      "xmin":0.,       "xmax":20.},
-            
-    "RecoH2_px":                          {"name":"RecoH2_px",                           "title":"Reco H2 p_{x} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
-    "RecoH2_py":                          {"name":"RecoH2_py",                           "title":"Reco H2 p_{y} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
-    "RecoH2_pz":                          {"name":"RecoH2_pz",                           "title":"Reco H2 p_{z} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
-    "RecoH2_p":                           {"name":"RecoH2_p",                            "title":"Reco H2 p [GeV]",                 "bin":75,      "xmin":0,        "xmax":200},
-    "RecoH2_pt":                          {"name":"RecoH2_pt",                           "title":"Reco H2 p_{T} [GeV]",             "bin":75,      "xmin":0,        "xmax":200},
-    "RecoH2_e":                           {"name":"RecoH2_e",                            "title":"Reco H2 energy [GeV]",            "bin":75,      "xmin":0,        "xmax":200},
-    "RecoH2_eta":                         {"name":"RecoH2_eta",                          "title":"Reco H2 #eta",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
-    "RecoH2_phi":                         {"name":"RecoH2_phi",                          "title":"Reco H2 #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
-    "RecoH2_theta":                       {"name":"RecoH2_theta",                        "title":"Reco H2 #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
-    "RecoH2_y":                           {"name":"RecoH2_y",                            "title":"Reco H2 rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
-    "RecoH2_mass":                        {"name":"RecoH2_mass",                         "title":"Reco H2 mass [GeV]",              "bin":75,      "xmin":60,        "xmax":180},
             
     "TagJet_kt4_e":                       {"name":"TagJet_kt4_e",                        "title":"kt4 jet energy [GeV]",            "bin":50,      "xmin":0,        "xmax":100},
     "TagJet_kt4_p":                       {"name":"TagJet_kt4_p",                        "title":"kt4 jet p [GeV]",                 "bin":50,      "xmin":0,        "xmax":100},
@@ -186,20 +157,17 @@ histoList = {
     "n_TagJet_kt4_charged_constituents":  {"name":"n_TagJet_kt4_charged_constituents",   "title":"kt4 jet charged constituents",    "bin":20,      "xmin":0.,       "xmax":20.},
     "n_TagJet_kt4_neutral_constituents":  {"name":"n_TagJet_kt4_neutral_constituents",   "title":"kt4 jet neutral constituents",    "bin":20,      "xmin":0.,       "xmax":20.},
             
-    "RecoH4_px":                          {"name":"RecoH4_px",                           "title":"Reco H4 p_{x} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
-    "RecoH4_py":                          {"name":"RecoH4_py",                           "title":"Reco H4 p_{y} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
-    "RecoH4_pz":                          {"name":"RecoH4_pz",                           "title":"Reco H4 p_{z} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
-    "RecoH4_p":                           {"name":"RecoH4_p",                            "title":"Reco H4 p [GeV]",                 "bin":75,      "xmin":0,        "xmax":200},
-    "RecoH4_pt":                          {"name":"RecoH4_pt",                           "title":"Reco H4 p_{T} [GeV]",             "bin":75,      "xmin":0,        "xmax":200},
-    "RecoH4_e":                           {"name":"RecoH4_e",                            "title":"Reco H4 energy [GeV]",            "bin":75,      "xmin":0,        "xmax":200},
-    "RecoH4_eta":                         {"name":"RecoH4_eta",                          "title":"Reco H4 #eta",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
-    "RecoH4_phi":                         {"name":"RecoH4_phi",                          "title":"Reco H4 #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
-    "RecoH4_theta":                       {"name":"RecoH4_theta",                        "title":"Reco H4 #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
-    "RecoH4_y":                           {"name":"RecoH4_y",                            "title":"Reco H4 rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
-    "RecoH4_mass":                        {"name":"RecoH4_mass",                         "title":"Reco H4 mass [GeV]",              "bin":75,      "xmin":60,        "xmax":180},
-
-    "d_RecoH_mass":                       {"name":"d_RecoH_mass",                        "title":"delta Reco H mass [GeV]",         "bin":75,      "xmin":0,        "xmax":200},
-
+    "RecoH_px":                          {"name":"RecoH_px",                           "title":"Reco H p_{x} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
+    "RecoH_py":                          {"name":"RecoH_py",                           "title":"Reco H p_{y} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
+    "RecoH_pz":                          {"name":"RecoH_pz",                           "title":"Reco H p_{z} [GeV]",             "bin":50,      "xmin":-200,     "xmax":200},
+    "RecoH_p":                           {"name":"RecoH_p",                            "title":"Reco H p [GeV]",                 "bin":75,      "xmin":0,        "xmax":200},
+    "RecoH_pt":                          {"name":"RecoH_pt",                           "title":"Reco H p_{T} [GeV]",             "bin":75,      "xmin":0,        "xmax":200},
+    "RecoH_e":                           {"name":"RecoH_e",                            "title":"Reco H energy [GeV]",            "bin":75,      "xmin":0,        "xmax":200},
+    "RecoH_eta":                         {"name":"RecoH_eta",                          "title":"Reco H #eta",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
+    "RecoH_phi":                         {"name":"RecoH_phi",                          "title":"Reco H #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
+    "RecoH_theta":                       {"name":"RecoH_theta",                        "title":"Reco H #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
+    "RecoH_y":                           {"name":"RecoH_y",                            "title":"Reco H rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
+    "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":75,      "xmin":60,       "xmax":180},
 
     "RecoVa_mass":             {"name":"RecoVa_mass",                        "title":"Reco Va (on-shell) mass [GeV]",          "bin":75,      "xmin":60,       "xmax":120},
     "RecoVb_mass":             {"name":"RecoVb_mass",                        "title":"Reco Vb (off-shell) mass [GeV]",         "bin":75,      "xmin":0,        "xmax":80},

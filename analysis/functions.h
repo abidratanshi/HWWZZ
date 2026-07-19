@@ -85,6 +85,92 @@ std::vector<int> FindBestJetPairing(ROOT::VecOps::RVec<TLorentzVector> jets) {
 }
 
 
+
+
+// Jointly evaluates a Z + H(4 jets) candidate.
+// Z_p4: the already-built Z candidate (from 2 selected leptons)
+// jets: the 4 Higgs-candidate jets (already clustered in python)
+//
+// Finds the best way to split the 4 jets into two dijet bosons (same
+// logic as FindBestJetPairing), and combines that with how close RecoZ_p4 is to
+// the true Z mass, into a single joint score for the whole ZH candidate.
+//
+std::vector<int> ReconstructZH(TLorentzVector Z_p4, ROOT::VecOps::RVec<TLorentzVector> jets) {
+
+    // scoring constants for later
+    double mZ = 91.1876; // Z mass
+    double mV = 85.0; // on-shell mass (b/w W and Z)
+    double mVstar = 40.0; // off-shell mass
+    double alpha = 0.35;  // weight: off-shell V* mass term
+    double beta  = 0.20;  // weight: Z mass term
+
+    double best_score = 1e9; // start with a very large number to be minimized
+    
+    int best_i=-1, best_j=-1, best_k=-1, best_l=-1;
+
+    int n = jets.size(); // number of jets
+
+     // loop over all possible ways to pick 2 jets out of 4
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+
+            // now get the OTHER two jets (not i and j)
+            std::vector<int> rest; // stores the remaining indices
+            
+            for (int x = 0; x < n; x++) {
+                if (x != i && x != j) {
+                    rest.push_back(x);
+                }
+            }
+            
+            int k = rest[0];
+            int l = rest[1];
+
+            // build two boson candidates (dijet systems)
+            TLorentzVector V1 = jets[i] + jets[j];
+            TLorentzVector V2 = jets[k] + jets[l];
+
+            // we want to identify:
+            // one boson ~ on-shell (W/Z)
+            // one boson off-shell (lighter)
+            TLorentzVector Va = V1;
+            TLorentzVector Vb = V2;
+
+            // ensure Va is the heavier one
+            if (V2.M() > V1.M()) {
+                Va = V2;
+                Vb = V1;
+            }
+
+            // define a score:
+            // Va should be near W/Z mass
+            // Vb should be off-shell
+            // first term: penalize deviation from W/Z mass
+            // second term: deviation from off-shell mass
+            // third term: deviation from Z mass
+            double Va_score = std::pow(Va.M() - mV, 2);
+            double Vb_score = std::pow(Vb.M() - mVstar, 2);
+            double Z_score = std::pow(Z_p4.M() - mZ, 2);
+            double score = Va_score + alpha * Vb_score + beta * Z_score;
+
+            // Keep the best pairing (smallest score)
+            if (score < best_score) {
+                best_score = score;
+                best_i = i;
+                best_j = j;
+                best_k = k;
+                best_l = l;
+            }
+        }
+    }
+    
+    return {best_i, best_j, best_k, best_l};
+}
+
+
+
+
+
 // this function takes the leptons and finds the best pair to have come from a Z
 std::vector<int> FindBestZLeptonPair(ROOT::VecOps::RVec<edm4hep::MCParticleData> leptons) {
 
@@ -238,6 +324,7 @@ ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> GetZLeptons_reco(
     return result;
 }
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // // compute angular separation between the first two particles in a collection
 // static float deltaR(ROOT::VecOps::RVec<float> eta, ROOT::VecOps::RVec<float> phi) {
