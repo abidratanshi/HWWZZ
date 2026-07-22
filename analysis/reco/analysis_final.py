@@ -43,8 +43,6 @@ procDictAdd = {}
 cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
-
-    "sel_bump": "RecoH_mass > 85 && RecoH_mass < 95",
     "sel_peak": "RecoH_mass > 115 && RecoH_mass < 135",
 }
 
@@ -138,7 +136,7 @@ histoList = {
     "RecoZ_y":                            {"name":"RecoZ_y",                             "title":"Reco Z rapidity",                 "bin":40,      "xmin":-4.,      "xmax":4.},
     "RecoZ_mass":                         {"name":"RecoZ_mass",                          "title":"Reco Z mass [GeV]",               "bin":70,      "xmin":40.,      "xmax":140},
                 
-    "Recoil_mass":                        {"name":"Recoil_mass",                         "title":"Recoil mass [GeV]",               "bin":40,      "xmin":105,        "xmax":145},
+    # "Recoil_mass":                        {"name":"Recoil_mass",                         "title":"Recoil mass [GeV]",               "bin":40,      "xmin":105,        "xmax":145},
             
     "TagJet_kt4_e":                       {"name":"TagJet_kt4_e",                        "title":"kt4 jet energy [GeV]",            "bin":50,      "xmin":0,        "xmax":100},
     "TagJet_kt4_p":                       {"name":"TagJet_kt4_p",                        "title":"kt4 jet p [GeV]",                 "bin":50,      "xmin":0,        "xmax":100},
@@ -169,20 +167,4 @@ histoList = {
     "RecoH_y":                           {"name":"RecoH_y",                            "title":"Reco H rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
     "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":75,      "xmin":60,       "xmax":180},
 
-    "RecoVa_mass":             {"name":"RecoVa_mass",                        "title":"Reco Va (on-shell) mass [GeV]",          "bin":75,      "xmin":60,       "xmax":120},
-    "RecoVb_mass":             {"name":"RecoVb_mass",                        "title":"Reco Vb (off-shell) mass [GeV]",         "bin":75,      "xmin":0,        "xmax":80},
-
-
-
-    "RecoVa_dR":               {"name":"RecoVa_dR",                        "title":"dR between Va (on-shell) pair jets",         "bin":75,      "xmin":0,        "xmax":20},
-    "RecoVb_dR":               {"name":"RecoVb_dR",                        "title":"dR between Vb (off-shell) pair jets",         "bin":75,      "xmin":0,        "xmax":20},
-
-
-
-    "n_ReconstructedParticles":            {"name":"n_ReconstructedParticles",           "title":"Number of reconstructed particles",                    "bin":5,       "xmin":-0.5,     "xmax":4.5},    
-    "n_ReconstructedParticles_no_Z":       {"name":"n_ReconstructedParticles_no_Z",      "title":"Number of reco particles after removing Z leptons",    "bin":5,       "xmin":-0.5,     "xmax":4.5},
-    "n_Z_leptons_removed":                 {"name":"n_Z_leptons_removed",                "title":"Number of Z leptons removed",                          "bin":5,       "xmin":-0.5,     "xmax":4.5},
-
-
-    
 }

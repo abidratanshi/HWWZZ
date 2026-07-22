@@ -85,88 +85,78 @@ std::vector<int> FindBestJetPairing(ROOT::VecOps::RVec<TLorentzVector> jets) {
 }
 
 
+// Returns {valid, best_i, best_j, best_pairing} as ints (valid: 1/0).
+// Z and Higgs 4-vectors are reconstructed separately in a second function
+// using these indices, keeping this RDataFrame-friendly (no out-params).
+std::vector<int> AnalyzeZH_indices(TLorentzVector lep1, TLorentzVector lep2,
+                                    ROOT::VecOps::RVec<TLorentzVector> jets) {
 
+    if (jets.size() != 4) return {0, -1, -1, -1};
 
-// Jointly evaluates a Z + H(4 jets) candidate.
-// Z_p4: the already-built Z candidate (from 2 selected leptons)
-// jets: the 4 Higgs-candidate jets (already clustered in python)
-//
-// Finds the best way to split the 4 jets into two dijet bosons (same
-// logic as FindBestJetPairing), and combines that with how close RecoZ_p4 is to
-// the true Z mass, into a single joint score for the whole ZH candidate.
-//
-std::vector<int> ReconstructZH(TLorentzVector Z_p4, ROOT::VecOps::RVec<TLorentzVector> jets) {
+    const double massH = 125.0;
+    TLorentzVector pair0 = lep1 + lep2;
 
-    // scoring constants for later
-    double mZ = 91.1876; // Z mass
-    double mV = 85.0; // on-shell mass (b/w W and Z)
-    double mVstar = 40.0; // off-shell mass
-    double alpha = 0.35;  // weight: off-shell V* mass term
-    double beta  = 0.20;  // weight: Z mass term
+    int jetPairings[3][4] = {
+        {0, 1, 2, 3},
+        {0, 2, 1, 3},
+        {0, 3, 1, 2}
+    };
 
-    double best_score = 1e9; // start with a very large number to be minimized
-    
-    int best_i=-1, best_j=-1, best_k=-1, best_l=-1;
+    double minDistance = 1e9;
+    int best_i = -1, best_j = -1, best_pairing = -1;
 
-    int n = jets.size(); // number of jets
+    for (int p = 0; p < 3; ++p) {
+        TLorentzVector pair1 = jets[jetPairings[p][0]] + jets[jetPairings[p][1]];
+        TLorentzVector pair2 = jets[jetPairings[p][2]] + jets[jetPairings[p][3]];
+        TLorentzVector candidates[3] = { pair0, pair1, pair2 };
 
-     // loop over all possible ways to pick 2 jets out of 4
-    for (int i = 0; i < n; i++) {
-        for (int j = i+1; j < n; j++) {
-
-            // now get the OTHER two jets (not i and j)
-            std::vector<int> rest; // stores the remaining indices
-            
-            for (int x = 0; x < n; x++) {
-                if (x != i && x != j) {
-                    rest.push_back(x);
+        for (int i = 0; i < 3; ++i) {
+            for (int j = i + 1; j < 3; ++j) {
+                TLorentzVector higgs = candidates[i] + candidates[j];
+                double distance = std::fabs(higgs.M() - massH);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    best_i = i;
+                    best_j = j;
+                    best_pairing = p;
                 }
-            }
-            
-            int k = rest[0];
-            int l = rest[1];
-
-            // build two boson candidates (dijet systems)
-            TLorentzVector V1 = jets[i] + jets[j];
-            TLorentzVector V2 = jets[k] + jets[l];
-
-            // we want to identify:
-            // one boson ~ on-shell (W/Z)
-            // one boson off-shell (lighter)
-            TLorentzVector Va = V1;
-            TLorentzVector Vb = V2;
-
-            // ensure Va is the heavier one
-            if (V2.M() > V1.M()) {
-                Va = V2;
-                Vb = V1;
-            }
-
-            // define a score:
-            // Va should be near W/Z mass
-            // Vb should be off-shell
-            // first term: penalize deviation from W/Z mass
-            // second term: deviation from off-shell mass
-            // third term: deviation from Z mass
-            double Va_score = std::pow(Va.M() - mV, 2);
-            double Vb_score = std::pow(Vb.M() - mVstar, 2);
-            double Z_score = std::pow(Z_p4.M() - mZ, 2);
-            double score = Va_score + alpha * Vb_score + beta * Z_score;
-
-            // Keep the best pairing (smallest score)
-            if (score < best_score) {
-                best_score = score;
-                best_i = i;
-                best_j = j;
-                best_k = k;
-                best_l = l;
             }
         }
     }
-    
-    return {best_i, best_j, best_k, best_l};
+
+    if (best_i == -1 || best_j == -1) return {0, -1, -1, -1};
+    if (best_i == 0 || best_j == 0)   return {0, best_i, best_j, best_pairing}; // rejected: leptons chosen as Higgs
+
+    return {1, best_i, best_j, best_pairing};
 }
 
+// Given the winning indices, rebuild Z and Higgs 4-vectors.
+// Returns {Z_px,Z_py,Z_pz,Z_e, H_px,H_py,H_pz,H_e}.
+std::vector<double> BuildZH_fromIndices(TLorentzVector lep1, TLorentzVector lep2,
+                                         ROOT::VecOps::RVec<TLorentzVector> jets,
+                                         int best_i, int best_j, int best_pairing) {
+
+    if (best_i < 0 || best_j < 0 || best_pairing < 0)
+        return {0.,0.,0.,0., 0.,0.,0.,0.};
+
+    int jetPairings[3][4] = {
+        {0, 1, 2, 3},
+        {0, 2, 1, 3},
+        {0, 3, 1, 2}
+    };
+
+    TLorentzVector pair0 = lep1 + lep2;
+    TLorentzVector pair1 = jets[jetPairings[best_pairing][0]] + jets[jetPairings[best_pairing][1]];
+    TLorentzVector pair2 = jets[jetPairings[best_pairing][2]] + jets[jetPairings[best_pairing][3]];
+    TLorentzVector candidates[3] = { pair0, pair1, pair2 };
+
+    int z_idx = 3 - best_i - best_j;
+    TLorentzVector Z = candidates[z_idx];
+    TLorentzVector H = candidates[best_i] + candidates[best_j];
+
+    return { Z.Px(), Z.Py(), Z.Pz(), Z.E(),
+             H.Px(), H.Py(), H.Pz(), H.E() };
+}
 
 
 
@@ -418,18 +408,6 @@ ROOT::VecOps::RVec<edm4hep::MCParticleData> GetZProductionLeptons(
 
     return result;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -20,6 +20,7 @@ formats        = ['png','pdf']
 # formats        = ['pdf']
 
 yaxis          = ['lin','log']
+# yaxis          = ['lin']
 # yaxis          = ['log']
 
 stacksig       = ['nostack']
@@ -111,8 +112,7 @@ variables = [
             "RecoZ_y",
             "RecoZ_mass",
 
-            "Recoil_mass",
-
+            # "Recoil_mass",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
@@ -142,26 +142,15 @@ variables = [
             "RecoH_theta",
             "RecoH_y",
             "RecoH_mass",
-
-            "RecoVa_mass",
-            "RecoVb_mass",
-
-            "RecoVa_dR",
-            "RecoVb_dR",
-
-            "n_ReconstructedParticles",     
-            "n_ReconstructedParticles_no_Z",
-            "n_Z_leptons_removed",          
-
+            
         ]
 
 selections = {}
-selections['HWWZZ']  = ["sel0", "sel_bump", "sel_peak"]
+selections['HWWZZ']  = ["sel0"]
 
 extralabel = {}
 extralabel["sel0"] = ""
-extralabel["sel_bump"] = "90 GeV bump region"
-extralabel["sel_peak"] = "125 GeV peak region"
+# extralabel["sel_peak"] = "125 GeV peak region"
 
 colors = {}
 colors['ee_eeH_HWW']   = ROOT.kOrange+2

@@ -152,51 +152,38 @@ class RDFanalysis():
             .Filter("(n_RecoElectrons_sel == 2 && RecoElectron_sel_charge[0] != RecoElectron_sel_charge[1]) || "
                     "(n_RecoMuons_sel == 2 && RecoMuon_sel_charge[0] != RecoMuon_sel_charge[1])")
         
-            # reconstructing Z
-            .Define("RecoElectron_p4", "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) + "
-                                       "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1])")
+            # # reconstructing Z
+            # .Define("RecoElectron_p4", "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) + "
+            #                            "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1])")
             
-            .Define("RecoMuon_p4", "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0]) + "
-                                   "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
+            # .Define("RecoMuon_p4", "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0]) + "
+            #                        "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
             
-            .Define("RecoZ_p4", "(n_RecoElectrons_sel == 2) ? RecoElectron_p4 : RecoMuon_p4")
+            # .Define("RecoZ_p4", "(n_RecoElectrons_sel == 2) ? RecoElectron_p4 : RecoMuon_p4")
+            
 
-            # ########## Trying function for isolating the leptons belonging to the production Z (similar to gen-level fn) ##########
-            # # merge electrons and muons for simplicity
-            # .Define("RecoLeptons_sel", "FCCAnalyses::ReconstructedParticle::merge(RecoElectrons_sel, RecoMuons_sel)")
-            # .Define("RecoZ_idx", "FCCAnalyses::ZHfunctions::FindBestZLeptonPair_reco(RecoLeptons_sel)")
-            # .Filter("RecoZ_idx[0] >= 0 && RecoZ_idx[1] >= 0")   # require a valid OS pair was found
-            # .Define("RecoZ_p4",  "FCCAnalyses::ZHfunctions::BuildZFromPair_reco(RecoLeptons_sel, RecoZ_idx)")
-            # ########################################################################################################################
+            # # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
+            # .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
+            # .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
+            # .Filter("abs(Recoil_mass - 125.0) < 20")
 
-            # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
-            .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
-            .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-            .Filter("abs(Recoil_mass - 125.0) < 20")
-
-            # Z properties
-            .Define("RecoZ_px",    "RecoZ_p4.Px()")
-            .Define("RecoZ_py",    "RecoZ_p4.Py()")
-            .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
-            .Define("RecoZ_p",     "RecoZ_p4.P()")
-            .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
-            .Define("RecoZ_e",     "RecoZ_p4.E()")
-            .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
-            .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
-            .Define("RecoZ_theta", "RecoZ_p4.Theta()")
-            .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
-            .Define("RecoZ_mass",  "RecoZ_p4.M()")
+            # # Z properties
+            # .Define("RecoZ_px",    "RecoZ_p4.Px()")
+            # .Define("RecoZ_py",    "RecoZ_p4.Py()")
+            # .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
+            # .Define("RecoZ_p",     "RecoZ_p4.P()")
+            # .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
+            # .Define("RecoZ_e",     "RecoZ_p4.E()")
+            # .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
+            # .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
+            # .Define("RecoZ_theta", "RecoZ_p4.Theta()")
+            # .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
+            # .Define("RecoZ_mass",  "RecoZ_p4.M()")
         
             # remove Z leptons from rest of particles in order to recluster the jets
             .Define("Z_leptons", "(n_RecoElectrons_sel == 2) ? RecoElectrons_sel : RecoMuons_sel")
             .Define("ReconstructedParticles_no_Z", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Z_leptons)")
 
-            # .Define("Z_leptons", "FCCAnalyses::ZHfunctions::GetZLeptons_reco(RecoLeptons_sel, RecoZ_idx)")
-            # .Define("ReconstructedParticles_no_Z", "FCCAnalyses::ReconstructedParticle::remove(ReconstructedParticles, Z_leptons)")
-
-            .Define("n_ReconstructedParticles",       "ReconstructedParticle::get_n(ReconstructedParticles)")
-            .Define("n_ReconstructedParticles_no_Z",  "ReconstructedParticle::get_n(ReconstructedParticles_no_Z)")
-            .Define("n_Z_leptons_removed",            "ReconstructedParticle::get_n(Z_leptons)")
         )
         
         # jet tagging
@@ -257,16 +244,57 @@ class RDFanalysis():
 
                 # array of TLVs for all 4 jets
                 .Define("Jets_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt4_px, TagJet_kt4_py, TagJet_kt4_pz, TagJet_kt4_e)")
+            
+
+
+                # ----------------------------------------------------------------------------------------------------------------------------------
+            
+                .Define("RecoLep1_p4", "(n_RecoElectrons_sel == 2) ? "
+                        "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) : "
+                        "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0])")
+            
+                .Define("RecoLep2_p4", "(n_RecoElectrons_sel == 2) ? "
+                        "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1]) : "
+                        "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
+
+                # perform pairing with all 6 objects simultaneously
+                .Define("ZHIndices", "FCCAnalyses::ZHfunctions::AnalyzeZH_indices(RecoLep1_p4, RecoLep2_p4, Jets_p4)")
+                .Define("ZH_valid",     "ZHIndices[0]")
+                .Define("ZH_best_i",    "ZHIndices[1]")
+                .Define("ZH_best_j",    "ZHIndices[2]")
+                .Define("ZH_pairing",   "ZHIndices[3]")
+            
+                # cut: reject events where leptons were chosen as part of the "Higgs"
+                .Filter("ZH_valid == 1")
+            
+                .Define("ZHResult", "FCCAnalyses::ZHfunctions::BuildZH_fromIndices(RecoLep1_p4, RecoLep2_p4, Jets_p4, ZH_best_i, ZH_best_j, ZH_pairing)")
+                .Define("RecoZ_p4", "TLorentzVector(ZHResult[0], ZHResult[1], ZHResult[2], ZHResult[3])")
+                .Define("RecoH_p4", "TLorentzVector(ZHResult[4], ZHResult[5], ZHResult[6], ZHResult[7])")
+                # ----------------------------------------------------------------------------------------------------------------------------------
+                
+                # Z properties
+                .Define("RecoZ_px",    "RecoZ_p4.Px()")
+                .Define("RecoZ_py",    "RecoZ_p4.Py()")
+                .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
+                .Define("RecoZ_p",     "RecoZ_p4.P()")
+                .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
+                .Define("RecoZ_e",     "RecoZ_p4.E()")
+                .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
+                .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
+                .Define("RecoZ_theta", "RecoZ_p4.Theta()")
+                .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
+                .Define("RecoZ_mass",  "RecoZ_p4.M()")
+            
+                # ----------------------------------------------------------------------------------------------------------------------------------
+
+            
 
                 # # get best jet pairings
                 # .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
-
-                # gets best jet pairing from function which includes all objects now instead of just the 4 jets as before
-                .Define("BestPairing", "FCCAnalyses::ZHfunctions::ReconstructZH(RecoZ_p4, Jets_p4)")
             
-                # reconstructing H from 4 jets
-                .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
-                                    "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
+                # # reconstructing H from 4 jets
+                # .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
+                #                     "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
 
                 # H properties
                 .Define("RecoH_px",    "RecoH_p4.Px()")
@@ -281,22 +309,7 @@ class RDFanalysis():
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",  "RecoH_p4.M()")
 
-
-            
-                # masses of the on-shell (Va) and off-shell (Vb) pairings,
-                # consistent with whichever pairing FindBestJetPairing selected
-                .Define("PairedBosonMasses", "FCCAnalyses::ZHfunctions::GetPairedBosonMasses(Jets_p4, BestPairing)")
-                .Define("RecoVa_mass", "PairedBosonMasses[0]")  # on-shell pairing mass
-                .Define("RecoVb_mass", "PairedBosonMasses[1]")  # off-shell pairing mass
-
-
-                # angular separation between the 2 jets within each pairing
-                .Define("PairedJetsDeltaR", "FCCAnalyses::ZHfunctions::GetPairedJetsDeltaR(Jets_p4, BestPairing)")
-                .Define("RecoVa_dR", "PairedJetsDeltaR[0]")  # dR between the on-shell pair's jets
-                .Define("RecoVb_dR", "PairedJetsDeltaR[1]")  # dR between the off-shell pair's jets
-
-                
-                # 
+               
         )
         return df2
 
@@ -385,8 +398,7 @@ class RDFanalysis():
             "RecoZ_y",
             "RecoZ_mass",
 
-            "Recoil_mass",
-
+            # "Recoil_mass",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
@@ -416,17 +428,7 @@ class RDFanalysis():
             "RecoH_theta",
             "RecoH_y",
             "RecoH_mass",
-
-            "RecoVa_mass",
-            "RecoVb_mass",
-
-            "RecoVa_dR",
-            "RecoVb_dR",
-
-            "n_ReconstructedParticles",     
-            "n_ReconstructedParticles_no_Z",
-            "n_Z_leptons_removed",          
-
+            
         ]
 
         return branchList
