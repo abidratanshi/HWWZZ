@@ -106,36 +106,3 @@ for i, pt_cut in enumerate(pt_thresholds):
 
 canvas.SaveAs("pt_scan_grid.png")
 canvas_log.SaveAs("pt_scan_grid_logy.png")
-
-# ----------------------------------------------------------------------
-# Overlay (normalized)
-# ----------------------------------------------------------------------
-
-c2 = ROOT.TCanvas("c2", "pT scan overlay", 800, 600)
-legend = ROOT.TLegend(0.60, 0.60, 0.88, 0.88)
-
-kept_hists = []  # keeps clones alive
-
-for i, pt_cut in enumerate(pt_thresholds):
-
-    h, count = results[pt_cut]
-
-    h_norm = h.Clone(f"{h.GetName()}_norm")
-    h_norm.SetDirectory(0)
-
-    if h_norm.Integral() > 0:
-        h_norm.Scale(1.0 / h_norm.Integral())
-
-    h_norm.SetLineColor(colors[i % len(colors)])
-    h_norm.SetLineWidth(2)
-
-    label = "No p_{T} cut" if pt_cut is None else f"p_{{T}} > {pt_cut} GeV"
-    legend.AddEntry(h_norm, label, "l")
-
-    h_norm.Draw("hist same" if i > 0 else "hist")
-
-    kept_hists.append(h_norm)
-
-legend.Draw()
-
-c2.SaveAs("pt_scan_overlay.png")

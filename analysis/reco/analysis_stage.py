@@ -11,9 +11,9 @@ processList = {
     'wzp6_ee_mumuH_HZZ_ecm365': {'fraction':0.001},
 
     # # Background
-    # 'p8_ee_WW_ecm365': {'fraction':0.000001},
-    # 'p8_ee_ZZ_ecm365': {'fraction':0.000001},
-    # 'p8_ee_tt_ecm365': {'fraction':0.000001},
+    'p8_ee_WW_ecm365': {'fraction':0.000001},
+    'p8_ee_ZZ_ecm365': {'fraction':0.000001},
+    'p8_ee_tt_ecm365': {'fraction':0.000001},
 }
 
 # directories
@@ -151,7 +151,9 @@ class RDFanalysis():
             # require exactly 2 leptons of same flavor and opposite charge
             .Filter("(n_RecoElectrons_sel == 2 && RecoElectron_sel_charge[0] != RecoElectron_sel_charge[1]) || "
                     "(n_RecoMuons_sel == 2 && RecoMuon_sel_charge[0] != RecoMuon_sel_charge[1])")
-        
+
+            # # ----------------------------------------------------------------------------------------------------------------------------------
+            
             # # reconstructing Z
             # .Define("RecoElectron_p4", "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) + "
             #                            "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1])")
@@ -165,7 +167,7 @@ class RDFanalysis():
             # # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
             # .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
             # .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-            # .Filter("abs(Recoil_mass - 125.0) < 20")
+            # # .Filter("abs(Recoil_mass - 125.0) < 20")
 
             # # Z properties
             # .Define("RecoZ_px",    "RecoZ_p4.Px()")
@@ -179,6 +181,8 @@ class RDFanalysis():
             # .Define("RecoZ_theta", "RecoZ_p4.Theta()")
             # .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
             # .Define("RecoZ_mass",  "RecoZ_p4.M()")
+            
+            # # ----------------------------------------------------------------------------------------------------------------------------------
         
             # remove Z leptons from rest of particles in order to recluster the jets
             .Define("Z_leptons", "(n_RecoElectrons_sel == 2) ? RecoElectrons_sel : RecoMuons_sel")
@@ -296,6 +300,10 @@ class RDFanalysis():
                 # .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
                 #                     "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
 
+
+
+
+            
                 # H properties
                 .Define("RecoH_px",    "RecoH_p4.Px()")
                 .Define("RecoH_py",    "RecoH_p4.Py()")

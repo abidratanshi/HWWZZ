@@ -6,7 +6,7 @@ intLumi = 3e6 # pb^-1
 
 # Scale event yields by intLumi and cross section (optional)
 # if scaling, both the number of events in the table and in the histograms will be scaled
-doScale = False
+doScale = True
 
 #Save event yields in a table (optional)
 saveTabular = False
@@ -24,10 +24,10 @@ processList = {
     'wzp6_ee_eeH_HZZ_ecm365':   {},
     'wzp6_ee_mumuH_HZZ_ecm365': {},
 
-    # # Background
-    # 'p8_ee_WW_ecm365': {'chunks':10},
-    # 'p8_ee_ZZ_ecm365': {'chunks':10},
-    # 'p8_ee_tt_ecm365': {'chunks':10},
+    # Background
+    'p8_ee_WW_ecm365': {'chunks':25},
+    'p8_ee_ZZ_ecm365': {'chunks':25},
+    'p8_ee_tt_ecm365': {'chunks':25},
 }
 
 # Dictionary for prettier names of processes (optional, they don't do anything, maybe only in table)
@@ -43,7 +43,7 @@ procDictAdd = {}
 cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
-    "sel_peak": "RecoH_mass > 115 && RecoH_mass < 135",
+    "sel1": "RecoH_mass > 100",
 }
 
 # Dictionary for the ouput variable/hitograms

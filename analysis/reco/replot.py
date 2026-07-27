@@ -35,7 +35,7 @@ def file_exists(file_path):
 DIRECTORY = "/ceph/aratanshi/final_output/"
 
 # selection tag used in your input file names, e.g. wzp6_ee_eeH_HWW_ecm365_sel0_histo.root
-CUT = "sel0"
+CUT = ["sel0","sel1"]
 
 #now you can list all the histograms that you want to plot
 VARIABLES = [
@@ -158,7 +158,7 @@ DIR_PLOTS = "/web/aratanshi/public_html/plots/replot/"
 
 energy      = 365
 collider    = 'FCC-ee'
-intLumi     = 3e6 #ab^-1
+intLumi     = 3 #ab^-1
 LOGY        = True
 
 #list of backgrounds, then legend and colors to be assigned to them
@@ -366,5 +366,5 @@ for variable in VARIABLES:
 	canvas.Modified()
 	canvas.Update()
 
-	suffix = "_logy" if LOGY else "_lin"
+	suffix = "_log" if LOGY else "_lin"
 	canvas.SaveAs(DIR_PLOTS + variable + "_" + CUT + suffix + ".png")
