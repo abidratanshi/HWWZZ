@@ -1,9 +1,12 @@
 import glob
 import os
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import ROOT
 
 base_dir = "/ceph/aratanshi/stage_output"
-
 samples = [
     "wzp6_ee_eeH_HWW_ecm365",
     "wzp6_ee_mumuH_HWW_ecm365",
@@ -12,7 +15,6 @@ samples = [
 ]
 
 files = []
-
 for sample in samples:
     pattern = os.path.join(base_dir, sample, "chunk_*.root")
     files.extend(sorted(glob.glob(pattern)))
@@ -23,14 +25,14 @@ for f in files:
 
 df = ROOT.RDataFrame("events", files)
 
-
 # None = no pT cut
 pt_thresholds = [None, 5, 10, 15, 20, 25]
 
-results = {}  # threshold -> (histogram pointer, event count)
+colors = ['k','r','g','b','y','c']
+
+results = {}  # threshold -> (histogram pointer, event count) - unchanged from original
 
 for pt_cut in pt_thresholds:
-
     if pt_cut is None:
         # No pT cut, only require exactly 4 jets
         df_cut = df.Filter(
@@ -56,53 +58,65 @@ for pt_cut in pt_thresholds:
         (hist_name, hist_title, 75, 60, 180),
         "RecoH_mass"
     )
-
     count = df_cut.Count()  # lazy
+
     results[pt_cut] = (h, count)
 
 # ----------------------------------------------------------------------
-# Trigger the event loop and make the plots
+# Trigger the event loop, pull histogram data into numpy, then plot with
+# matplotlib instead of ROOT canvases.
 # ----------------------------------------------------------------------
 
-# Linear grid
-canvas = ROOT.TCanvas("c", "pT scan", 900, 700)
-canvas.Divide(2, 3)
+# kept_data holds (edges, contents, label) for every threshold, staying
+# alive for the whole script.
+kept_data = []
 
-# Log-scale grid
-canvas_log = ROOT.TCanvas("c_log", "pT scan (log y)", 900, 700)
-canvas_log.Divide(2, 3)
-
-colors = [
-    ROOT.kBlack,
-    ROOT.kBlue,
-    ROOT.kRed,
-    ROOT.kGreen + 2,
-    ROOT.kMagenta,
-    ROOT.kOrange + 7,
-]
-
-for i, pt_cut in enumerate(pt_thresholds):
-
+for pt_cut in pt_thresholds:
     h, count = results[pt_cut]
-    n_events = count.GetValue()   # triggers the event loop only once
-
+    n_events = count.GetValue()  # triggers the event loop only once total, same as original
     label = "No pT cut" if pt_cut is None else f"pT > {pt_cut} GeV"
-
     print(
         f"{label}: {n_events} events survive, "
         f"histogram integral = {h.Integral()}"
     )
 
-    h.SetLineColor(colors[i % len(colors)])
+    # pull bin edges/contents out of the ROOT TH1D into numpy arrays
+    hist_obj = h.GetValue()  # RResultPtr -> actual TH1D
+    n_bins = hist_obj.GetNbinsX()
+    edges = np.array([hist_obj.GetBinLowEdge(i) for i in range(1, n_bins + 2)])
+    contents = np.array([hist_obj.GetBinContent(i) for i in range(1, n_bins + 1)])
 
-    # Linear version
-    canvas.cd(i + 1)
-    h.Draw("hist")
+    kept_data.append((edges, contents, label))
 
-    # Log-y version
-    canvas_log.cd(i + 1)
-    ROOT.gPad.SetLogy()
-    h.Draw("hist")
+# ---- linear-scale grid (2 columns x 3 rows, matching canvas.Divide(2,3)) ----
+fig_lin, axes_lin = plt.subplots(3, 2, figsize=(10, 12))
+axes_lin = axes_lin.flatten()
 
-canvas.SaveAs("pt_scan_grid.png")
-canvas_log.SaveAs("pt_scan_grid_logy.png")
+for i, (edges, contents, label) in enumerate(kept_data):
+    color = colors[i % len(colors)]
+    ax = axes_lin[i]
+    ax.stairs(contents, edges, color=color)
+    ax.set_xlabel(r"$m_H$ [GeV]")
+    ax.set_ylabel("Events")
+    ax.set_title(label)
+
+fig_lin.tight_layout()
+fig_lin.savefig("pt_scan_grid.png", dpi=150)
+plt.close(fig_lin)
+
+# ---- log-y grid ----
+fig_log, axes_log = plt.subplots(3, 2, figsize=(10, 12))
+axes_log = axes_log.flatten()
+
+for i, (edges, contents, label) in enumerate(kept_data):
+    color = colors[i % len(colors)]
+    ax = axes_log[i]
+    ax.stairs(contents, edges, color=color)
+    ax.set_yscale("log")
+    ax.set_xlabel(r"$m_H$ [GeV]")
+    ax.set_ylabel("Events")
+    ax.set_title(label)
+
+fig_log.tight_layout()
+fig_log.savefig("pt_scan_grid_logy.png", dpi=150)
+plt.close(fig_log)

@@ -25,9 +25,9 @@ processList = {
     'wzp6_ee_mumuH_HZZ_ecm365': {},
 
     # Background
-    'p8_ee_WW_ecm365': {'chunks':25},
-    'p8_ee_ZZ_ecm365': {'chunks':25},
-    'p8_ee_tt_ecm365': {'chunks':25},
+    'p8_ee_WW_ecm365': {},
+    'p8_ee_ZZ_ecm365': {},
+    'p8_ee_tt_ecm365': {},
 }
 
 # Dictionary for prettier names of processes (optional, they don't do anything, maybe only in table)
@@ -44,6 +44,7 @@ cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
     "sel1": "RecoH_mass > 100",
+    "sel2": "TagJet_kt4_pt > 20",
 }
 
 # Dictionary for the ouput variable/hitograms
