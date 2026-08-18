@@ -146,43 +146,57 @@ class RDFanalysis():
             .Define("RecoPhoton_phi",    "ReconstructedParticle::get_phi(RecoPhotons)")
             .Define("RecoPhoton_charge", "ReconstructedParticle::get_charge(RecoPhotons)")
             .Define("RecoPhoton_mass",   "ReconstructedParticle::get_mass(RecoPhotons)")
+
+            # different definition of missing energy from fccanalysis classes instead of edm4hep
+            .Define("RecoEmiss", "FCCAnalyses::ZHfunctions::missingEnergy(365, ReconstructedParticles)") #ecm 
+            .Define("RecoEmiss_px",  "RecoEmiss[0].momentum.x")
+            .Define("RecoEmiss_py",  "RecoEmiss[0].momentum.y")
+            .Define("RecoEmiss_pz",  "RecoEmiss[0].momentum.z")
+            .Define("RecoEmiss_pt",  "return sqrt(RecoEmiss_px*RecoEmiss_px + RecoEmiss_py*RecoEmiss_py)")
+            .Define("RecoEmiss_p",  "return sqrt(RecoEmiss_px*RecoEmiss_px + RecoEmiss_py*RecoEmiss_py + RecoEmiss_pz*RecoEmiss_pz)")
+            .Define("RecoEmiss_e",   "RecoEmiss[0].energy")
+            .Define("RecoEmiss_p4",  "TLorentzVector(RecoEmiss_px, RecoEmiss_py, RecoEmiss_pz, RecoEmiss_e)")
+            .Define("RecoEmiss_eta",    "RecoEmiss_p4.Eta()")
+            .Define("RecoEmiss_phi",    "RecoEmiss_p4.Phi()")
+            .Define("RecoEmiss_theta",    "RecoEmiss_p4.Theta()")
+            .Define("RecoEmiss_y",    "RecoEmiss_p4.Rapidity()")
+            .Define("RecoEmiss_costheta",   "abs(std::cos(RecoEmiss_theta))")
         
             # event selection for Z -> 2L
             # require exactly 2 leptons of same flavor and opposite charge
             .Filter("(n_RecoElectrons_sel == 2 && RecoElectron_sel_charge[0] != RecoElectron_sel_charge[1]) || "
                     "(n_RecoMuons_sel == 2 && RecoMuon_sel_charge[0] != RecoMuon_sel_charge[1])")
 
-            # # ----------------------------------------------------------------------------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------------------------------
+            # reconstructing Z
+            .Define("RecoElectron_p4", "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) + "
+                                       "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1])")
             
-            # # reconstructing Z
-            # .Define("RecoElectron_p4", "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) + "
-            #                            "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1])")
+            .Define("RecoMuon_p4", "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0]) + "
+                                   "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
             
-            # .Define("RecoMuon_p4", "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0]) + "
-            #                        "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
-            
-            # .Define("RecoZ_p4", "(n_RecoElectrons_sel == 2) ? RecoElectron_p4 : RecoMuon_p4")
+            .Define("RecoZ_p4", "(n_RecoElectrons_sel == 2) ? RecoElectron_p4 : RecoMuon_p4")
             
 
-            # # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
-            # .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
+            # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
+            .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
             # .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-            # # .Filter("abs(Recoil_mass - 125.0) < 20")
+            # .Filter("abs(Recoil_mass - 125.0) < 20")
 
-            # # Z properties
-            # .Define("RecoZ_px",    "RecoZ_p4.Px()")
-            # .Define("RecoZ_py",    "RecoZ_p4.Py()")
-            # .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
-            # .Define("RecoZ_p",     "RecoZ_p4.P()")
-            # .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
-            # .Define("RecoZ_e",     "RecoZ_p4.E()")
-            # .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
-            # .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
-            # .Define("RecoZ_theta", "RecoZ_p4.Theta()")
-            # .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
-            # .Define("RecoZ_mass",  "RecoZ_p4.M()")
+            # Z properties
+            .Define("RecoZ_px",    "RecoZ_p4.Px()")
+            .Define("RecoZ_py",    "RecoZ_p4.Py()")
+            .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
+            .Define("RecoZ_p",     "RecoZ_p4.P()")
+            .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
+            .Define("RecoZ_e",     "RecoZ_p4.E()")
+            .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
+            .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
+            .Define("RecoZ_theta", "RecoZ_p4.Theta()")
+            .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
+            .Define("RecoZ_mass",  "RecoZ_p4.M()")
             
-            # # ----------------------------------------------------------------------------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------------------------------
         
             # remove Z leptons from rest of particles in order to recluster the jets
             .Define("Z_leptons", "(n_RecoElectrons_sel == 2) ? RecoElectrons_sel : RecoMuons_sel")
@@ -251,54 +265,54 @@ class RDFanalysis():
             
 
 
-                # ----------------------------------------------------------------------------------------------------------------------------------
+                # # ----------------------------------------------------------------------------------------------------------------------------------
             
-                .Define("RecoLep1_p4", "(n_RecoElectrons_sel == 2) ? "
-                        "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) : "
-                        "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0])")
+                # .Define("RecoLep1_p4", "(n_RecoElectrons_sel == 2) ? "
+                #         "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) : "
+                #         "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0])")
             
-                .Define("RecoLep2_p4", "(n_RecoElectrons_sel == 2) ? "
-                        "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1]) : "
-                        "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
+                # .Define("RecoLep2_p4", "(n_RecoElectrons_sel == 2) ? "
+                #         "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1]) : "
+                #         "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
 
-                # perform pairing with all 6 objects simultaneously
-                .Define("ZHIndices", "FCCAnalyses::ZHfunctions::AnalyzeZH_indices(RecoLep1_p4, RecoLep2_p4, Jets_p4)")
-                .Define("ZH_valid",     "ZHIndices[0]")
-                .Define("ZH_best_i",    "ZHIndices[1]")
-                .Define("ZH_best_j",    "ZHIndices[2]")
-                .Define("ZH_pairing",   "ZHIndices[3]")
+                # # perform pairing with all 6 objects simultaneously
+                # .Define("ZHIndices", "FCCAnalyses::ZHfunctions::AnalyzeZH_indices(RecoLep1_p4, RecoLep2_p4, Jets_p4)")
+                # .Define("ZH_valid",     "ZHIndices[0]")
+                # .Define("ZH_best_i",    "ZHIndices[1]")
+                # .Define("ZH_best_j",    "ZHIndices[2]")
+                # .Define("ZH_pairing",   "ZHIndices[3]")
             
-                # cut: reject events where leptons were chosen as part of the "Higgs"
-                .Filter("ZH_valid == 1")
+                # # cut: reject events where leptons were chosen as part of the "Higgs"
+                # .Filter("ZH_valid == 1")
             
-                .Define("ZHResult", "FCCAnalyses::ZHfunctions::BuildZH_fromIndices(RecoLep1_p4, RecoLep2_p4, Jets_p4, ZH_best_i, ZH_best_j, ZH_pairing)")
-                .Define("RecoZ_p4", "TLorentzVector(ZHResult[0], ZHResult[1], ZHResult[2], ZHResult[3])")
-                .Define("RecoH_p4", "TLorentzVector(ZHResult[4], ZHResult[5], ZHResult[6], ZHResult[7])")
-                # ----------------------------------------------------------------------------------------------------------------------------------
+                # .Define("ZHResult", "FCCAnalyses::ZHfunctions::BuildZH_fromIndices(RecoLep1_p4, RecoLep2_p4, Jets_p4, ZH_best_i, ZH_best_j, ZH_pairing)")
+                # .Define("RecoZ_p4", "TLorentzVector(ZHResult[0], ZHResult[1], ZHResult[2], ZHResult[3])")
+                # .Define("RecoH_p4", "TLorentzVector(ZHResult[4], ZHResult[5], ZHResult[6], ZHResult[7])")
+                # # ----------------------------------------------------------------------------------------------------------------------------------
                 
-                # Z properties
-                .Define("RecoZ_px",    "RecoZ_p4.Px()")
-                .Define("RecoZ_py",    "RecoZ_p4.Py()")
-                .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
-                .Define("RecoZ_p",     "RecoZ_p4.P()")
-                .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
-                .Define("RecoZ_e",     "RecoZ_p4.E()")
-                .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
-                .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
-                .Define("RecoZ_theta", "RecoZ_p4.Theta()")
-                .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
-                .Define("RecoZ_mass",  "RecoZ_p4.M()")
+                # # Z properties
+                # .Define("RecoZ_px",    "RecoZ_p4.Px()")
+                # .Define("RecoZ_py",    "RecoZ_p4.Py()")
+                # .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
+                # .Define("RecoZ_p",     "RecoZ_p4.P()")
+                # .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
+                # .Define("RecoZ_e",     "RecoZ_p4.E()")
+                # .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
+                # .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
+                # .Define("RecoZ_theta", "RecoZ_p4.Theta()")
+                # .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
+                # .Define("RecoZ_mass",  "RecoZ_p4.M()")
             
-                # ----------------------------------------------------------------------------------------------------------------------------------
+                # # ----------------------------------------------------------------------------------------------------------------------------------
 
             
 
-                # # get best jet pairings
-                # .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
+                # get best jet pairings
+                .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
             
-                # # reconstructing H from 4 jets
-                # .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
-                #                     "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
+                # reconstructing H from 4 jets
+                .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
+                                    "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
 
 
 
@@ -393,6 +407,18 @@ class RDFanalysis():
             "RecoPhoton_phi",
             "RecoPhoton_charge",
             "RecoPhoton_mass",
+
+            "RecoEmiss_px",
+            "RecoEmiss_py",
+            "RecoEmiss_pz",
+            "RecoEmiss_pt",
+            "RecoEmiss_p",
+            "RecoEmiss_e",
+            "RecoEmiss_eta",
+            "RecoEmiss_phi",
+            "RecoEmiss_theta",
+            "RecoEmiss_y",
+            "RecoEmiss_costheta",
 
             "RecoZ_px",
             "RecoZ_py",

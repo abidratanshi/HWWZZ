@@ -618,6 +618,27 @@ std::vector<double> GetPairedJetsDeltaR(ROOT::VecOps::RVec<TLorentzVector> jets,
 // --------------------------------------------------------------------------------------------------------------------------
 
 
+// returns missing energy vector, based on reco particles
+Vec_rp missingEnergy(float ecm, Vec_rp in, float p_cutoff = 0.0) {
+    float px = 0, py = 0, pz = 0, e = 0;
+    for(auto &p : in) {
+        if (std::sqrt(p.momentum.x * p.momentum.x + p.momentum.y*p.momentum.y) < p_cutoff) continue;
+        px += -p.momentum.x;
+        py += -p.momentum.y;
+        pz += -p.momentum.z;
+        e += p.energy;
+    }
+    
+    Vec_rp ret;
+    rp res;
+    res.momentum.x = px;
+    res.momentum.y = py;
+    res.momentum.z = pz;
+    res.energy = ecm-e;
+    ret.emplace_back(res);
+    return ret;
+}
+
 struct sel_iso {
     sel_iso(float arg_max_iso);
     float m_max_iso = .25;

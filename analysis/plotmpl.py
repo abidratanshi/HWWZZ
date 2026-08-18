@@ -288,15 +288,17 @@ for cut in CUTS:
 
             fig, ax = plt.subplots(figsize=(8, 8))
 
-            # background stack (drawn first, so it sits behind signal lines)
+            # background stack using stairs (drawn first, so it sits behind signal lines)
             if bkg_data:
-                bottom = np.zeros(len(bkg_data[0][1]))
+                # ax.stairs expects the baseline to have the same length as contents
+                bottom = np.zeros(len(bkg_data[0][1])) 
                 for edges, contents, _, color, label, _ in bkg_data:
-                    centers = 0.5 * (edges[:-1] + edges[1:])
-                    widths = np.diff(edges)
-                    ax.bar(centers, contents, width=widths, bottom=bottom,
-                           color=color, edgecolor="black", linewidth=0.5,
-                           label=label, zorder=1)
+                    
+                    # fill between the current bottom and the new total
+                    ax.stairs(contents + bottom, edges, baseline=bottom,
+                              fill=True, color=color, edgecolor="black", 
+                              linewidth=0.5, label=label, zorder=1)
+                    
                     bottom += contents
 
             # signal lines (unstacked, drawn on top)

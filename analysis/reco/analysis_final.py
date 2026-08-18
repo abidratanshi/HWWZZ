@@ -9,7 +9,7 @@ intLumi = 3e6 # pb^-1
 doScale = True
 
 #Save event yields in a table (optional)
-saveTabular = False
+saveTabular = True
 
 nCPUs = 8
 
@@ -44,7 +44,16 @@ cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
     "sel1": "RecoH_mass > 100",
-    "sel2": "TagJet_kt4_pt > 20",
+    "sel_misse_100": "RecoEmiss_e < 100",
+    "sel_misse_90": "RecoEmiss_e < 90",
+    "sel_misse_80": "RecoEmiss_e < 80",
+    "sel_misse_70": "RecoEmiss_e < 70",
+    "sel_misse_60": "RecoEmiss_e < 70",
+    "sel_misse_50": "RecoEmiss_e < 50",
+    "sel_misse_40": "RecoEmiss_e < 40",
+    "sel_misse_30": "RecoEmiss_e < 30",
+    "sel_misse_20": "RecoEmiss_e < 20",
+    "sel_misse_10": "RecoEmiss_e < 10",
 }
 
 # Dictionary for the ouput variable/hitograms
@@ -124,6 +133,18 @@ histoList = {
     "RecoPhoton_phi":                     {"name":"RecoPhoton_phi",                      "title":"Reco photon #phi",                "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoPhoton_charge":                  {"name":"RecoPhoton_charge",                   "title":"Reco photon charge",              "bin":3,       "xmin":-1.5,     "xmax":1.5},
     "RecoPhoton_mass":                    {"name":"RecoPhoton_mass",                     "title":"Reco photon mass [GeV]",          "bin":50,      "xmin":-0.05,    "xmax":0.05},
+
+    "RecoEmiss_px":                      {"name":"RecoEmiss_px",                       "title":"Reco E miss p_{x} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
+    "RecoEmiss_py":                      {"name":"RecoEmiss_py",                       "title":"Reco E miss p_{y} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
+    "RecoEmiss_pz":                      {"name":"RecoEmiss_pz",                       "title":"Reco E miss p_{z} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
+    "RecoEmiss_pt":                      {"name":"RecoEmiss_pt",                       "title":"Reco E miss p_{T} [GeV]",           "bin":50,      "xmin":0,        "xmax":100},
+    "RecoEmiss_p":                       {"name":"RecoEmiss_p",                        "title":"Reco E miss p [GeV]",               "bin":50,      "xmin":0,        "xmax":100},
+    "RecoEmiss_e":                       {"name":"RecoEmiss_e",                        "title":"Reco E miss energy [GeV]",          "bin":50,      "xmin":0,        "xmax":100},
+    "RecoEmiss_eta":                     {"name":"RecoEmiss_eta",                      "title":"Reco E miss #eta",                  "bin":32,      "xmin":-3.2,     "xmax":3.2},
+    "RecoEmiss_phi":                     {"name":"RecoEmiss_phi",                      "title":"Reco E miss #phi",                  "bin":32,      "xmin":-3.2,     "xmax":3.2},
+    "RecoEmiss_theta":                   {"name":"RecoEmiss_theta",                    "title":"Reco E miss #theta",                "bin":16,      "xmin":0,        "xmax":3.2},
+    "RecoEmiss_y":                       {"name":"RecoEmiss_y",                        "title":"Reco E miss rapidity",              "bin":40,      "xmin":-4.,      "xmax":4.},
+    "RecoEmiss_costheta":                {"name":"RecoEmiss_costheta",                 "title":"Reco E miss cos #theta",            "bin":16,      "xmin":0,        "xmax":3.2},
 
     "RecoZ_px":                           {"name":"RecoZ_px",                            "title":"Reco Z p_{x} [GeV]",              "bin":50,      "xmin":-200,     "xmax":200},
     "RecoZ_py":                           {"name":"RecoZ_py",                            "title":"Reco Z p_{y} [GeV]",              "bin":50,      "xmin":-200,     "xmax":200},

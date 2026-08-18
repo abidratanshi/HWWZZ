@@ -38,7 +38,7 @@ DIRECTORY = "/ceph/aratanshi/final_output/"
 # NOTE: this used to be used directly as a string in the filename
 # ("_" + CUT + "_histo.root"), which silently breaks for a list -
 # now looped over explicitly below.
-CUTS = ["sel0", "sel1", "sel2"]
+CUTS = ["sel0","sel1","sel_misse_100","sel_misse_90","sel_misse_80","sel_misse_70","sel_misse_60","sel_misse_50","sel_misse_40","sel_misse_30","sel_misse_20","sel_misse_10",]
 
 #now you can list all the histograms that you want to plot
 VARIABLES = [
@@ -113,6 +113,18 @@ VARIABLES = [
             "RecoPhoton_charge",
             "RecoPhoton_mass",
 
+            "RecoEmiss_px",
+            "RecoEmiss_py",
+            "RecoEmiss_pz",
+            "RecoEmiss_pt",
+            "RecoEmiss_p",
+            "RecoEmiss_e",
+            "RecoEmiss_eta",
+            "RecoEmiss_phi",
+            "RecoEmiss_theta",
+            "RecoEmiss_y",
+            "RecoEmiss_costheta",
+
             "RecoZ_px",
             "RecoZ_py",
             "RecoZ_pz",
@@ -125,17 +137,19 @@ VARIABLES = [
             "RecoZ_y",
             "RecoZ_mass",
 
-            "TagJet_kt4_px",
-            "TagJet_kt4_py",
-            "TagJet_kt4_pz",
-            "TagJet_kt4_p",
-            "TagJet_kt4_pt",
-            "TagJet_kt4_phi",
-            "TagJet_kt4_eta",
-            "TagJet_kt4_theta",
-            "TagJet_kt4_e",
-            "TagJet_kt4_mass",
-            "TagJet_kt4_charge",
+            # "Recoil_mass",
+
+            "TagJet_kt4_px", 
+            "TagJet_kt4_py",    
+            "TagJet_kt4_pz",      
+            "TagJet_kt4_p",  
+            "TagJet_kt4_pt",    
+            "TagJet_kt4_phi", 
+            "TagJet_kt4_eta",     
+            "TagJet_kt4_theta",          
+            "TagJet_kt4_e",     
+            "TagJet_kt4_mass",        
+            "TagJet_kt4_charge",       
             "TagJet_kt4_flavor",
             "n_TagJet_kt4",
             "n_TagJet_kt4_constituents",
@@ -153,7 +167,7 @@ VARIABLES = [
             "RecoH_theta",
             "RecoH_y",
             "RecoH_mass",
-
+            
         ]
 
 #directory where you want your plots to go
