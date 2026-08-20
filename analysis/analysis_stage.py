@@ -19,7 +19,7 @@ processList = {
 # directories
 inputDir = "/ceph/sgiappic/HiggsCP/winter23"
 outputDir = "/ceph/aratanshi/stage_output"
-includePaths = ["../functions.h"]
+includePaths = ["functions.h"]
 
 nCPUS = 8
 
@@ -161,13 +161,48 @@ class RDFanalysis():
             .Define("RecoEmiss_theta",    "RecoEmiss_p4.Theta()")
             .Define("RecoEmiss_y",    "RecoEmiss_p4.Rapidity()")
             .Define("RecoEmiss_costheta",   "abs(std::cos(RecoEmiss_theta))")
-        
+
+            # GEN LEVEL NEUTRINOS 
+            .Define("GenElectronNeutrino_PID", "FCCAnalyses::MCParticle::sel_pdgID(12, true)(Particle)") 
+            .Define("GenMuonNeutrino_PID",     "FCCAnalyses::MCParticle::sel_pdgID(14, true)(Particle)") 
+            .Define("GenTauNeutrino_PID",      "FCCAnalyses::MCParticle::sel_pdgID(16, true)(Particle)") 
+            # merge all the neutrino flavors into one class, takes two arguments only so we do it twice
+            .Define("GenNeutrino1_PID", "FCCAnalyses::MCParticle::mergeParticles(GenElectronNeutrino_PID, GenMuonNeutrino_PID)") 
+            .Define("GenNeutrino_PID",  "FCCAnalyses::MCParticle::mergeParticles(GenNeutrino1_PID, GenTauNeutrino_PID)") 
+            .Define("FSGenNeutrino",    "FCCAnalyses::MCParticle::sel_genStatus(1)(GenNeutrino_PID)") 
+            # keep neutrinos where the parent is a Z boson (pdg id 23)
+            # arguments: (Z boson pdg id, true = keep only these parents, true = charge conjugate/include anti-Z if applicable)
+            .Define("ZGenNeutrino", "FCCAnalyses::MCParticle::sel_parentID(23, true, true)(FSGenNeutrino, Particle, Particle0)")
+            # all neutrino properties
+            .Define("n_FSGenNeutrino",     "FCCAnalyses::MCParticle::get_n(FSGenNeutrino)")
+            .Define("FSGenNeutrino_e",     "FCCAnalyses::MCParticle::get_e(FSGenNeutrino)")
+            .Define("FSGenNeutrino_p",     "FCCAnalyses::MCParticle::get_p(FSGenNeutrino)")
+            .Define("FSGenNeutrino_pt",    "FCCAnalyses::MCParticle::get_pt(FSGenNeutrino)")
+            .Define("FSGenNeutrino_px",    "FCCAnalyses::MCParticle::get_px(FSGenNeutrino)")
+            .Define("FSGenNeutrino_py",    "FCCAnalyses::MCParticle::get_py(FSGenNeutrino)")
+            .Define("FSGenNeutrino_pz",    "FCCAnalyses::MCParticle::get_pz(FSGenNeutrino)")
+            .Define("FSGenNeutrino_y",     "FCCAnalyses::MCParticle::get_y(FSGenNeutrino)")
+            .Define("FSGenNeutrino_eta",   "FCCAnalyses::MCParticle::get_eta(FSGenNeutrino)")
+            .Define("FSGenNeutrino_theta", "FCCAnalyses::MCParticle::get_theta(FSGenNeutrino)")
+            .Define("FSGenNeutrino_phi",   "FCCAnalyses::MCParticle::get_phi(FSGenNeutrino)")
+            # Z-neutrino properties
+            .Define("n_ZGenNeutrino",     "FCCAnalyses::MCParticle::get_n(ZGenNeutrino)")
+            .Define("ZGenNeutrino_e",     "FCCAnalyses::MCParticle::get_e(ZGenNeutrino)")
+            .Define("ZGenNeutrino_p",     "FCCAnalyses::MCParticle::get_p(ZGenNeutrino)")
+            .Define("ZGenNeutrino_pt",    "FCCAnalyses::MCParticle::get_pt(ZGenNeutrino)")
+            .Define("ZGenNeutrino_px",    "FCCAnalyses::MCParticle::get_px(ZGenNeutrino)")
+            .Define("ZGenNeutrino_py",    "FCCAnalyses::MCParticle::get_py(ZGenNeutrino)")
+            .Define("ZGenNeutrino_pz",    "FCCAnalyses::MCParticle::get_pz(ZGenNeutrino)")
+            .Define("ZGenNeutrino_y",     "FCCAnalyses::MCParticle::get_y(ZGenNeutrino)")
+            .Define("ZGenNeutrino_eta",   "FCCAnalyses::MCParticle::get_eta(ZGenNeutrino)")
+            .Define("ZGenNeutrino_theta", "FCCAnalyses::MCParticle::get_theta(ZGenNeutrino)")
+            .Define("ZGenNeutrino_phi",   "FCCAnalyses::MCParticle::get_phi(ZGenNeutrino)")
+
             # event selection for Z -> 2L
             # require exactly 2 leptons of same flavor and opposite charge
             .Filter("(n_RecoElectrons_sel == 2 && RecoElectron_sel_charge[0] != RecoElectron_sel_charge[1]) || "
                     "(n_RecoMuons_sel == 2 && RecoMuon_sel_charge[0] != RecoMuon_sel_charge[1])")
 
-            # ----------------------------------------------------------------------------------------------------------------------------------
             # reconstructing Z
             .Define("RecoElectron_p4", "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) + "
                                        "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1])")
@@ -176,12 +211,6 @@ class RDFanalysis():
                                    "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
             
             .Define("RecoZ_p4", "(n_RecoElectrons_sel == 2) ? RecoElectron_p4 : RecoMuon_p4")
-            
-
-            # Constraining recoil mass here (before H reconstruction) to enforce the leptonic Z is consistent with being the production Z
-            .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
-            # .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
-            # .Filter("abs(Recoil_mass - 125.0) < 20")
 
             # Z properties
             .Define("RecoZ_px",    "RecoZ_p4.Px()")
@@ -195,8 +224,6 @@ class RDFanalysis():
             .Define("RecoZ_theta", "RecoZ_p4.Theta()")
             .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
             .Define("RecoZ_mass",  "RecoZ_p4.M()")
-            
-            # ----------------------------------------------------------------------------------------------------------------------------------
         
             # remove Z leptons from rest of particles in order to recluster the jets
             .Define("Z_leptons", "(n_RecoElectrons_sel == 2) ? RecoElectrons_sel : RecoMuons_sel")
@@ -262,50 +289,6 @@ class RDFanalysis():
 
                 # array of TLVs for all 4 jets
                 .Define("Jets_p4", "ROOT::VecOps::Construct<TLorentzVector>(TagJet_kt4_px, TagJet_kt4_py, TagJet_kt4_pz, TagJet_kt4_e)")
-            
-
-
-                # # ----------------------------------------------------------------------------------------------------------------------------------
-            
-                # .Define("RecoLep1_p4", "(n_RecoElectrons_sel == 2) ? "
-                #         "TLorentzVector(RecoElectron_sel_px[0], RecoElectron_sel_py[0], RecoElectron_sel_pz[0], RecoElectron_sel_e[0]) : "
-                #         "TLorentzVector(RecoMuon_sel_px[0], RecoMuon_sel_py[0], RecoMuon_sel_pz[0], RecoMuon_sel_e[0])")
-            
-                # .Define("RecoLep2_p4", "(n_RecoElectrons_sel == 2) ? "
-                #         "TLorentzVector(RecoElectron_sel_px[1], RecoElectron_sel_py[1], RecoElectron_sel_pz[1], RecoElectron_sel_e[1]) : "
-                #         "TLorentzVector(RecoMuon_sel_px[1], RecoMuon_sel_py[1], RecoMuon_sel_pz[1], RecoMuon_sel_e[1])")
-
-                # # perform pairing with all 6 objects simultaneously
-                # .Define("ZHIndices", "FCCAnalyses::ZHfunctions::AnalyzeZH_indices(RecoLep1_p4, RecoLep2_p4, Jets_p4)")
-                # .Define("ZH_valid",     "ZHIndices[0]")
-                # .Define("ZH_best_i",    "ZHIndices[1]")
-                # .Define("ZH_best_j",    "ZHIndices[2]")
-                # .Define("ZH_pairing",   "ZHIndices[3]")
-            
-                # # cut: reject events where leptons were chosen as part of the "Higgs"
-                # .Filter("ZH_valid == 1")
-            
-                # .Define("ZHResult", "FCCAnalyses::ZHfunctions::BuildZH_fromIndices(RecoLep1_p4, RecoLep2_p4, Jets_p4, ZH_best_i, ZH_best_j, ZH_pairing)")
-                # .Define("RecoZ_p4", "TLorentzVector(ZHResult[0], ZHResult[1], ZHResult[2], ZHResult[3])")
-                # .Define("RecoH_p4", "TLorentzVector(ZHResult[4], ZHResult[5], ZHResult[6], ZHResult[7])")
-                # # ----------------------------------------------------------------------------------------------------------------------------------
-                
-                # # Z properties
-                # .Define("RecoZ_px",    "RecoZ_p4.Px()")
-                # .Define("RecoZ_py",    "RecoZ_p4.Py()")
-                # .Define("RecoZ_pz",    "RecoZ_p4.Pz()")
-                # .Define("RecoZ_p",     "RecoZ_p4.P()")
-                # .Define("RecoZ_pt",    "RecoZ_p4.Pt()")
-                # .Define("RecoZ_e",     "RecoZ_p4.E()")
-                # .Define("RecoZ_eta",   "RecoZ_p4.Eta()")
-                # .Define("RecoZ_phi",   "RecoZ_p4.Phi()")
-                # .Define("RecoZ_theta", "RecoZ_p4.Theta()")
-                # .Define("RecoZ_y",     "RecoZ_p4.Rapidity()")
-                # .Define("RecoZ_mass",  "RecoZ_p4.M()")
-            
-                # # ----------------------------------------------------------------------------------------------------------------------------------
-
-            
 
                 # get best jet pairings
                 .Define("BestPairing", "FCCAnalyses::ZHfunctions::FindBestJetPairing(Jets_p4)")
@@ -314,10 +297,6 @@ class RDFanalysis():
                 .Define("RecoH_p4", "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]] + "
                                     "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
 
-
-
-
-            
                 # H properties
                 .Define("RecoH_px",    "RecoH_p4.Px()")
                 .Define("RecoH_py",    "RecoH_p4.Py()")
@@ -331,7 +310,11 @@ class RDFanalysis():
                 .Define("RecoH_y",     "RecoH_p4.Rapidity()")
                 .Define("RecoH_mass",  "RecoH_p4.M()")
 
-               
+                # recoil mass
+                .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
+                .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
+
+
         )
         return df2
 
@@ -420,6 +403,30 @@ class RDFanalysis():
             "RecoEmiss_y",
             "RecoEmiss_costheta",
 
+            "n_FSGenNeutrino",
+            "FSGenNeutrino_e",
+            "FSGenNeutrino_p",
+            "FSGenNeutrino_pt",
+            "FSGenNeutrino_px",
+            "FSGenNeutrino_py",
+            "FSGenNeutrino_pz",
+            "FSGenNeutrino_y",
+            "FSGenNeutrino_eta",
+            "FSGenNeutrino_theta",
+            "FSGenNeutrino_phi",
+
+            "n_ZGenNeutrino",
+            "ZGenNeutrino_e",
+            "ZGenNeutrino_p",
+            "ZGenNeutrino_pt",
+            "ZGenNeutrino_px",
+            "ZGenNeutrino_py",
+            "ZGenNeutrino_pz",
+            "ZGenNeutrino_y",
+            "ZGenNeutrino_eta",
+            "ZGenNeutrino_theta",
+            "ZGenNeutrino_phi",
+
             "RecoZ_px",
             "RecoZ_py",
             "RecoZ_pz",
@@ -431,8 +438,6 @@ class RDFanalysis():
             "RecoZ_theta",
             "RecoZ_y",
             "RecoZ_mass",
-
-            # "Recoil_mass",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
@@ -462,6 +467,8 @@ class RDFanalysis():
             "RecoH_theta",
             "RecoH_y",
             "RecoH_mass",
+
+            "Recoil_mass",
             
         ]
 

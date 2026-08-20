@@ -1,6 +1,5 @@
 sig_processes = ['wzp6_ee_eeH_HWW_ecm365','wzp6_ee_mumuH_HWW_ecm365',
                  'wzp6_ee_eeH_HZZ_ecm365','wzp6_ee_mumuH_HZZ_ecm365']
-
 bkg_processes = ['p8_ee_WW_ecm365','p8_ee_ZZ_ecm365','p8_ee_tt_ecm365']
 
 processes = sig_processes+bkg_processes
@@ -36,10 +35,9 @@ for sel in selections:
 
     if sel == selections[0]: print()
     print(sel)
-    print(f"S =    {S:.0f}")
-    print(f"B =    {B:.0f}")
-    print(f"S/B =  {S/B:.3f}")
-    print(f"S/√B = {S/B**(1/2):.3f}")
-    # print(f"S/√(S+B) = {S/(S+B)**(1/2):.3f}")
+    print(f"S =        {S:.3e}")
+    print(f"B =        {B:.3e}")
+    # print(f"S/B =      {S/B:.3f}")
+    # print(f"S/√B =     {S/B**(1/2):.3f}")
+    print(f"S/√(S+B) = {S/(S+B)**(1/2):.3f}")
     if sel != selections[-1]: print()
-    

@@ -3,3 +3,4 @@ __pycache__/
 testing/
 docker_stderror
 *.png
+archive/

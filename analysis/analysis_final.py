@@ -44,16 +44,20 @@ cutList = {
     # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
     "sel1": "RecoH_mass > 100",
-    "sel_misse_100": "RecoEmiss_e < 100",
-    "sel_misse_90": "RecoEmiss_e < 90",
-    "sel_misse_80": "RecoEmiss_e < 80",
-    "sel_misse_70": "RecoEmiss_e < 70",
-    "sel_misse_60": "RecoEmiss_e < 70",
-    "sel_misse_50": "RecoEmiss_e < 50",
-    "sel_misse_40": "RecoEmiss_e < 40",
-    "sel_misse_30": "RecoEmiss_e < 30",
-    "sel_misse_20": "RecoEmiss_e < 20",
-    "sel_misse_10": "RecoEmiss_e < 10",
+    
+    "selZ": "RecoH_mass > 80 && RecoH_mass < 100",
+    "selH": "RecoH_mass > 115 && RecoH_mass < 135",
+    
+    # "sel_misse_100": "RecoEmiss_e < 100",
+    # "sel_misse_90": "RecoEmiss_e < 90",
+    # "sel_misse_80": "RecoEmiss_e < 80",
+    # "sel_misse_70": "RecoEmiss_e < 70",
+    # "sel_misse_60": "RecoEmiss_e < 60",
+    # "sel_misse_50": "RecoEmiss_e < 50",
+    # "sel_misse_40": "RecoEmiss_e < 40",
+    # "sel_misse_30": "RecoEmiss_e < 30",
+    # "sel_misse_20": "RecoEmiss_e < 20",
+    # "sel_misse_10": "RecoEmiss_e < 10",
 }
 
 # Dictionary for the ouput variable/hitograms
@@ -146,6 +150,30 @@ histoList = {
     "RecoEmiss_y":                       {"name":"RecoEmiss_y",                        "title":"Reco E miss rapidity",              "bin":40,      "xmin":-4.,      "xmax":4.},
     "RecoEmiss_costheta":                {"name":"RecoEmiss_costheta",                 "title":"Reco E miss cos #theta",            "bin":16,      "xmin":0,        "xmax":3.2},
 
+    "n_FSGenNeutrino":                   {"name":"n_FSGenNeutrino",                    "title":"Number of gen-level neutrinos",    "bin":10,      "xmin":-0.5,     "xmax":9.5},
+    "FSGenNeutrino_e":                   {"name":"FSGenNeutrino_e",                    "title":"Gen neutrino energy [GeV]",        "bin":50,      "xmin":0,        "xmax":100},
+    "FSGenNeutrino_p":                   {"name":"FSGenNeutrino_p",                    "title":"Gen neutrino p [GeV]",             "bin":50,      "xmin":0,        "xmax":100},
+    "FSGenNeutrino_pt":                  {"name":"FSGenNeutrino_pt",                   "title":"Gen neutrino p_{T} [GeV]",         "bin":50,      "xmin":0,        "xmax":100},
+    "FSGenNeutrino_px":                  {"name":"FSGenNeutrino_px",                   "title":"Gen neutrino p_{x} [GeV]",         "bin":50,      "xmin":-100,     "xmax":100},
+    "FSGenNeutrino_py":                  {"name":"FSGenNeutrino_py",                   "title":"Gen neutrino p_{y} [GeV]",         "bin":50,      "xmin":-100,     "xmax":100},
+    "FSGenNeutrino_pz":                  {"name":"FSGenNeutrino_pz",                   "title":"Gen neutrino p_{z} [GeV]",         "bin":50,      "xmin":-100,     "xmax":100},
+    "FSGenNeutrino_y":                   {"name":"FSGenNeutrino_y",                    "title":"Gen neutrino rapidity",            "bin":40,      "xmin":-4.,      "xmax":4.},
+    "FSGenNeutrino_eta":                 {"name":"FSGenNeutrino_eta",                  "title":"Gen neutrino #eta",                "bin":32,      "xmin":-3.2,     "xmax":3.2},
+    "FSGenNeutrino_theta":               {"name":"FSGenNeutrino_theta",                "title":"Gen neutrino #theta",              "bin":16,      "xmin":0,        "xmax":3.2},
+    "FSGenNeutrino_phi":                 {"name":"FSGenNeutrino_phi",                  "title":"Gen neutrino #phi",                "bin":32,      "xmin":-3.2,     "xmax":3.2},
+
+    "n_ZGenNeutrino":                   {"name":"n_ZGenNeutrino",                  "title":"Number of gen-level Z-neutrinos",      "bin":10,      "xmin":-0.5,     "xmax":9.5},
+    "ZGenNeutrino_e":                   {"name":"ZGenNeutrino_e",                  "title":"Gen Z-neutrino energy [GeV]",          "bin":50,      "xmin":0,        "xmax":100},
+    "ZGenNeutrino_p":                   {"name":"ZGenNeutrino_p",                  "title":"Gen Z-neutrino p [GeV]",               "bin":50,      "xmin":0,        "xmax":100},
+    "ZGenNeutrino_pt":                  {"name":"ZGenNeutrino_pt",                 "title":"Gen Z-neutrino p_{T} [GeV]",           "bin":50,      "xmin":0,        "xmax":100},
+    "ZGenNeutrino_px":                  {"name":"ZGenNeutrino_px",                 "title":"Gen Z-neutrino p_{x} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
+    "ZGenNeutrino_py":                  {"name":"ZGenNeutrino_py",                 "title":"Gen Z-neutrino p_{y} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
+    "ZGenNeutrino_pz":                  {"name":"ZGenNeutrino_pz",                 "title":"Gen Z-neutrino p_{z} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
+    "ZGenNeutrino_y":                   {"name":"ZGenNeutrino_y",                  "title":"Gen Z-neutrino rapidity",              "bin":40,      "xmin":-4.,      "xmax":4.},
+    "ZGenNeutrino_eta":                 {"name":"ZGenNeutrino_eta",                "title":"Gen Z-neutrino #eta",                  "bin":32,      "xmin":-3.2,     "xmax":3.2},
+    "ZGenNeutrino_theta":               {"name":"ZGenNeutrino_theta",              "title":"Gen Z-neutrino #theta",                "bin":16,      "xmin":0,        "xmax":3.2},
+    "ZGenNeutrino_phi":                 {"name":"ZGenNeutrino_phi",                "title":"Gen Z-neutrino #phi",                  "bin":32,      "xmin":-3.2,     "xmax":3.2},
+
     "RecoZ_px":                           {"name":"RecoZ_px",                            "title":"Reco Z p_{x} [GeV]",              "bin":50,      "xmin":-200,     "xmax":200},
     "RecoZ_py":                           {"name":"RecoZ_py",                            "title":"Reco Z p_{y} [GeV]",              "bin":50,      "xmin":-200,     "xmax":200},
     "RecoZ_pz":                           {"name":"RecoZ_pz",                            "title":"Reco Z p_{z} [GeV]",              "bin":50,      "xmin":-200,     "xmax":200},
@@ -157,9 +185,7 @@ histoList = {
     "RecoZ_theta":                        {"name":"RecoZ_theta",                         "title":"Reco Z #theta",                   "bin":16,      "xmin":0,        "xmax":3.2},
     "RecoZ_y":                            {"name":"RecoZ_y",                             "title":"Reco Z rapidity",                 "bin":40,      "xmin":-4.,      "xmax":4.},
     "RecoZ_mass":                         {"name":"RecoZ_mass",                          "title":"Reco Z mass [GeV]",               "bin":70,      "xmin":40.,      "xmax":140},
-                
-    # "Recoil_mass":                        {"name":"Recoil_mass",                         "title":"Recoil mass [GeV]",               "bin":40,      "xmin":105,        "xmax":145},
-            
+                            
     "TagJet_kt4_e":                       {"name":"TagJet_kt4_e",                        "title":"kt4 jet energy [GeV]",            "bin":50,      "xmin":0,        "xmax":100},
     "TagJet_kt4_p":                       {"name":"TagJet_kt4_p",                        "title":"kt4 jet p [GeV]",                 "bin":50,      "xmin":0,        "xmax":100},
     "TagJet_kt4_pt":                      {"name":"TagJet_kt4_pt",                       "title":"kt4 jet p_{T} [GeV]",             "bin":50,      "xmin":0,        "xmax":100},
@@ -187,6 +213,9 @@ histoList = {
     "RecoH_phi":                         {"name":"RecoH_phi",                          "title":"Reco H #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoH_theta":                       {"name":"RecoH_theta",                        "title":"Reco H #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
     "RecoH_y":                           {"name":"RecoH_y",                            "title":"Reco H rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
-    "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":75,      "xmin":60,       "xmax":180},
+    "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":100,      "xmin":60,       "xmax":180},
+
+    "Recoil_mass":                       {"name":"Recoil_mass",                       "title":"Recoil mass [GeV]",              "bin":50,      "xmin":105,        "xmax":145},
+
 
 }
