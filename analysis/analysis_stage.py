@@ -170,10 +170,7 @@ class RDFanalysis():
             .Define("GenNeutrino1_PID", "FCCAnalyses::MCParticle::mergeParticles(GenElectronNeutrino_PID, GenMuonNeutrino_PID)") 
             .Define("GenNeutrino_PID",  "FCCAnalyses::MCParticle::mergeParticles(GenNeutrino1_PID, GenTauNeutrino_PID)") 
             .Define("FSGenNeutrino",    "FCCAnalyses::MCParticle::sel_genStatus(1)(GenNeutrino_PID)") 
-            # keep neutrinos where the parent is a Z boson (pdg id 23)
-            # arguments: (Z boson pdg id, true = keep only these parents, true = charge conjugate/include anti-Z if applicable)
-            .Define("ZGenNeutrino", "FCCAnalyses::MCParticle::sel_parentID(23, true, true)(FSGenNeutrino, Particle, Particle0)")
-            # all neutrino properties
+            # neutrino properties
             .Define("n_FSGenNeutrino",     "FCCAnalyses::MCParticle::get_n(FSGenNeutrino)")
             .Define("FSGenNeutrino_e",     "FCCAnalyses::MCParticle::get_e(FSGenNeutrino)")
             .Define("FSGenNeutrino_p",     "FCCAnalyses::MCParticle::get_p(FSGenNeutrino)")
@@ -185,6 +182,9 @@ class RDFanalysis():
             .Define("FSGenNeutrino_eta",   "FCCAnalyses::MCParticle::get_eta(FSGenNeutrino)")
             .Define("FSGenNeutrino_theta", "FCCAnalyses::MCParticle::get_theta(FSGenNeutrino)")
             .Define("FSGenNeutrino_phi",   "FCCAnalyses::MCParticle::get_phi(FSGenNeutrino)")
+            # keep neutrinos where the parent is a Z boson (pdg id 23)
+            # arguments: (Z boson pdg id, true = keep only these parents, true = charge conjugate/include anti-Z if applicable)
+            .Define("ZGenNeutrino", "FCCAnalyses::MCParticle::sel_parentID(23, true, true)(GenNeutrino_PID, Particle, Particle0)")
             # Z-neutrino properties
             .Define("n_ZGenNeutrino",     "FCCAnalyses::MCParticle::get_n(ZGenNeutrino)")
             .Define("ZGenNeutrino_e",     "FCCAnalyses::MCParticle::get_e(ZGenNeutrino)")

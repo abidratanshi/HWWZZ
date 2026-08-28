@@ -48,16 +48,16 @@ cutList = {
     "selZ": "RecoH_mass > 80 && RecoH_mass < 100",
     "selH": "RecoH_mass > 115 && RecoH_mass < 135",
     
-    # "sel_misse_100": "RecoEmiss_e < 100",
-    # "sel_misse_90": "RecoEmiss_e < 90",
-    # "sel_misse_80": "RecoEmiss_e < 80",
-    # "sel_misse_70": "RecoEmiss_e < 70",
-    # "sel_misse_60": "RecoEmiss_e < 60",
-    # "sel_misse_50": "RecoEmiss_e < 50",
-    # "sel_misse_40": "RecoEmiss_e < 40",
-    # "sel_misse_30": "RecoEmiss_e < 30",
-    # "sel_misse_20": "RecoEmiss_e < 20",
-    # "sel_misse_10": "RecoEmiss_e < 10",
+    "sel_misse_100": "RecoEmiss_e < 100",
+    "sel_misse_90": "RecoEmiss_e < 90",
+    "sel_misse_80": "RecoEmiss_e < 80",
+    "sel_misse_70": "RecoEmiss_e < 70",
+    "sel_misse_60": "RecoEmiss_e < 60",
+    "sel_misse_50": "RecoEmiss_e < 50",
+    "sel_misse_40": "RecoEmiss_e < 40",
+    "sel_misse_30": "RecoEmiss_e < 30",
+    "sel_misse_20": "RecoEmiss_e < 20",
+    "sel_misse_10": "RecoEmiss_e < 10",
 }
 
 # Dictionary for the ouput variable/hitograms

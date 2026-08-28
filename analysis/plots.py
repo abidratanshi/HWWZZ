@@ -1,13 +1,7 @@
 #code adapted from FCCAnalyses/do_plots.py
 
-import sys
 import os
-import os.path
-import ntpath
-import importlib
 import copy
-import re
-import logging
 import ROOT
 
 # Set ROOT to batch mode so it doesn't open all the plots
@@ -23,13 +17,10 @@ def sorted_dict_values(dic: dict) -> list:
 def make_dir_if_not_exists(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
-        os.system("cp /web/aratanshi/public_html/plots/index.php {}".format(directory)) #copy index to show plots in web page automatically
+        # os.system("cp /web/aratanshi/public_html/plots/index.php {}".format(directory)) #copy index to show plots in web page automatically
         print(f"Directory created successfully.")
     else:
         print(f"Directory already exists.")
-
-def file_exists(file_path):
-    return os.path.isfile(file_path)
 
 # directory with final stage files
 DIRECTORY = "/ceph/aratanshi/final_output/"
@@ -40,157 +31,157 @@ DIRECTORY = "/ceph/aratanshi/final_output/"
 # now looped over explicitly below.
 
 # CUTS = ["sel0","sel1","sel2","sel_misse_100","sel_misse_90","sel_misse_80","sel_misse_70","sel_misse_60","sel_misse_50","sel_misse_40","sel_misse_30","sel_misse_20","sel_misse_10",]
-CUTS = ["sel0","sel1","selZ","selH","selZmissE","selHmissE"]
+CUTS = ["sel0","sel1","selZ","selH"]
 
 #now you can list all the histograms that you want to plot
 VARIABLES = [
 
-            "n_RecoElectrons",
-            "RecoElectron_e",
-            "RecoElectron_p",
-            "RecoElectron_pt",
-            "RecoElectron_px",
-            "RecoElectron_py",
-            "RecoElectron_pz",
-            "RecoElectron_y",
-            "RecoElectron_eta",
-            "RecoElectron_theta",
-            "RecoElectron_phi",
-            "RecoElectron_charge",
-            "RecoElectron_mass",
+            # "n_RecoElectrons",
+            # "RecoElectron_e",
+            # "RecoElectron_p",
+            # "RecoElectron_pt",
+            # "RecoElectron_px",
+            # "RecoElectron_py",
+            # "RecoElectron_pz",
+            # "RecoElectron_y",
+            # "RecoElectron_eta",
+            # "RecoElectron_theta",
+            # "RecoElectron_phi",
+            # "RecoElectron_charge",
+            # "RecoElectron_mass",
 
-            "n_RecoElectrons_sel",
-            "RecoElectron_sel_e",
-            "RecoElectron_sel_p",
-            "RecoElectron_sel_pt",
-            "RecoElectron_sel_px",
-            "RecoElectron_sel_py",
-            "RecoElectron_sel_pz",
-            "RecoElectron_sel_y",
-            "RecoElectron_sel_eta",
-            "RecoElectron_sel_theta",
-            "RecoElectron_sel_phi",
-            "RecoElectron_sel_charge",
-            "RecoElectron_sel_mass",
+            # "n_RecoElectrons_sel",
+            # "RecoElectron_sel_e",
+            # "RecoElectron_sel_p",
+            # "RecoElectron_sel_pt",
+            # "RecoElectron_sel_px",
+            # "RecoElectron_sel_py",
+            # "RecoElectron_sel_pz",
+            # "RecoElectron_sel_y",
+            # "RecoElectron_sel_eta",
+            # "RecoElectron_sel_theta",
+            # "RecoElectron_sel_phi",
+            # "RecoElectron_sel_charge",
+            # "RecoElectron_sel_mass",
 
-            "n_RecoMuons",
-            "RecoMuon_e",
-            "RecoMuon_p",
-            "RecoMuon_pt",
-            "RecoMuon_px",
-            "RecoMuon_py",
-            "RecoMuon_pz",
-            "RecoMuon_y",
-            "RecoMuon_eta",
-            "RecoMuon_theta",
-            "RecoMuon_phi",
-            "RecoMuon_charge",
-            "RecoMuon_mass",
+            # "n_RecoMuons",
+            # "RecoMuon_e",
+            # "RecoMuon_p",
+            # "RecoMuon_pt",
+            # "RecoMuon_px",
+            # "RecoMuon_py",
+            # "RecoMuon_pz",
+            # "RecoMuon_y",
+            # "RecoMuon_eta",
+            # "RecoMuon_theta",
+            # "RecoMuon_phi",
+            # "RecoMuon_charge",
+            # "RecoMuon_mass",
 
-            "n_RecoMuons_sel",
-            "RecoMuon_sel_e",
-            "RecoMuon_sel_p",
-            "RecoMuon_sel_pt",
-            "RecoMuon_sel_px",
-            "RecoMuon_sel_py",
-            "RecoMuon_sel_pz",
-            "RecoMuon_sel_y",
-            "RecoMuon_sel_eta",
-            "RecoMuon_sel_theta",
-            "RecoMuon_sel_phi",
-            "RecoMuon_sel_charge",
-            "RecoMuon_sel_mass",
+            # "n_RecoMuons_sel",
+            # "RecoMuon_sel_e",
+            # "RecoMuon_sel_p",
+            # "RecoMuon_sel_pt",
+            # "RecoMuon_sel_px",
+            # "RecoMuon_sel_py",
+            # "RecoMuon_sel_pz",
+            # "RecoMuon_sel_y",
+            # "RecoMuon_sel_eta",
+            # "RecoMuon_sel_theta",
+            # "RecoMuon_sel_phi",
+            # "RecoMuon_sel_charge",
+            # "RecoMuon_sel_mass",
 
-            "n_RecoPhotons",
-            "RecoPhoton_e",
-            "RecoPhoton_p",
-            "RecoPhoton_pt",
-            "RecoPhoton_px",
-            "RecoPhoton_py",
-            "RecoPhoton_pz",
-            "RecoPhoton_y",
-            "RecoPhoton_eta",
-            "RecoPhoton_theta",
-            "RecoPhoton_phi",
-            "RecoPhoton_charge",
-            "RecoPhoton_mass",
+            # "n_RecoPhotons",
+            # "RecoPhoton_e",
+            # "RecoPhoton_p",
+            # "RecoPhoton_pt",
+            # "RecoPhoton_px",
+            # "RecoPhoton_py",
+            # "RecoPhoton_pz",
+            # "RecoPhoton_y",
+            # "RecoPhoton_eta",
+            # "RecoPhoton_theta",
+            # "RecoPhoton_phi",
+            # "RecoPhoton_charge",
+            # "RecoPhoton_mass",
 
-            "RecoEmiss_px",
-            "RecoEmiss_py",
-            "RecoEmiss_pz",
-            "RecoEmiss_pt",
-            "RecoEmiss_p",
-            "RecoEmiss_e",
-            "RecoEmiss_eta",
-            "RecoEmiss_phi",
-            "RecoEmiss_theta",
-            "RecoEmiss_y",
-            "RecoEmiss_costheta",
+            # "RecoEmiss_px",
+            # "RecoEmiss_py",
+            # "RecoEmiss_pz",
+            # "RecoEmiss_pt",
+            # "RecoEmiss_p",
+            # "RecoEmiss_e",
+            # "RecoEmiss_eta",
+            # "RecoEmiss_phi",
+            # "RecoEmiss_theta",
+            # "RecoEmiss_y",
+            # "RecoEmiss_costheta",
 
-            "n_FSGenNeutrino",
-            "FSGenNeutrino_e",
-            "FSGenNeutrino_p",
-            "FSGenNeutrino_pt",
-            "FSGenNeutrino_px",
-            "FSGenNeutrino_py",
-            "FSGenNeutrino_pz",
-            "FSGenNeutrino_y",
-            "FSGenNeutrino_eta",
-            "FSGenNeutrino_theta",
-            "FSGenNeutrino_phi",
+            # "n_FSGenNeutrino",
+            # "FSGenNeutrino_e",
+            # "FSGenNeutrino_p",
+            # "FSGenNeutrino_pt",
+            # "FSGenNeutrino_px",
+            # "FSGenNeutrino_py",
+            # "FSGenNeutrino_pz",
+            # "FSGenNeutrino_y",
+            # "FSGenNeutrino_eta",
+            # "FSGenNeutrino_theta",
+            # "FSGenNeutrino_phi",
 
-            "n_ZGenNeutrino",
-            "ZGenNeutrino_e",
-            "ZGenNeutrino_p",
-            "ZGenNeutrino_pt",
-            "ZGenNeutrino_px",
-            "ZGenNeutrino_py",
-            "ZGenNeutrino_pz",
-            "ZGenNeutrino_y",
-            "ZGenNeutrino_eta",
-            "ZGenNeutrino_theta",
-            "ZGenNeutrino_phi",
+            # "n_ZGenNeutrino",
+            # "ZGenNeutrino_e",
+            # "ZGenNeutrino_p",
+            # "ZGenNeutrino_pt",
+            # "ZGenNeutrino_px",
+            # "ZGenNeutrino_py",
+            # "ZGenNeutrino_pz",
+            # "ZGenNeutrino_y",
+            # "ZGenNeutrino_eta",
+            # "ZGenNeutrino_theta",
+            # "ZGenNeutrino_phi",
 
-            "RecoZ_px",
-            "RecoZ_py",
-            "RecoZ_pz",
-            "RecoZ_p",
-            "RecoZ_pt",
-            "RecoZ_e",
-            "RecoZ_eta",
-            "RecoZ_phi",
-            "RecoZ_theta",
-            "RecoZ_y",
-            "RecoZ_mass",
+            # "RecoZ_px",
+            # "RecoZ_py",
+            # "RecoZ_pz",
+            # "RecoZ_p",
+            # "RecoZ_pt",
+            # "RecoZ_e",
+            # "RecoZ_eta",
+            # "RecoZ_phi",
+            # "RecoZ_theta",
+            # "RecoZ_y",
+            # "RecoZ_mass",
 
-            "TagJet_kt4_px", 
-            "TagJet_kt4_py",    
-            "TagJet_kt4_pz",      
-            "TagJet_kt4_p",  
-            "TagJet_kt4_pt",    
-            "TagJet_kt4_phi", 
-            "TagJet_kt4_eta",     
-            "TagJet_kt4_theta",          
-            "TagJet_kt4_e",     
-            "TagJet_kt4_mass",        
-            "TagJet_kt4_charge",       
-            "TagJet_kt4_flavor",
-            "n_TagJet_kt4",
-            "n_TagJet_kt4_constituents",
-            "n_TagJet_kt4_charged_constituents",
-            "n_TagJet_kt4_neutral_constituents",
+            # "TagJet_kt4_px", 
+            # "TagJet_kt4_py",    
+            # "TagJet_kt4_pz",      
+            # "TagJet_kt4_p",  
+            # "TagJet_kt4_pt",    
+            # "TagJet_kt4_phi", 
+            # "TagJet_kt4_eta",     
+            # "TagJet_kt4_theta",          
+            # "TagJet_kt4_e",     
+            # "TagJet_kt4_mass",        
+            # "TagJet_kt4_charge",       
+            # "TagJet_kt4_flavor",
+            # "n_TagJet_kt4",
+            # "n_TagJet_kt4_constituents",
+            # "n_TagJet_kt4_charged_constituents",
+            # "n_TagJet_kt4_neutral_constituents",
 
-            "RecoH_px",
-            "RecoH_py",
-            "RecoH_pz",
-            "RecoH_p",
-            "RecoH_pt",
-            "RecoH_e",
-            "RecoH_eta",
-            "RecoH_phi",
-            "RecoH_theta",
-            "RecoH_y",
-            "RecoH_mass",
+            # "RecoH_px",
+            # "RecoH_py",
+            # "RecoH_pz",
+            # "RecoH_p",
+            # "RecoH_pt",
+            # "RecoH_e",
+            # "RecoH_eta",
+            # "RecoH_phi",
+            # "RecoH_theta",
+            # "RecoH_y",
+            # "RecoH_mass",
 
             "Recoil_mass",
             
@@ -200,48 +191,44 @@ VARIABLES = [
 DIR_PLOTS = "/web/aratanshi/public_html/plots/"
 
 energy      = 365
-collider    = 'FCC-ee'
 intLumi     = 3 #ab^-1
-# LOGY        = True
 
-#list of backgrounds, then legend and colors to be assigned to them
-backgrounds_all = ["p8_ee_WW_ecm365",
-                   "p8_ee_ZZ_ecm365",
-                   "p8_ee_tt_ecm365"]
+#list of signals
+signals = ["wzp6_ee_eeH_HWW_ecm365",
+           "wzp6_ee_mumuH_HWW_ecm365",
+           "wzp6_ee_eeH_HZZ_ecm365",
+           "wzp6_ee_mumuH_HZZ_ecm365"]
+
+#list of backgrounds
+backgrounds = ["p8_ee_WW_ecm365",
+               "p8_ee_ZZ_ecm365",
+               "p8_ee_tt_ecm365"]
 
 legend = {
-    "wzp6_ee_eeH_HWW_ecm365":  "ee #rightarrow eeH #rightarrow HWW",
-    "wzp6_ee_mumuH_HWW_ecm365":"ee #rightarrow mumuH #rightarrow HWW",
-    "wzp6_ee_eeH_HZZ_ecm365":  "ee #rightarrow eeH #rightarrow HZZ",
-    "wzp6_ee_mumuH_HZZ_ecm365":"ee #rightarrow mumuH #rightarrow HZZ",
-    "p8_ee_WW_ecm365":"ee #rightarrow WW",
-    "p8_ee_ZZ_ecm365":"ee #rightarrow ZZ",
-    "p8_ee_tt_ecm365":"ee #rightarrow tt",
+    "wzp6_ee_eeH_HWW_ecm365":   "ee #rightarrow eeH #rightarrow HWW",
+    "wzp6_ee_mumuH_HWW_ecm365": "ee #rightarrow #mu#muH #rightarrow HWW",
+    "wzp6_ee_eeH_HZZ_ecm365":   "ee #rightarrow eeH #rightarrow HZZ",
+    "wzp6_ee_mumuH_HZZ_ecm365": "ee #rightarrow #mu#muH #rightarrow HZZ",
+    "p8_ee_WW_ecm365":          "ee #rightarrow WW",
+    "p8_ee_ZZ_ecm365":          "ee #rightarrow ZZ",
+    "p8_ee_tt_ecm365":          "ee #rightarrow tt",
 }
 
 legcolors = {
-    'wzp6_ee_eeH_HWW_ecm365':ROOT.TColor.GetColor('#c51b7d'),
-    'wzp6_ee_mumuH_HWW_ecm365':ROOT.TColor.GetColor('#2b8cbe'),
-    'wzp6_ee_eeH_HZZ_ecm365':ROOT.TColor.GetColor('#fdae6b'),
-    'wzp6_ee_mumuH_HZZ_ecm365':ROOT.TColor.GetColor('#762a83'),
+    'wzp6_ee_eeH_HWW_ecm365':   ROOT.TColor.GetColor('#1f77b4'),
+    'wzp6_ee_mumuH_HWW_ecm365': ROOT.TColor.GetColor('#2ca02c'),
+    'wzp6_ee_eeH_HZZ_ecm365':   ROOT.TColor.GetColor('#ff7f0e'),
+    'wzp6_ee_mumuH_HZZ_ecm365': ROOT.TColor.GetColor('#d62728'),
 
-    'p8_ee_WW_ecm365':ROOT.TColor.GetColor('#d9f0d3'),
-    'p8_ee_ZZ_ecm365':ROOT.TColor.GetColor('#1b7837'),
-    'p8_ee_tt_ecm365':ROOT.TColor.GetColor('#7fbf7b'),
+    'p8_ee_WW_ecm365': ROOT.TColor.GetColor('#3B3B3B'),
+    'p8_ee_ZZ_ecm365': ROOT.TColor.GetColor('#808080'),
+    'p8_ee_tt_ecm365': ROOT.TColor.GetColor('#C4C4C4'),
 }
-
-#list of signals, then legend and colors to be assigned to them
-signals = [
-    'wzp6_ee_eeH_HWW_ecm365',
-    'wzp6_ee_mumuH_HWW_ecm365',
-    'wzp6_ee_eeH_HZZ_ecm365',
-    'wzp6_ee_mumuH_HZZ_ecm365',
-]
 
 # make sure the output directory exists before we start saving into it
 make_dir_if_not_exists(DIR_PLOTS)
 
-for LOGY in (True,False): # this now plots both log and linear scale each time
+for LOGY in (True,False): # plots both log and linear scale each time
     for CUT in CUTS:
         for variable in VARIABLES:
     
@@ -252,7 +239,7 @@ for LOGY in (True,False): # this now plots both log and linear scale each time
     
             nsig = len(signals)
             nbkg=0
-            # nbkg = len(backgrounds_all) #put to zero if you only want to look at signals
+            # nbkg = len(backgrounds) #put to zero if you only want to look at signals
     
             #legend coordinates and style
             legsize = 0.04*nsig
@@ -284,7 +271,7 @@ for LOGY in (True,False): # this now plots both log and linear scale each time
             #loop over files for signals and assign corresponding colors and titles
             for s in signals:
                 fin = directory + s + "_" + CUT + "_histo.root"
-                if file_exists(fin): #might be an empty file after stage2
+                if os.path.isfile(fin): #might be an empty file after stage2
                     tf = ROOT.TFile.Open(fin, 'READ')
                     h = tf.Get(variable)
                     if not h:
@@ -308,9 +295,9 @@ for LOGY in (True,False): # this now plots both log and linear scale each time
     
             if nbkg != 0:
                 #for the common backgrounds i want to keep them separate into different histograms
-                for b in backgrounds_all:
+                for b in backgrounds:
                     fin = directory + b + "_" + CUT + "_histo.root"
-                    if file_exists(fin):
+                    if os.path.isfile(fin):
                         tf = ROOT.TFile.Open(fin, 'READ')
                         h = tf.Get(variable)
                         if not h:
@@ -384,6 +371,10 @@ for LOGY in (True,False): # this now plots both log and linear scale each time
     
             else:
                 # add the signal histograms
+
+                # get max y value between all signal processes
+                max_y = max(h.GetMaximum() for h in histos[:nsig])
+                
                 for i in range(nsig):
                     h = histos[i]
                     h.SetLineWidth(3)
@@ -394,24 +385,23 @@ for LOGY in (True,False): # this now plots both log and linear scale each time
                         h.GetXaxis().SetTitle(histos[i].GetXaxis().GetTitle())
                         h.GetXaxis().SetTitleOffset(1.2)
                         if LOGY == True:
-                            h.GetYaxis().SetRangeUser(1e-6, 1e8) #range to set if only working with signals
+                            h.GetYaxis().SetRangeUser(1e-6, 1e8)
                         else:
-                            max_y = h.GetMaximum()
+                            # max_y = h.GetMaximum()
                             h.GetYaxis().SetRangeUser(0, max_y*1.5)
                     else:
                         h.Draw("HIST SAME")
-    
-            if 'ee' in collider:
-                leftText = 'FCCAnalyses: FCC-ee Simulation (Delphes)'
-            rightText = f'#sqrt{{s}} = {energy} GeV, L={intLumi} ab^{{-1}}'
+
+            rightText = f'#sqrt{{s}} = {energy} GeV \n L={intLumi} ab^{{-1}}'
+            leftText = 'FCCAnalyses: FCC-ee Simulation (Delphes)'
     
             latex = ROOT.TLatex()
             latex.SetNDC()
-    
-            text = '#bf{#it{'+rightText+'}}'
+
+            text = '#bf{#it{' + rightText + '}}'
             latex.SetTextSize(0.03)
             latex.DrawLatex(0.18, 0.84, text)
-    
+
             latex.SetTextAlign(31)
             text = '#it{' + leftText + '}'
             latex.SetTextSize(0.03)
