@@ -24,6 +24,9 @@ for line in file:
         process = li[0]
         events[process] = {k:float(v) for k,v in zip(selections,li[2:-1:2])}
 
+S_total = 0
+B_total = 0
+
 for sel in selections:
     S = 0
     B = 0
@@ -33,11 +36,14 @@ for sel in selections:
         elif process in bkg_processes:
             B += events[process][sel]
 
+    # saving initial sig/bkg counts with no cuts to compare to
+    if sel == "sel0":
+        S_total = S
+        B_total = B
+    
     if sel == selections[0]: print()
     print(sel)
-    print(f"S =        {S:.3e}")
-    print(f"B =        {B:.3e}")
-    # print(f"S/B =      {S/B:.3f}")
-    # print(f"S/√B =     {S/B**(1/2):.3f}")
+    print(f"S =        {S:.3e}, {S/S_total*100:.0f}% of total sig events")
+    print(f"B =        {B:.3e}, {B/B_total*100:.0f}% of total bkg events")
     print(f"S/√(S+B) = {S/(S+B)**(1/2):.3f}")
     if sel != selections[-1]: print()

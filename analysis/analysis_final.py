@@ -40,25 +40,21 @@ procDict = "FCCee_procDict_winter2023_IDEA.json"
 procDictAdd = {}
 
 # Dictionary of the list of cuts. The key is the name of the selection that will be added to the output file
+# no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
 cutList = {
-    # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
     "sel0": "true",
-    "sel1": "RecoH_mass > 100",
+    "sel_H": "RecoH_mass > 100 && RecoH_mass < 150",
+    "sel_Z": "RecoZ_mass > 70 && RecoZ_mass < 110",
+    "sel_missE": "RecoEmiss_e < 15",
     
-    "selZ": "RecoH_mass > 80 && RecoH_mass < 100",
-    "selH": "RecoH_mass > 115 && RecoH_mass < 135",
-    
-    "sel_misse_100": "RecoEmiss_e < 100",
-    "sel_misse_90": "RecoEmiss_e < 90",
-    "sel_misse_80": "RecoEmiss_e < 80",
-    "sel_misse_70": "RecoEmiss_e < 70",
-    "sel_misse_60": "RecoEmiss_e < 60",
-    "sel_misse_50": "RecoEmiss_e < 50",
-    "sel_misse_40": "RecoEmiss_e < 40",
-    "sel_misse_30": "RecoEmiss_e < 30",
-    "sel_misse_20": "RecoEmiss_e < 20",
-    "sel_misse_10": "RecoEmiss_e < 10",
 }
+# helper function to combine cuts, takes keys from cutList
+def combine_cuts(*keys):
+    return " && ".join([cutList[k] for k in keys])
+    
+# adding combined selections to the list of cuts
+cutList["sel_H_Z_missE"] = combine_cuts("sel_H", "sel_Z", "sel_missE")
+
 
 # Dictionary for the ouput variable/hitograms
 # The key is the name of the variable in the output files.
@@ -143,7 +139,7 @@ histoList = {
     "RecoEmiss_pz":                      {"name":"RecoEmiss_pz",                       "title":"Reco E miss p_{z} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
     "RecoEmiss_pt":                      {"name":"RecoEmiss_pt",                       "title":"Reco E miss p_{T} [GeV]",           "bin":50,      "xmin":0,        "xmax":100},
     "RecoEmiss_p":                       {"name":"RecoEmiss_p",                        "title":"Reco E miss p [GeV]",               "bin":50,      "xmin":0,        "xmax":100},
-    "RecoEmiss_e":                       {"name":"RecoEmiss_e",                        "title":"Reco E miss energy [GeV]",          "bin":50,      "xmin":0,        "xmax":100},
+    "RecoEmiss_e":                       {"name":"RecoEmiss_e",                        "title":"Reco E miss energy [GeV]",          "bin":50,      "xmin":0,        "xmax":50},
     "RecoEmiss_eta":                     {"name":"RecoEmiss_eta",                      "title":"Reco E miss #eta",                  "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoEmiss_phi":                     {"name":"RecoEmiss_phi",                      "title":"Reco E miss #phi",                  "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoEmiss_theta":                   {"name":"RecoEmiss_theta",                    "title":"Reco E miss #theta",                "bin":16,      "xmin":0,        "xmax":3.2},
@@ -179,7 +175,7 @@ histoList = {
     "RecoZ_pz":                           {"name":"RecoZ_pz",                            "title":"Reco Z p_{z} [GeV]",              "bin":50,      "xmin":-200,     "xmax":200},
     "RecoZ_p":                            {"name":"RecoZ_p",                             "title":"Reco Z p [GeV]",                  "bin":75,      "xmin":0,        "xmax":200},
     "RecoZ_pt":                           {"name":"RecoZ_pt",                            "title":"Reco Z p_{T} [GeV]",              "bin":75,      "xmin":0,        "xmax":200},
-    "RecoZ_e":                            {"name":"RecoZ_e",                             "title":"Reco Z energy [GeV]",             "bin":75,      "xmin":0,        "xmax":200},
+    "RecoZ_e":                            {"name":"RecoZ_e",                             "title":"Reco Z energy [GeV]",             "bin":75,      "xmin":0,        "xmax":250},
     "RecoZ_eta":                          {"name":"RecoZ_eta",                           "title":"Reco Z #eta",                     "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoZ_phi":                          {"name":"RecoZ_phi",                           "title":"Reco Z #phi",                     "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoZ_theta":                        {"name":"RecoZ_theta",                         "title":"Reco Z #theta",                   "bin":16,      "xmin":0,        "xmax":3.2},
@@ -213,9 +209,9 @@ histoList = {
     "RecoH_phi":                         {"name":"RecoH_phi",                          "title":"Reco H #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoH_theta":                       {"name":"RecoH_theta",                        "title":"Reco H #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
     "RecoH_y":                           {"name":"RecoH_y",                            "title":"Reco H rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
-    "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":100,      "xmin":60,       "xmax":180},
+    "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":60,      "xmin":110,       "xmax":140},
 
-    "Recoil_mass":                       {"name":"Recoil_mass",                       "title":"Recoil mass [GeV]",              "bin":50,      "xmin":105,        "xmax":145},
+    "Recoil_mass":                       {"name":"Recoil_mass",                       "title":"Recoil mass [GeV]",              "bin":50,      "xmin":110,        "xmax":140},
 
 
 }

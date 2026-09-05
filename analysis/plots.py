@@ -1,432 +1,821 @@
-#code adapted from FCCAnalyses/do_plots.py
+#!/usr/bin/env python3
+
+"""
+FCC-ee plotting script
+Adapted from FCCAnalyses/do_plots.py
+"""
 
 import os
-import copy
 import ROOT
 
-# Set ROOT to batch mode so it doesn't open all the plots
+# Run ROOT in batch mode: does not open graphical windows
 ROOT.gROOT.SetBatch(True)
+# Surpress all but ROOT warinings
+ROOT.gErrorIgnoreLevel = ROOT.kWarning
 
-def sorted_dict_values(dic: dict) -> list:
-    '''
-    Sort values in the dictionary.
-    '''
-    keys = sorted(dic)
-    return [dic[key] for key in keys]
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
 
-def make_dir_if_not_exists(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        # os.system("cp /web/aratanshi/public_html/plots/index.php {}".format(directory)) #copy index to show plots in web page automatically
-        print(f"Directory created successfully.")
-    else:
-        print(f"Directory already exists.")
-
-# directory with final stage files
+# Directory containing the final-stage ROOT files
 DIRECTORY = "/ceph/aratanshi/final_output/"
 
-# selection tags used in your input file names, e.g. wzp6_ee_eeH_HWW_ecm365_sel0_histo.root
-# NOTE: this used to be used directly as a string in the filename
-# ("_" + CUT + "_histo.root"), which silently breaks for a list -
-# now looped over explicitly below.
-
-# CUTS = ["sel0","sel1","sel2","sel_misse_100","sel_misse_90","sel_misse_80","sel_misse_70","sel_misse_60","sel_misse_50","sel_misse_40","sel_misse_30","sel_misse_20","sel_misse_10",]
-CUTS = ["sel0","sel1","selZ","selH"]
-
-#now you can list all the histograms that you want to plot
-VARIABLES = [
-
-            # "n_RecoElectrons",
-            # "RecoElectron_e",
-            # "RecoElectron_p",
-            # "RecoElectron_pt",
-            # "RecoElectron_px",
-            # "RecoElectron_py",
-            # "RecoElectron_pz",
-            # "RecoElectron_y",
-            # "RecoElectron_eta",
-            # "RecoElectron_theta",
-            # "RecoElectron_phi",
-            # "RecoElectron_charge",
-            # "RecoElectron_mass",
-
-            # "n_RecoElectrons_sel",
-            # "RecoElectron_sel_e",
-            # "RecoElectron_sel_p",
-            # "RecoElectron_sel_pt",
-            # "RecoElectron_sel_px",
-            # "RecoElectron_sel_py",
-            # "RecoElectron_sel_pz",
-            # "RecoElectron_sel_y",
-            # "RecoElectron_sel_eta",
-            # "RecoElectron_sel_theta",
-            # "RecoElectron_sel_phi",
-            # "RecoElectron_sel_charge",
-            # "RecoElectron_sel_mass",
-
-            # "n_RecoMuons",
-            # "RecoMuon_e",
-            # "RecoMuon_p",
-            # "RecoMuon_pt",
-            # "RecoMuon_px",
-            # "RecoMuon_py",
-            # "RecoMuon_pz",
-            # "RecoMuon_y",
-            # "RecoMuon_eta",
-            # "RecoMuon_theta",
-            # "RecoMuon_phi",
-            # "RecoMuon_charge",
-            # "RecoMuon_mass",
-
-            # "n_RecoMuons_sel",
-            # "RecoMuon_sel_e",
-            # "RecoMuon_sel_p",
-            # "RecoMuon_sel_pt",
-            # "RecoMuon_sel_px",
-            # "RecoMuon_sel_py",
-            # "RecoMuon_sel_pz",
-            # "RecoMuon_sel_y",
-            # "RecoMuon_sel_eta",
-            # "RecoMuon_sel_theta",
-            # "RecoMuon_sel_phi",
-            # "RecoMuon_sel_charge",
-            # "RecoMuon_sel_mass",
-
-            # "n_RecoPhotons",
-            # "RecoPhoton_e",
-            # "RecoPhoton_p",
-            # "RecoPhoton_pt",
-            # "RecoPhoton_px",
-            # "RecoPhoton_py",
-            # "RecoPhoton_pz",
-            # "RecoPhoton_y",
-            # "RecoPhoton_eta",
-            # "RecoPhoton_theta",
-            # "RecoPhoton_phi",
-            # "RecoPhoton_charge",
-            # "RecoPhoton_mass",
-
-            # "RecoEmiss_px",
-            # "RecoEmiss_py",
-            # "RecoEmiss_pz",
-            # "RecoEmiss_pt",
-            # "RecoEmiss_p",
-            # "RecoEmiss_e",
-            # "RecoEmiss_eta",
-            # "RecoEmiss_phi",
-            # "RecoEmiss_theta",
-            # "RecoEmiss_y",
-            # "RecoEmiss_costheta",
-
-            # "n_FSGenNeutrino",
-            # "FSGenNeutrino_e",
-            # "FSGenNeutrino_p",
-            # "FSGenNeutrino_pt",
-            # "FSGenNeutrino_px",
-            # "FSGenNeutrino_py",
-            # "FSGenNeutrino_pz",
-            # "FSGenNeutrino_y",
-            # "FSGenNeutrino_eta",
-            # "FSGenNeutrino_theta",
-            # "FSGenNeutrino_phi",
-
-            # "n_ZGenNeutrino",
-            # "ZGenNeutrino_e",
-            # "ZGenNeutrino_p",
-            # "ZGenNeutrino_pt",
-            # "ZGenNeutrino_px",
-            # "ZGenNeutrino_py",
-            # "ZGenNeutrino_pz",
-            # "ZGenNeutrino_y",
-            # "ZGenNeutrino_eta",
-            # "ZGenNeutrino_theta",
-            # "ZGenNeutrino_phi",
-
-            # "RecoZ_px",
-            # "RecoZ_py",
-            # "RecoZ_pz",
-            # "RecoZ_p",
-            # "RecoZ_pt",
-            # "RecoZ_e",
-            # "RecoZ_eta",
-            # "RecoZ_phi",
-            # "RecoZ_theta",
-            # "RecoZ_y",
-            # "RecoZ_mass",
-
-            # "TagJet_kt4_px", 
-            # "TagJet_kt4_py",    
-            # "TagJet_kt4_pz",      
-            # "TagJet_kt4_p",  
-            # "TagJet_kt4_pt",    
-            # "TagJet_kt4_phi", 
-            # "TagJet_kt4_eta",     
-            # "TagJet_kt4_theta",          
-            # "TagJet_kt4_e",     
-            # "TagJet_kt4_mass",        
-            # "TagJet_kt4_charge",       
-            # "TagJet_kt4_flavor",
-            # "n_TagJet_kt4",
-            # "n_TagJet_kt4_constituents",
-            # "n_TagJet_kt4_charged_constituents",
-            # "n_TagJet_kt4_neutral_constituents",
-
-            # "RecoH_px",
-            # "RecoH_py",
-            # "RecoH_pz",
-            # "RecoH_p",
-            # "RecoH_pt",
-            # "RecoH_e",
-            # "RecoH_eta",
-            # "RecoH_phi",
-            # "RecoH_theta",
-            # "RecoH_y",
-            # "RecoH_mass",
-
-            "Recoil_mass",
-            
-        ]
-
-#directory where you want your plots to go
+# Directory where plots will be saved
 DIR_PLOTS = "/web/aratanshi/public_html/plots/"
 
-energy      = 365
-intLumi     = 3 #ab^-1
+# Centre-of-mass energy and integrated luminosity
+ENERGY = 365   # GeV
+INT_LUMI = 3   # ab^-1
 
-#list of signals
-signals = ["wzp6_ee_eeH_HWW_ecm365",
-           "wzp6_ee_mumuH_HWW_ecm365",
-           "wzp6_ee_eeH_HZZ_ecm365",
-           "wzp6_ee_mumuH_HZZ_ecm365"]
+# Selections to plot
+CUTS = [
+    "sel0",
+    "sel_H",
+    "sel_missE",
+    "sel_H_missE",
+]
 
-#list of backgrounds
-backgrounds = ["p8_ee_WW_ecm365",
-               "p8_ee_ZZ_ecm365",
-               "p8_ee_tt_ecm365"]
+# Histograms to plot
+VARIABLES = [
 
-legend = {
-    "wzp6_ee_eeH_HWW_ecm365":   "ee #rightarrow eeH #rightarrow HWW",
-    "wzp6_ee_mumuH_HWW_ecm365": "ee #rightarrow #mu#muH #rightarrow HWW",
-    "wzp6_ee_eeH_HZZ_ecm365":   "ee #rightarrow eeH #rightarrow HZZ",
-    "wzp6_ee_mumuH_HZZ_ecm365": "ee #rightarrow #mu#muH #rightarrow HZZ",
-    "p8_ee_WW_ecm365":          "ee #rightarrow WW",
-    "p8_ee_ZZ_ecm365":          "ee #rightarrow ZZ",
-    "p8_ee_tt_ecm365":          "ee #rightarrow tt",
+    "n_RecoElectrons",
+    "RecoElectron_e",
+    "RecoElectron_p",
+    "RecoElectron_pt",
+    "RecoElectron_px",
+    "RecoElectron_py",
+    "RecoElectron_pz",
+    "RecoElectron_y",
+    "RecoElectron_eta",
+    "RecoElectron_theta",
+    "RecoElectron_phi",
+    "RecoElectron_charge",
+    "RecoElectron_mass",
+    
+    "n_RecoMuons",
+    "RecoMuon_e",
+    "RecoMuon_p",
+    "RecoMuon_pt",
+    "RecoMuon_px",
+    "RecoMuon_py",
+    "RecoMuon_pz",
+    "RecoMuon_y",
+    "RecoMuon_eta",
+    "RecoMuon_theta",
+    "RecoMuon_phi",
+    "RecoMuon_charge",
+    "RecoMuon_mass",
+    
+    "n_RecoPhotons",
+    "RecoPhoton_e",
+    "RecoPhoton_p",
+    "RecoPhoton_pt",
+    "RecoPhoton_px",
+    "RecoPhoton_py",
+    "RecoPhoton_pz",
+    "RecoPhoton_y",
+    "RecoPhoton_eta",
+    "RecoPhoton_theta",
+    "RecoPhoton_phi",
+    "RecoPhoton_charge",
+    "RecoPhoton_mass",
+    
+    "RecoEmiss_px",
+    "RecoEmiss_py",
+    "RecoEmiss_pz",
+    "RecoEmiss_pt",
+    "RecoEmiss_p",
+    "RecoEmiss_e",
+    "RecoEmiss_eta",
+    "RecoEmiss_phi",
+    "RecoEmiss_theta",
+    "RecoEmiss_y",
+    "RecoEmiss_costheta",
+    
+    "RecoZ_px",
+    "RecoZ_py",
+    "RecoZ_pz",
+    "RecoZ_p",
+    "RecoZ_pt",
+    "RecoZ_e",
+    "RecoZ_eta",
+    "RecoZ_phi",
+    "RecoZ_theta",
+    "RecoZ_y",
+    "RecoZ_mass",
+    
+    "RecoH_px",
+    "RecoH_py",
+    "RecoH_pz",
+    "RecoH_p",
+    "RecoH_pt",
+    "RecoH_e",
+    "RecoH_eta",
+    "RecoH_phi",
+    "RecoH_theta",
+    "RecoH_y",
+    "RecoH_mass",
+
+    "Recoil_mass",
+]
+
+# Set this to True if you want backgrounds included
+PLOT_BACKGROUNDS = True
+
+# Produce linear and logarithmic versions
+PLOT_LOG = True
+PLOT_LINEAR = True
+
+
+# Each process contains:
+#   label = text displayed in the legend
+#   color = line/fill color
+
+SIGNALS = {
+    "wzp6_ee_eeH_HWW_ecm365": {
+        "label": "ee #rightarrow eeH #rightarrow HWW",
+        "color": "#1f77b4",
+    },
+
+    "wzp6_ee_mumuH_HWW_ecm365": {
+        "label": "ee #rightarrow #mu#muH #rightarrow HWW",
+        "color": "#2ca02c",
+    },
+
+    "wzp6_ee_eeH_HZZ_ecm365": {
+        "label": "ee #rightarrow eeH #rightarrow HZZ",
+        "color": "#ff7f0e",
+    },
+
+    "wzp6_ee_mumuH_HZZ_ecm365": {
+        "label": "ee #rightarrow #mu#muH #rightarrow HZZ",
+        "color": "#d62728",
+    },
 }
 
-legcolors = {
-    'wzp6_ee_eeH_HWW_ecm365':   ROOT.TColor.GetColor('#1f77b4'),
-    'wzp6_ee_mumuH_HWW_ecm365': ROOT.TColor.GetColor('#2ca02c'),
-    'wzp6_ee_eeH_HZZ_ecm365':   ROOT.TColor.GetColor('#ff7f0e'),
-    'wzp6_ee_mumuH_HZZ_ecm365': ROOT.TColor.GetColor('#d62728'),
+BACKGROUNDS = {
+    "p8_ee_WW_ecm365": {
+        "label": "ee #rightarrow WW",
+        "color": "#3B3B3B",
+    },
 
-    'p8_ee_WW_ecm365': ROOT.TColor.GetColor('#3B3B3B'),
-    'p8_ee_ZZ_ecm365': ROOT.TColor.GetColor('#808080'),
-    'p8_ee_tt_ecm365': ROOT.TColor.GetColor('#C4C4C4'),
+    "p8_ee_ZZ_ecm365": {
+        "label": "ee #rightarrow ZZ",
+        "color": "#808080",
+    },
+
+    "p8_ee_tt_ecm365": {
+        "label": "ee #rightarrow tt",
+        "color": "#C4C4C4",
+    },
 }
 
-# make sure the output directory exists before we start saving into it
-make_dir_if_not_exists(DIR_PLOTS)
+# Convert hexadecimal colors to ROOT colors once
+for process_info in list(SIGNALS.values()) + list(BACKGROUNDS.values()):
+    process_info["root_color"] = ROOT.TColor.GetColor(process_info["color"])
 
-for LOGY in (True,False): # plots both log and linear scale each time
-    for CUT in CUTS:
+
+# ---------------------------------------------------------------------------
+# Helper functions
+# ---------------------------------------------------------------------------
+
+
+def load_histogram(process, cut, variable):
+    """
+    Load one histogram from a ROOT file
+
+    Parameters
+    ----------
+    process : str
+        Process name, e.g. 'wzp6_ee_eeH_HWW_ecm365'
+
+    cut : str
+        Selection name, e.g. 'selZ'
+
+    variable : str
+        Histogram name, e.g. 'Recoil_mass'
+
+    Returns
+    -------
+    ROOT histogram or None
+        A detached copy of the histogram, or None if the file/histogram
+        could not be found
+    """
+
+    filename = os.path.join(
+        DIRECTORY,
+        f"{process}_{cut}_histo.root"
+    )
+
+    # Check whether the ROOT file exists
+    if not os.path.isfile(filename):
+        print(f"  WARNING: file not found: {filename}")
+        return None
+
+    # Open ROOT file
+    tf = ROOT.TFile.Open(filename, "READ")
+
+    # Check whether ROOT successfully opened the file
+    if not tf or tf.IsZombie():
+        print(f"  WARNING: could not open ROOT file: {filename}")
+
+        if tf:
+            tf.Close()
+
+        return None
+
+    # Retrieve histogram
+    hist = tf.Get(variable)
+
+    if not hist:
+        print(
+            f"  WARNING: histogram '{variable}' "
+            f"not found in {filename}"
+        )
+
+        tf.Close()
+        return None
+
+    # Clone the histogram so it survives after closing the ROOT file
+    hist = hist.Clone()
+
+    # Detach histogram from the ROOT file
+    hist.SetDirectory(0)
+
+    # Close input ROOT file
+    tf.Close()
+
+    return hist
+
+
+def configure_legend(legend, n_columns=1):
+    """
+    Apply common styling to a ROOT legend
+    """
+
+    legend.SetNColumns(n_columns)
+    legend.SetFillStyle(0)
+    legend.SetLineColor(0)
+    legend.SetShadowColor(0)
+    legend.SetTextSize(0.025)
+    legend.SetTextFont(42)
+    legend.SetBorderSize(0)
+
+
+def get_positive_max(histograms):
+    """
+    Return the largest positive bin content among a list of histograms
+
+    Returns 0 if no positive bin content is found
+    """
+
+    maximum = 0.0
+
+    for hist in histograms:
+        hist_max = hist.GetMaximum()
+
+        if hist_max > maximum:
+            maximum = hist_max
+
+    return maximum
+
+
+def get_positive_min(histograms):
+    """
+    Find the smallest positive bin content among histograms
+
+    This is useful for choosing a sensible lower limit on a logarithmic
+    y-axis
+
+    Returns 0 if no positive bin content exists
+    """
+
+    minimum = float("inf")
+
+    for hist in histograms:
+
+        for bin_number in range(1, hist.GetNbinsX() + 1):
+            value = hist.GetBinContent(bin_number)
+
+            if value > 0 and value < minimum:
+                minimum = value
+
+    if minimum == float("inf"):
+        return 0.0
+
+    return minimum
+
+
+def style_signal_histogram(hist, process):
+    """
+    Apply signal histogram styling
+    """
+
+    hist.SetLineWidth(3)
+    hist.SetLineColor(SIGNALS[process]["root_color"])
+    hist.SetFillStyle(0)
+
+
+def style_background_histogram(hist, process):
+    """
+    Apply background histogram styling
+    """
+
+    hist.SetLineWidth(1)
+    hist.SetLineColor(ROOT.kBlack)
+    hist.SetFillColor(BACKGROUNDS[process]["root_color"])
+
+
+# ---------------------------------------------------------------------------
+# Plotting function
+# ---------------------------------------------------------------------------
+
+def make_plot(
+    signal_hists,
+    background_hists,
+    variable,
+    cut,
+    logy=False,
+):
+    """
+    Create and save one plot
+
+    Parameters
+    ----------
+    signal_hists : list of tuples
+        [(process_name, histogram), ...]
+
+    background_hists : list of tuples
+        [(process_name, histogram), ...]
+
+    variable : str
+        Histogram/variable name
+
+    cut : str
+        Selection name
+
+    logy : bool
+        If True, use logarithmic y-axis
+    """
+
+    if not signal_hists:
+        print(
+            f"  No signal histograms available for "
+            f"{variable}, {cut}. Skipping."
+        )
+        return
+
+    # -----------------------------------------------------------------------
+    # Canvas
+    # -----------------------------------------------------------------------
+
+    canvas = ROOT.TCanvas(
+        f"canvas_{variable}_{cut}",
+        "",
+        800,
+        800,
+    )
+
+    canvas.SetTicks(1, 1)
+    canvas.SetLeftMargin(0.14)
+    canvas.SetRightMargin(0.08)
+    canvas.GetFrame().SetBorderSize(12)
+
+    if logy:
+        canvas.SetLogy()
+
+
+    # -----------------------------------------------------------------------
+    # Legends
+    # -----------------------------------------------------------------------
+
+    n_signal = len(signal_hists)
+    n_background = len(background_hists)
+
+    signal_legend_height = 0.04 * n_signal
+
+    signal_legend = ROOT.TLegend(
+        0.16,
+        0.70 - signal_legend_height,
+        0.45,
+        0.70,
+    )
+
+    configure_legend(signal_legend)
+
+
+    # Background legend
+    background_legend_height = 0.03 * ((n_background + 1) // 2)
+
+    background_legend = ROOT.TLegend(
+        0.45,
+        0.70 - background_legend_height,
+        0.90,
+        0.70,
+    )
+
+    configure_legend(
+        background_legend,
+        n_columns=2,
+    )
+
+
+    # -----------------------------------------------------------------------
+    # Prepare signal histograms
+    # -----------------------------------------------------------------------
+
+    for process, hist in signal_hists:
+
+        style_signal_histogram(hist, process)
+
+        signal_legend.AddEntry(
+            hist,
+            SIGNALS[process]["label"],
+            "l",
+        )
+
+
+    # -----------------------------------------------------------------------
+    # Prepare background histograms
+    # -----------------------------------------------------------------------
+
+    # Sort backgrounds from smallest to largest total yield
+    background_hists_sorted = sorted(
+        background_hists,
+        key=lambda item: item[1].Integral(),
+    )
+
+    background_stack = None
+
+    if background_hists_sorted:
+
+        background_stack = ROOT.THStack(
+            f"background_stack_{variable}_{cut}",
+            "",
+        )
+
+        for process, hist in background_hists_sorted:
+
+            style_background_histogram(hist, process)
+
+            # Only add positive-yield backgrounds to the legend
+            if hist.Integral() > 0:
+                background_legend.AddEntry(
+                    hist,
+                    BACKGROUNDS[process]["label"],
+                    "f",
+                )
+
+            background_stack.Add(hist)
+
+
+    # -----------------------------------------------------------------------
+    # Determine axis ranges
+    # -----------------------------------------------------------------------
+
+    all_hists = [hist for _, hist in signal_hists]
+
+    if background_hists_sorted:
+        all_hists += [
+            hist for _, hist in background_hists_sorted
+        ]
+
+    maximum = get_positive_max(all_hists)
+
+    if maximum <= 0:
+        maximum = 1.0
+
+
+    # -----------------------------------------------------------------------
+    # Draw background stack
+    # -----------------------------------------------------------------------
+
+    if background_stack:
+
+        if logy:
+
+            positive_min = get_positive_min(
+                [hist for _, hist in background_hists_sorted]
+            )
+
+            if positive_min <= 0:
+                positive_min = maximum * 1e-5
+
+            background_stack.SetMinimum(
+                positive_min * 0.5
+            )
+
+            background_stack.SetMaximum(
+                maximum * 10
+            )
+
+        else:
+
+            background_stack.SetMinimum(0)
+            background_stack.SetMaximum(maximum * 1.5)
+
+        background_stack.Draw("HIST")
+
+        background_stack.GetYaxis().SetTitle("Events")
+
+        # Use the x-axis title from the first signal histogram
+        background_stack.GetXaxis().SetTitle(
+            signal_hists[0][1].GetXaxis().GetTitle()
+        )
+
+        background_stack.GetXaxis().SetTitleOffset(1.2)
+
+
+    # -----------------------------------------------------------------------
+    # Draw signal histograms
+    # -----------------------------------------------------------------------
+
+    if background_stack:
+
+        # Background stack already established the axes
+        for _, hist in signal_hists:
+            hist.Draw("HIST SAME")
+
+    else:
+
+        # No background: first signal establishes the axes
+        first_hist = signal_hists[0][1]
+
+        if logy:
+
+            positive_min = get_positive_min(
+                [hist for _, hist in signal_hists]
+            )
+
+            if positive_min <= 0:
+                positive_min = maximum * 1e-5
+
+            first_hist.SetMinimum(
+                positive_min * 0.5
+            )
+
+            first_hist.SetMaximum(
+                maximum * 10
+            )
+
+        else:
+
+            first_hist.SetMinimum(0)
+            first_hist.SetMaximum(maximum * 1.5)
+
+        first_hist.Draw("HIST")
+
+        first_hist.GetYaxis().SetTitle("Events")
+        first_hist.GetXaxis().SetTitle(
+            first_hist.GetXaxis().GetTitle()
+        )
+        first_hist.GetXaxis().SetTitleOffset(1.2)
+
+        # Draw remaining signal histograms on top
+        for _, hist in signal_hists[1:]:
+            hist.Draw("HIST SAME")
+
+
+    # -----------------------------------------------------------------------
+    # Add text
+    # -----------------------------------------------------------------------
+
+    latex = ROOT.TLatex()
+    latex.SetNDC()
+
+    # Energy and luminosity
+    ss_txt = f"#sqrt{{s}} = {ENERGY} GeV"
+    L_txt = f" L = {INT_LUMI} ab^{{-1}}"
+    right_text = f"#splitline{{{ss_txt}}}{{{L_txt}}}"
+
+    latex.SetTextSize(0.03)
+
+    text = "#bf{" + right_text + "}"
+
+    latex.DrawLatex(
+        0.18,
+        0.81,
+        text,
+    )
+
+    # FCCAnalyses label
+    left_text = "FCCAnalyses: FCC-ee Simulation (Delphes)"
+
+    latex.SetTextSize(0.03)
+
+    text = "#it{" + left_text + "}"
+
+    latex.DrawLatex(
+        0.37,
+        0.92,
+        text,
+    )
+
+
+    # -----------------------------------------------------------------------
+    # Draw legends
+    # -----------------------------------------------------------------------
+
+    signal_legend.Draw()
+
+    if background_hists_sorted:
+        background_legend.Draw()
+
+
+    # -----------------------------------------------------------------------
+    # Final canvas update
+    # -----------------------------------------------------------------------
+
+    canvas.RedrawAxis()
+    canvas.Modified()
+    canvas.Update()
+
+
+    # -----------------------------------------------------------------------
+    # Save
+    # -----------------------------------------------------------------------
+
+    suffix = "log" if logy else "lin"
+
+    cut_dir = os.path.join(DIR_PLOTS, cut)
+    os.makedirs(cut_dir, exist_ok=True)
+    
+    output_file = os.path.join(
+        cut_dir,
+        f"{variable}_{suffix}.png",
+        # f"{variable}_{cut}_{suffix}.png", # use this line to include cut in filename
+    )
+
+    canvas.SaveAs(output_file)
+
+    print(f"  Saved: {output_file}")
+
+    # Explicitly delete canvas to avoid accumulating ROOT objects
+    canvas.Close()
+
+
+# ---------------------------------------------------------------------------
+# Main analysis
+# ---------------------------------------------------------------------------
+
+def main():
+
+    print()
+    print("==============================================")
+    print(" FCC-ee histogram plotting")
+    print("==============================================")
+    print(f" Input directory : {DIRECTORY}")
+    print(f" Output directory: {DIR_PLOTS}")
+    print(f" Energy          : {ENERGY} GeV")
+    print(f" Luminosity      : {INT_LUMI} ab^-1")
+    print(f" Cuts            : {CUTS}")
+    print(f" Variables       : {VARIABLES}")
+    print(f" Backgrounds     : {PLOT_BACKGROUNDS}")
+    print("==============================================")
+    print()
+
+
+    # -----------------------------------------------------------------------
+    # Main loop
+    #
+    # Histograms are loaded ONCE for each cut/variable combination
+    # Then the same histograms are used to make both linear and log plots
+    #
+    # This avoids opening the same ROOT files twice
+    # -----------------------------------------------------------------------
+
+    for cut in CUTS:
+
         for variable in VARIABLES:
-    
-            directory = DIRECTORY
-            print(variable, CUT, directory)
-    
-            canvas = ROOT.TCanvas("", "", 800, 800)
-    
-            nsig = len(signals)
-            nbkg=0
-            # nbkg = len(backgrounds) #put to zero if you only want to look at signals
-    
-            #legend coordinates and style
-            legsize = 0.04*nsig
-            legsize2 = 0.04*nbkg
-            leg = ROOT.TLegend(0.16, 0.70 - legsize, 0.45, 0.70)
-            leg.SetFillColor(0)
-            leg.SetFillStyle(0)
-            leg.SetLineColor(0)
-            leg.SetShadowColor(0)
-            leg.SetTextSize(0.025)
-            leg.SetTextFont(42)
-            leg.SetBorderSize(0)
-    
-            leg2 = ROOT.TLegend(0.45, 0.70 - legsize2, 0.90, 0.70)
-            leg2.SetNColumns(2)
-            leg2.SetFillColor(0)
-            leg2.SetFillStyle(0)
-            leg2.SetLineColor(0)
-            leg2.SetShadowColor(0)
-            leg2.SetTextSize(0.025)
-            leg2.SetTextFont(42)
-            leg2.SetBorderSize(0)
-    
-            #global arrays for histos and colors
-            histos = []
-            colors = []
-            leg_bkg = []
-    
-            #loop over files for signals and assign corresponding colors and titles
-            for s in signals:
-                fin = directory + s + "_" + CUT + "_histo.root"
-                if os.path.isfile(fin): #might be an empty file after stage2
-                    tf = ROOT.TFile.Open(fin, 'READ')
-                    h = tf.Get(variable)
-                    if not h:
-                        print(f"  WARNING: histogram '{variable}' not found in {fin}, skipping")
-                        tf.Close()
-                        continue
-                    hh = copy.deepcopy(h)
-                    hh.SetDirectory(0)
-                    histos.append(hh)
-                    colors.append(legcolors[s])
-                    leg.AddEntry(histos[-1], legend[s], "l")
-                    leg_bkg.append(0)
-                    tf.Close()
-                else:
-                    print(f"  WARNING: file not found, skipping: {fin}")
-            nsig = len(histos)
-    
-            if nsig == 0:
-                print(f"  no signal histograms found for {variable}, {CUT} - skipping entirely")
+
+            print()
+            print("----------------------------------------------")
+            print(f"Processing: {variable}")
+            print(f"Selection : {cut}")
+            print("----------------------------------------------")
+
+
+            # ===============================================================
+            # Load signal histograms
+            # ===============================================================
+
+            signal_hists = []
+
+            for process in SIGNALS:
+
+                hist = load_histogram(
+                    process,
+                    cut,
+                    variable,
+                )
+
+                if hist is None:
+                    continue
+
+                signal_hists.append(
+                    (process, hist)
+                )
+
+
+            # If no signal histogram was found, there is nothing to plot
+            if not signal_hists:
+
+                print(
+                    f"  No signal histograms found for "
+                    f"{variable}, {cut}."
+                )
+
                 continue
-    
-            if nbkg != 0:
-                #for the common backgrounds i want to keep them separate into different histograms
-                for b in backgrounds:
-                    fin = directory + b + "_" + CUT + "_histo.root"
-                    if os.path.isfile(fin):
-                        tf = ROOT.TFile.Open(fin, 'READ')
-                        h = tf.Get(variable)
-                        if not h:
-                            print(f"  WARNING: histogram '{variable}' not found in {fin}, skipping")
-                            tf.Close()
-                            continue
-                        hh = copy.deepcopy(h)
-                        hh.SetDirectory(0)
-                        histos.append(hh)
-                        colors.append(legcolors[b])
-                        leg_bkg.append(b)
-                        tf.Close()
-                    else:
-                        print(f"  WARNING: file not found, skipping: {fin}")
-    
-                #drawing stack for backgrounds
-                hStackBkg = ROOT.THStack("hStackBkg", "")
-    
-                BgMCHistYieldsDic = {}
-                bkg_count = 0
-                for i in range(nsig, len(histos)):
-                    h = histos[i]
-                    h.SetLineWidth(1)
-                    h.SetLineColor(ROOT.kBlack)
-                    h.SetFillColor(colors[i])
-                    #making sure only histograms with integral positive get added to the stack and legend
-                    if h.Integral() > 0:
-                        # small per-histogram offset avoids key collisions if two
-                        # backgrounds happen to have identical integrals
-                        BgMCHistYieldsDic[h.Integral() + bkg_count*1e-9] = h
-                        leg2.AddEntry(h, legend[leg_bkg[i]], "f")
-                    else:
-                        BgMCHistYieldsDic[-1.0*(bkg_count+1)] = h
-                    bkg_count += 1
-    
-                # sort stack by yields (smallest to largest)
-                BgMCHistYieldsDic = sorted_dict_values(BgMCHistYieldsDic)
-                for h in BgMCHistYieldsDic:
-                    hStackBkg.Add(h)
-    
-                if LOGY == True:
-                    hStackBkg.SetMinimum(1e-1) #change the range to be plotted
-                    hStackBkg.SetMaximum(1e10) #leave some space on top for the legend
-                else:
-                    last = 0
-                    # include the stack's own total (background sum) in the max
-                    # search, not just each individual histogram's own max -
-                    # otherwise a tall stacked total can get clipped
-                    stack_max = hStackBkg.GetMaximum() if hStackBkg.GetNhists() > 0 else 0
-                    if last < stack_max:
-                        last = stack_max
-                    for i in range(len(histos)):
-                        if last < histos[i].GetMaximum():
-                            last = histos[i].GetMaximum()
-                    hStackBkg.SetMinimum(0)
-                    hStackBkg.SetMaximum(last*3 if last > 0 else 1)
-    
-                #draw the histograms
-                hStackBkg.Draw("HIST")
-    
-                # add the signal histograms
-                for i in range(nsig):
-                    h = histos[i]
-                    h.SetLineWidth(3)
-                    h.SetLineColor(colors[i])
-                    h.Draw("HIST SAME")
-    
-                hStackBkg.GetYaxis().SetTitle("Events")
-                hStackBkg.GetXaxis().SetTitle(histos[0].GetXaxis().GetTitle()) #get x axis label from final stage
-                hStackBkg.GetXaxis().SetTitleOffset(1.2)
-    
-            else:
-                # add the signal histograms
 
-                # get max y value between all signal processes
-                max_y = max(h.GetMaximum() for h in histos[:nsig])
-                
-                for i in range(nsig):
-                    h = histos[i]
-                    h.SetLineWidth(3)
-                    h.SetLineColor(colors[i])
-                    if i == 0:
-                        h.Draw("HIST")
-                        h.GetYaxis().SetTitle("Events")
-                        h.GetXaxis().SetTitle(histos[i].GetXaxis().GetTitle())
-                        h.GetXaxis().SetTitleOffset(1.2)
-                        if LOGY == True:
-                            h.GetYaxis().SetRangeUser(1e-6, 1e8)
-                        else:
-                            # max_y = h.GetMaximum()
-                            h.GetYaxis().SetRangeUser(0, max_y*1.5)
-                    else:
-                        h.Draw("HIST SAME")
 
-            rightText = f'#sqrt{{s}} = {energy} GeV \n L={intLumi} ab^{{-1}}'
-            leftText = 'FCCAnalyses: FCC-ee Simulation (Delphes)'
-    
-            latex = ROOT.TLatex()
-            latex.SetNDC()
+            print(
+                f"  Found {len(signal_hists)} "
+                f"signal histogram(s)."
+            )
 
-            text = '#bf{#it{' + rightText + '}}'
-            latex.SetTextSize(0.03)
-            latex.DrawLatex(0.18, 0.84, text)
 
-            latex.SetTextAlign(31)
-            text = '#it{' + leftText + '}'
-            latex.SetTextSize(0.03)
-            latex.DrawLatex(0.92, 0.92, text)
-    
-            #fix legend height after having the correct number of processes
-            legsize = 0.04*nsig
-            legsize2 = 0.03*(len(histos)-nsig)/2
-            leg.SetY1(0.70 - legsize)
-            leg2.SetY1(0.70 - legsize2)
-    
-            leg.Draw()
-            leg2.Draw()
-    
-            canvas.SetTicks(1, 1)
-            canvas.SetLeftMargin(0.14)
-            canvas.SetRightMargin(0.08)
-            canvas.GetFrame().SetBorderSize(12)
-    
-            if LOGY == True:
-                canvas.SetLogy()
-    
-            canvas.RedrawAxis()
-            canvas.Modified()
-            canvas.Update()
-    
-            suffix = "_log" if LOGY else "_lin"
-            canvas.SaveAs(DIR_PLOTS + variable + "_" + CUT + suffix + ".png")
+            # ===============================================================
+            # Load background histograms if requested
+            # ===============================================================
+
+            background_hists = []
+
+            if PLOT_BACKGROUNDS:
+
+                for process in BACKGROUNDS:
+
+                    hist = load_histogram(
+                        process,
+                        cut,
+                        variable,
+                    )
+
+                    if hist is None:
+                        continue
+
+                    background_hists.append(
+                        (process, hist)
+                    )
+
+                print(
+                    f"  Found {len(background_hists)} "
+                    f"background histogram(s)."
+                )
+
+
+            # ===============================================================
+            # Make linear plot
+            # ===============================================================
+
+            if PLOT_LINEAR:
+
+                print("  Creating linear plot...")
+
+                make_plot(
+                    signal_hists=signal_hists,
+                    background_hists=background_hists,
+                    variable=variable,
+                    cut=cut,
+                    logy=False,
+                )
+
+
+            # ===============================================================
+            # Make logarithmic plot
+            # ===============================================================
+
+            if PLOT_LOG:
+
+                print("  Creating logarithmic plot...")
+
+                make_plot(
+                    signal_hists=signal_hists,
+                    background_hists=background_hists,
+                    variable=variable,
+                    cut=cut,
+                    logy=True,
+                )
+
+
+            # ===============================================================
+            # Clean up histograms
+            # ===============================================================
+
+            # Histograms are detached from their ROOT files, so they are
+            # safe to delete here
+            signal_hists.clear()
+            background_hists.clear()
+
+
+    print()
+    print("==============================================")
+    print(" Plotting finished.")
+    print("==============================================")
+
+
+# ---------------------------------------------------------------------------
+# Run script
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    main()
