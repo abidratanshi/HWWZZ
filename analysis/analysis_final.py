@@ -44,17 +44,17 @@ procDictAdd = {}
 cutList = {
     "sel0": "true",
     "sel_H": "RecoH_mass > 100 && RecoH_mass < 150",
-    "sel_Z": "RecoZ_mass > 70 && RecoZ_mass < 110",
+    "sel_Z": "RecoZ_mass > 80 && RecoZ_mass < 100",
     "sel_missE": "RecoEmiss_e < 15",
-    
+    "sel_recoil": "Recoil_mass > 118 && Recoil_mass < 135",
+    "sel_dijet": "dijet_pair1_mass > 15 && dijet_pair2_mass > 15",
 }
 # helper function to combine cuts, takes keys from cutList
 def combine_cuts(*keys):
     return " && ".join([cutList[k] for k in keys])
     
 # adding combined selections to the list of cuts
-cutList["sel_H_Z_missE"] = combine_cuts("sel_H", "sel_Z", "sel_missE")
-
+cutList["sel_H_Z_missE_recoil_dijet"] = combine_cuts("sel_H", "sel_Z", "sel_missE", "sel_recoil", "sel_dijet")
 
 # Dictionary for the ouput variable/hitograms
 # The key is the name of the variable in the output files.
@@ -209,9 +209,11 @@ histoList = {
     "RecoH_phi":                         {"name":"RecoH_phi",                          "title":"Reco H #phi",                    "bin":32,      "xmin":-3.2,     "xmax":3.2},
     "RecoH_theta":                       {"name":"RecoH_theta",                        "title":"Reco H #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
     "RecoH_y":                           {"name":"RecoH_y",                            "title":"Reco H rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
-    "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":60,      "xmin":110,       "xmax":140},
+    "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":75,      "xmin":110,       "xmax":140},
+    "RecoH_mass_1":                      {"name":"RecoH_mass",                         "title":"Reco H mass 1 [GeV]",            "bin":100,      "xmin":60,       "xmax":180},
 
     "Recoil_mass":                       {"name":"Recoil_mass",                       "title":"Recoil mass [GeV]",              "bin":50,      "xmin":110,        "xmax":140},
 
-
+    "dijet_pair1_mass":                  {"name":"dijet_pair1_mass",             "title":"dijet pair1 mass [GeV]",              "bin":50,      "xmin":0,        "xmax":150},
+    "dijet_pair2_mass":                  {"name":"dijet_pair2_mass",             "title":"dijet pair2 mass [GeV]",              "bin":50,      "xmin":0,        "xmax":150},
 }
