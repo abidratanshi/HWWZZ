@@ -8,7 +8,7 @@ Adapted from FCCAnalyses/do_plots.py
 import os
 import ROOT
 
-# get CUTS and VARIABLES from analysis script
+# get CUTS and VARIABLES data from analysis script
 from analysis_final import cutList, histoList
 
 # Run ROOT in batch mode: does not open graphical windows
