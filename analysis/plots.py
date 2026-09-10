@@ -8,6 +8,9 @@ Adapted from FCCAnalyses/do_plots.py
 import os
 import ROOT
 
+# get CUTS and VARIABLES from analysis script
+from analysis_final import cutList, histoList
+
 # Run ROOT in batch mode: does not open graphical windows
 ROOT.gROOT.SetBatch(True)
 # Surpress all but ROOT warinings
@@ -28,99 +31,15 @@ ENERGY = 365   # GeV
 INT_LUMI = 3   # ab^-1
 
 # Selections to plot
-CUTS = [
-    "sel0",
-    "sel_H",
-    "sel_missE",
-    "sel_H_missE",
-]
+# the imported cutList is a dictionary and so this just gets the keys
+CUTS = list(cutList)
 
 # Histograms to plot
-VARIABLES = [
-
-    "n_RecoElectrons",
-    "RecoElectron_e",
-    "RecoElectron_p",
-    "RecoElectron_pt",
-    "RecoElectron_px",
-    "RecoElectron_py",
-    "RecoElectron_pz",
-    "RecoElectron_y",
-    "RecoElectron_eta",
-    "RecoElectron_theta",
-    "RecoElectron_phi",
-    "RecoElectron_charge",
-    "RecoElectron_mass",
-    
-    "n_RecoMuons",
-    "RecoMuon_e",
-    "RecoMuon_p",
-    "RecoMuon_pt",
-    "RecoMuon_px",
-    "RecoMuon_py",
-    "RecoMuon_pz",
-    "RecoMuon_y",
-    "RecoMuon_eta",
-    "RecoMuon_theta",
-    "RecoMuon_phi",
-    "RecoMuon_charge",
-    "RecoMuon_mass",
-    
-    "n_RecoPhotons",
-    "RecoPhoton_e",
-    "RecoPhoton_p",
-    "RecoPhoton_pt",
-    "RecoPhoton_px",
-    "RecoPhoton_py",
-    "RecoPhoton_pz",
-    "RecoPhoton_y",
-    "RecoPhoton_eta",
-    "RecoPhoton_theta",
-    "RecoPhoton_phi",
-    "RecoPhoton_charge",
-    "RecoPhoton_mass",
-    
-    "RecoEmiss_px",
-    "RecoEmiss_py",
-    "RecoEmiss_pz",
-    "RecoEmiss_pt",
-    "RecoEmiss_p",
-    "RecoEmiss_e",
-    "RecoEmiss_eta",
-    "RecoEmiss_phi",
-    "RecoEmiss_theta",
-    "RecoEmiss_y",
-    "RecoEmiss_costheta",
-    
-    "RecoZ_px",
-    "RecoZ_py",
-    "RecoZ_pz",
-    "RecoZ_p",
-    "RecoZ_pt",
-    "RecoZ_e",
-    "RecoZ_eta",
-    "RecoZ_phi",
-    "RecoZ_theta",
-    "RecoZ_y",
-    "RecoZ_mass",
-    
-    "RecoH_px",
-    "RecoH_py",
-    "RecoH_pz",
-    "RecoH_p",
-    "RecoH_pt",
-    "RecoH_e",
-    "RecoH_eta",
-    "RecoH_phi",
-    "RecoH_theta",
-    "RecoH_y",
-    "RecoH_mass",
-
-    "Recoil_mass",
-]
+# the imported histoList is a dictionary and so this just gets the keys
+VARIABLES = list(histoList)
 
 # Set this to True if you want backgrounds included
-PLOT_BACKGROUNDS = True
+PLOT_BACKGROUNDS = False
 
 # Produce linear and logarithmic versions
 PLOT_LOG = True
