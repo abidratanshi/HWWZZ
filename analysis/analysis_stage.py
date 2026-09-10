@@ -314,6 +314,12 @@ class RDFanalysis():
                 .Define("Total_p4",    "TLorentzVector(0.,0.,0.,365.)")
                 .Define("Recoil_mass", "(Total_p4 - RecoZ_p4).M()")
 
+                # dijet masses from BestPairing to see if one is on-shell/off-shell
+                .Define("dijet_pair1_p4",   "Jets_p4[BestPairing[0]] + Jets_p4[BestPairing[1]]")
+                .Define("dijet_pair2_p4",   "Jets_p4[BestPairing[2]] + Jets_p4[BestPairing[3]]")
+                .Define("dijet_pair1_mass", "dijet_pair1_p4.M()")
+                .Define("dijet_pair2_mass", "dijet_pair2_p4.M()")
+
 
         )
         return df2
@@ -469,6 +475,9 @@ class RDFanalysis():
             "RecoH_mass",
 
             "Recoil_mass",
+
+            "dijet_pair1_mass",
+            "dijet_pair2_mass",
             
         ]
 
