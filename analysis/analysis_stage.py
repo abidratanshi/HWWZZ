@@ -269,6 +269,12 @@ class RDFanalysis():
         df2 = jetFlavourHelper_kt4.inference(weaver_preproc, weaver_model, df2)
 
         df2 = (df2
+
+                # merge distance for the 4 -> 3 jet transition (d34)
+                .Define("d34_kt4", "JetClusteringUtils::get_exclusive_dmerge(_jet_kt4, 3)")
+                # similar as above but for the 3 -> 2 jets transition (d23)
+                .Define("d23_kt4", "JetClusteringUtils::get_exclusive_dmerge(_jet_kt4, 2)")
+            
                 .Define("TagJet_kt4_px",                     "JetClusteringUtils::get_px({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_py",                     "JetClusteringUtils::get_py({})".format(jetClusteringHelper_kt4.jets))
                 .Define("TagJet_kt4_pz",                     "JetClusteringUtils::get_pz({})".format(jetClusteringHelper_kt4.jets))
@@ -444,6 +450,9 @@ class RDFanalysis():
             "RecoZ_theta",
             "RecoZ_y",
             "RecoZ_mass",
+
+            "d34_kt4",
+            "d23_kt4",
 
             "TagJet_kt4_px", 
             "TagJet_kt4_py",    
