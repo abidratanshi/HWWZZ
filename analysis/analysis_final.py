@@ -42,19 +42,36 @@ procDictAdd = {}
 # Dictionary of the list of cuts. The key is the name of the selection that will be added to the output file
 # no selection, `true`, just builds the histograms, it will not be shown in the latex table or change anything
 cutList = {
-    "sel0": "true",
-    "sel_H": "RecoH_mass > 100 && RecoH_mass < 150",
-    "sel_Z": "RecoZ_mass > 80 && RecoZ_mass < 100",
-    "sel_missE": "RecoEmiss_e < 15",
-    "sel_recoil": "Recoil_mass > 118 && Recoil_mass < 135",
-    "sel_dijet": "dijet_pair1_mass > 15 && dijet_pair2_mass > 15",
+    "sel0":       "true",
+    "sel_H":      "RecoH_mass > 100 && RecoH_mass < 150",
+    "sel_Z":      "RecoZ_mass > 80 && RecoZ_mass < 100",
+    
+    "sel_missE_1":  "RecoEmiss_e < 10",
+    "sel_missE_2":  "RecoEmiss_e < 20",
+    "sel_missE_3":  "RecoEmiss_e < 30",
+    "sel_missE_4":  "RecoEmiss_e < 40",
+    "sel_missE_5":  "RecoEmiss_e < 50",
+    
+    "sel_recoil": "Recoil_mass > 110 && Recoil_mass < 140",
+    # "sel_dijet":  "dijet_pair1_mass > 15 && dijet_pair2_mass > 15",
+    
+    "sel_d34_1":  "d34_kt4 > 10",
+    "sel_d34_2":  "d34_kt4 > 20",
+    "sel_d34_3":  "d34_kt4 > 30",
+    "sel_d34_4":  "d34_kt4 > 40",
+    "sel_d34_5":  "d34_kt4 > 50",
+    "sel_d34_6":  "d34_kt4 > 60",
+    "sel_d34_7":  "d34_kt4 > 70",
+    "sel_d34_8":  "d34_kt4 > 80",
+    "sel_d34_9":  "d34_kt4 > 90",
+    
 }
 # helper function to combine cuts, takes keys from cutList
 def combine_cuts(*keys):
     return " && ".join([cutList[k] for k in keys])
     
 # adding combined selections to the list of cuts
-cutList["sel_H_Z_missE_recoil_dijet"] = combine_cuts("sel_H", "sel_Z", "sel_missE", "sel_recoil", "sel_dijet")
+# cutList["sel_H_Z_missE_recoil_dijet_d34"] = combine_cuts("sel_H", "sel_Z", "sel_missE", "sel_recoil", "sel_dijet","sel_d34")
 
 # Dictionary for the ouput variable/hitograms
 # The key is the name of the variable in the output files.
@@ -181,7 +198,10 @@ histoList = {
     "RecoZ_theta":                        {"name":"RecoZ_theta",                         "title":"Reco Z #theta",                   "bin":16,      "xmin":0,        "xmax":3.2},
     "RecoZ_y":                            {"name":"RecoZ_y",                             "title":"Reco Z rapidity",                 "bin":40,      "xmin":-4.,      "xmax":4.},
     "RecoZ_mass":                         {"name":"RecoZ_mass",                          "title":"Reco Z mass [GeV]",               "bin":70,      "xmin":40.,      "xmax":140},
-                            
+
+    "d34_kt4":                            {"name":"d34_kt4",                             "title":"d34_kt4",                         "bin":100,      "xmin":0.,      "xmax":100},
+    "d23_kt4":                            {"name":"d23_kt4",                             "title":"d23_kt4",                         "bin":100,      "xmin":0.,      "xmax":1000},
+    
     "TagJet_kt4_e":                       {"name":"TagJet_kt4_e",                        "title":"kt4 jet energy [GeV]",            "bin":50,      "xmin":0,        "xmax":100},
     "TagJet_kt4_p":                       {"name":"TagJet_kt4_p",                        "title":"kt4 jet p [GeV]",                 "bin":50,      "xmin":0,        "xmax":100},
     "TagJet_kt4_pt":                      {"name":"TagJet_kt4_pt",                       "title":"kt4 jet p_{T} [GeV]",             "bin":50,      "xmin":0,        "xmax":100},
@@ -210,7 +230,7 @@ histoList = {
     "RecoH_theta":                       {"name":"RecoH_theta",                        "title":"Reco H #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
     "RecoH_y":                           {"name":"RecoH_y",                            "title":"Reco H rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
     "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":75,      "xmin":110,       "xmax":140},
-    "RecoH_mass_1":                      {"name":"RecoH_mass",                         "title":"Reco H mass 1 [GeV]",            "bin":100,      "xmin":60,       "xmax":180},
+    "RecoH_mass_1":                      {"name":"RecoH_mass",                         "title":"Reco H mass 1 [GeV]",            "bin":100,      "xmin":60,       "xmax":190},
 
     "Recoil_mass":                       {"name":"Recoil_mass",                       "title":"Recoil mass [GeV]",              "bin":50,      "xmin":110,        "xmax":140},
 
