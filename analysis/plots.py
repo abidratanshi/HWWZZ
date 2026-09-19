@@ -5,7 +5,12 @@ FCC-ee plotting script
 Adapted from FCCAnalyses/do_plots.py
 """
 
+# Start timer to measure script run time
+import time
+START_TIME = time.perf_counter()
+
 import os
+import glob
 import ROOT
 
 # get CUTS and VARIABLES data from analysis script
@@ -15,6 +20,10 @@ from analysis_final import cutList, histoList
 ROOT.gROOT.SetBatch(True)
 # Surpress all but ROOT warinings
 ROOT.gErrorIgnoreLevel = ROOT.kWarning
+# Gives a square physical paper size for the PDF
+ROOT.gStyle.SetPaperSize(20, 20)
+# Max number of digits before exp notation in axes
+# ROOT.TGaxis.SetMaxDigits(4)
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -36,15 +45,15 @@ CUTS = list(cutList)
 
 # Histograms to plot
 # the imported histoList is a dictionary and so this just gets the keys
-VARIABLES = list(histoList)
+# VARIABLES = list(histoList)
+VARIABLES = ["RecoH_mass_1"]
 
 # Set this to True if you want backgrounds included
-PLOT_BACKGROUNDS = False
+PLOT_BACKGROUNDS = True
 
 # Produce linear and logarithmic versions
 PLOT_LOG = True
 PLOT_LINEAR = True
-
 
 # Each process contains:
 #   label = text displayed in the legend
@@ -70,6 +79,22 @@ SIGNALS = {
         "label": "ee #rightarrow #mu#muH #rightarrow HZZ",
         "color": "#d62728",
     },
+
+    # "p8_ee_WW_ecm365": {
+    #     "label": "ee #rightarrow WW",
+    #     "color": "#9467bd",
+    # },
+
+    # "p8_ee_ZZ_ecm365": {
+    #     "label": "ee #rightarrow ZZ",
+    #     "color": "#e377c2",
+    # },
+
+    # "p8_ee_tt_ecm365": {
+    #     "label": "ee #rightarrow tt",
+    #     "color": "#8c564b",
+    # },
+    
 }
 
 BACKGROUNDS = {
@@ -174,7 +199,7 @@ def configure_legend(legend, n_columns=1):
 
     legend.SetNColumns(n_columns)
     legend.SetFillStyle(0)
-    legend.SetLineColor(0)
+    legend.SetLineColor(2)
     legend.SetShadowColor(0)
     legend.SetTextSize(0.025)
     legend.SetTextFont(42)
@@ -311,32 +336,29 @@ def make_plot(
     n_signal = len(signal_hists)
     n_background = len(background_hists)
 
-    signal_legend_height = 0.04 * n_signal
+    signal_legend_height = 0.03 * n_signal
 
     signal_legend = ROOT.TLegend(
-        0.16,
-        0.70 - signal_legend_height,
-        0.45,
+        0.40,
+        0.85 - signal_legend_height,
         0.70,
+        0.85,
     )
 
     configure_legend(signal_legend)
 
 
     # Background legend
-    background_legend_height = 0.03 * ((n_background + 1) // 2)
+    background_legend_height = 0.03 * n_background
 
     background_legend = ROOT.TLegend(
-        0.45,
-        0.70 - background_legend_height,
-        0.90,
         0.70,
+        0.85 - background_legend_height,
+        1.00,
+        0.85,
     )
 
-    configure_legend(
-        background_legend,
-        n_columns=2,
-    )
+    configure_legend(background_legend)
 
 
     # -----------------------------------------------------------------------
@@ -377,6 +399,11 @@ def make_plot(
 
             style_background_histogram(hist, process)
 
+            background_stack.Add(hist)
+
+        # Using unsorted list here so that the order of the legend is always the same
+        for process, hist in background_hists:
+
             # Only add positive-yield backgrounds to the legend
             if hist.Integral() > 0:
                 background_legend.AddEntry(
@@ -384,8 +411,6 @@ def make_plot(
                     BACKGROUNDS[process]["label"],
                     "f",
                 )
-
-            background_stack.Add(hist)
 
 
     # -----------------------------------------------------------------------
@@ -498,39 +523,29 @@ def make_plot(
     # -----------------------------------------------------------------------
     # Add text
     # -----------------------------------------------------------------------
+    
+    text = ROOT.TLatex()
+    text.SetNDC()
 
-    latex = ROOT.TLatex()
-    latex.SetNDC()
-
-    # Energy and luminosity
-    ss_txt = f"#sqrt{{s}} = {ENERGY} GeV"
-    L_txt = f" L = {INT_LUMI} ab^{{-1}}"
-    right_text = f"#splitline{{{ss_txt}}}{{{L_txt}}}"
-
-    latex.SetTextSize(0.03)
-
-    text = "#bf{" + right_text + "}"
-
-    latex.DrawLatex(
-        0.18,
-        0.81,
-        text,
-    )
+    # Energy
+    ss_text = f"#sqrt{{s}} = {ENERGY} GeV,"
+    text.SetTextFont(132)
+    text.SetTextSize(0.02)
+    text.DrawLatex(0.14, 0.91, ss_text)
+    
+    # Luminosity
+    L_text = f"L = {INT_LUMI} ab^{{-1}}"
+    text.SetTextFont(132)
+    text.SetTextSize(0.02)
+    text.DrawLatex(0.26, 0.91, L_text)
 
     # FCCAnalyses label
-    left_text = "FCCAnalyses: FCC-ee Simulation (Delphes)"
+    fcc_text = "#bf{FCCAnalyses: FCC-ee Simulation}"
+    text.SetTextFont(42)
+    text.SetTextSize(0.03)
+    text.DrawLatex(0.48, 0.91, fcc_text)
 
-    latex.SetTextSize(0.03)
-
-    text = "#it{" + left_text + "}"
-
-    latex.DrawLatex(
-        0.37,
-        0.92,
-        text,
-    )
-
-
+    
     # -----------------------------------------------------------------------
     # Draw legends
     # -----------------------------------------------------------------------
@@ -555,20 +570,22 @@ def make_plot(
     # -----------------------------------------------------------------------
 
     suffix = "log" if logy else "lin"
-
+    
     cut_dir = os.path.join(DIR_PLOTS, cut)
     os.makedirs(cut_dir, exist_ok=True)
+
+    # file type extensions to be produced
+    exts = ("pdf", "png")
     
-    output_file = os.path.join(
-        cut_dir,
-        f"{variable}_{suffix}.png",
-        # f"{variable}_{cut}_{suffix}.png", # use this line to include cut in filename
-    )
-
-    canvas.SaveAs(output_file)
-
-    print(f"  Saved: {output_file}")
-
+    for ext in exts:
+        output_file = os.path.join(
+            cut_dir,
+            f"{variable}_{suffix}.{ext}",
+        )
+        
+        canvas.SaveAs(output_file)
+        print(f"  Saved: {output_file}")
+        
     # Explicitly delete canvas to avoid accumulating ROOT objects
     canvas.Close()
 
@@ -583,13 +600,13 @@ def main():
     print("==============================================")
     print(" FCC-ee histogram plotting")
     print("==============================================")
-    print(f" Input directory : {DIRECTORY}")
-    print(f" Output directory: {DIR_PLOTS}")
-    print(f" Energy          : {ENERGY} GeV")
-    print(f" Luminosity      : {INT_LUMI} ab^-1")
-    print(f" Cuts            : {CUTS}")
-    print(f" Variables       : {VARIABLES}")
-    print(f" Backgrounds     : {PLOT_BACKGROUNDS}")
+    print(f" Input directory  : {DIRECTORY}")
+    print(f" Output directory : {DIR_PLOTS}")
+    print(f" Energy           : {ENERGY} GeV")
+    print(f" Luminosity       : {INT_LUMI} ab^-1")
+    print(f" Cuts             : {CUTS}")
+    print(f" Variables        : {VARIABLES}")
+    print(f" Backgrounds      : {PLOT_BACKGROUNDS}")
     print("==============================================")
     print()
 
@@ -729,7 +746,7 @@ def main():
     print()
     print("==============================================")
     print(" Plotting finished.")
-    print("==============================================")
+    # print("==============================================")
 
 
 # ---------------------------------------------------------------------------
@@ -738,3 +755,29 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # Gather all file paths in the plots directory recursively
+    search_pattern = os.path.join(DIR_PLOTS, "**", "*.*")
+    all_files = glob.glob(search_pattern, recursive=True)
+    
+    # Filter for files that were actually modified or created during this run
+    updated_files = [
+        file_path for file_path in all_files 
+        if os.path.isfile(file_path) and os.path.getmtime(file_path) >= START_TIME
+    ]
+    total_plots = len(updated_files)
+    
+    # Calculate total elapsed run time
+    END_TIME = time.perf_counter()
+    total_seconds = END_TIME - START_TIME
+    
+    # Split into whole minutes and remaining seconds
+    total_minutes, seconds = divmod(total_seconds, 60)
+
+    # Split into whole hours and remaining minutes
+    hours, minutes = divmod(total_minutes, 60)
+
+    # Output summary
+    print(f" Elapsed time (H:M:S): {int(hours):02d}:{int(minutes):02d}:{int(seconds):02d}")
+    print(f" Total plots produced: {total_plots:,}")
+    print("==============================================")
