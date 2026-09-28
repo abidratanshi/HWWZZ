@@ -1,3 +1,5 @@
+# get list of processes from stage1
+from analysis_stage import processList
 
 inputDir = "/ceph/aratanshi/stage_output"
 outputDir = "/ceph/aratanshi/final_output"
@@ -16,20 +18,6 @@ nCPUs = 8
 #produces ROOT TTrees, default is False
 doTree = False
 
-processList = {
-
-    # Signal
-    'wzp6_ee_eeH_HWW_ecm365':   {},
-    'wzp6_ee_mumuH_HWW_ecm365': {},
-    'wzp6_ee_eeH_HZZ_ecm365':   {},
-    'wzp6_ee_mumuH_HZZ_ecm365': {},
-
-    # Background
-    'p8_ee_WW_ecm365': {},
-    'p8_ee_ZZ_ecm365': {},
-    'p8_ee_tt_ecm365': {},
-}
-
 # Dictionary for prettier names of processes (optional, they don't do anything, maybe only in table)
 processLabels = {}
 
@@ -46,32 +34,19 @@ cutList = {
     "sel_H":      "RecoH_mass > 100 && RecoH_mass < 150",
     "sel_Z":      "RecoZ_mass > 80 && RecoZ_mass < 100",
     
-    "sel_missE_1":  "RecoEmiss_e < 10",
-    "sel_missE_2":  "RecoEmiss_e < 20",
-    "sel_missE_3":  "RecoEmiss_e < 30",
-    "sel_missE_4":  "RecoEmiss_e < 40",
-    "sel_missE_5":  "RecoEmiss_e < 50",
-    
+    "sel_missE":  "RecoEmiss_e < 19",
     "sel_recoil": "Recoil_mass > 110 && Recoil_mass < 140",
-    # "sel_dijet":  "dijet_pair1_mass > 15 && dijet_pair2_mass > 15",
+    # "sel_dijet1": "dijet_pair1_mass > 70 && dijet_pair1_mass < 100",
+    # "sel_dijet2": "dijet_pair2_mass > 25 && dijet_pair2_mass < 55",
     
-    "sel_d34_1":  "d34_kt4 > 10",
-    "sel_d34_2":  "d34_kt4 > 20",
-    "sel_d34_3":  "d34_kt4 > 30",
-    "sel_d34_4":  "d34_kt4 > 40",
-    "sel_d34_5":  "d34_kt4 > 50",
-    "sel_d34_6":  "d34_kt4 > 60",
-    "sel_d34_7":  "d34_kt4 > 70",
-    "sel_d34_8":  "d34_kt4 > 80",
-    "sel_d34_9":  "d34_kt4 > 90",
-    
+    "sel_d34":  "d34_kt4 > 50",
 }
 # helper function to combine cuts, takes keys from cutList
 def combine_cuts(*keys):
     return " && ".join([cutList[k] for k in keys])
     
 # adding combined selections to the list of cuts
-# cutList["sel_H_Z_missE_recoil_dijet_d34"] = combine_cuts("sel_H", "sel_Z", "sel_missE", "sel_recoil", "sel_dijet","sel_d34")
+cutList["sel_H_Z_missE_recoil_d34"] = combine_cuts("sel_H", "sel_Z", "sel_missE", "sel_recoil", "sel_d34")
 
 # Dictionary for the ouput variable/hitograms
 # The key is the name of the variable in the output files.
@@ -154,7 +129,7 @@ histoList = {
     "RecoEmiss_px":                      {"name":"RecoEmiss_px",                       "title":"Reco E miss p_{x} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
     "RecoEmiss_py":                      {"name":"RecoEmiss_py",                       "title":"Reco E miss p_{y} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
     "RecoEmiss_pz":                      {"name":"RecoEmiss_pz",                       "title":"Reco E miss p_{z} [GeV]",           "bin":50,      "xmin":-100,     "xmax":100},
-    "RecoEmiss_pt":                      {"name":"RecoEmiss_pt",                       "title":"Reco E miss p_{T} [GeV]",           "bin":50,      "xmin":0,        "xmax":100},
+    "RecoEmiss_pt":                      {"name":"RecoEmiss_pt",                       "title":"Reco E miss p_{T} [GeV]",           "bin":50,      "xmin":0,        "xmax":30},
     "RecoEmiss_p":                       {"name":"RecoEmiss_p",                        "title":"Reco E miss p [GeV]",               "bin":50,      "xmin":0,        "xmax":100},
     "RecoEmiss_e":                       {"name":"RecoEmiss_e",                        "title":"Reco E miss energy [GeV]",          "bin":50,      "xmin":0,        "xmax":50},
     "RecoEmiss_eta":                     {"name":"RecoEmiss_eta",                      "title":"Reco E miss #eta",                  "bin":32,      "xmin":-3.2,     "xmax":3.2},
@@ -200,7 +175,7 @@ histoList = {
     "RecoZ_mass":                         {"name":"RecoZ_mass",                          "title":"Reco Z mass [GeV]",               "bin":70,      "xmin":40.,      "xmax":140},
 
     "d34_kt4":                            {"name":"d34_kt4",                             "title":"d34_kt4",                         "bin":100,      "xmin":0.,      "xmax":100},
-    "d23_kt4":                            {"name":"d23_kt4",                             "title":"d23_kt4",                         "bin":100,      "xmin":0.,      "xmax":1000},
+    "d23_kt4":                            {"name":"d23_kt4",                             "title":"d23_kt4",                         "bin":100,      "xmin":0.,      "xmax":100},
     
     "TagJet_kt4_e":                       {"name":"TagJet_kt4_e",                        "title":"kt4 jet energy [GeV]",            "bin":50,      "xmin":0,        "xmax":100},
     "TagJet_kt4_p":                       {"name":"TagJet_kt4_p",                        "title":"kt4 jet p [GeV]",                 "bin":50,      "xmin":0,        "xmax":100},
@@ -230,7 +205,7 @@ histoList = {
     "RecoH_theta":                       {"name":"RecoH_theta",                        "title":"Reco H #theta",                  "bin":16,      "xmin":0,        "xmax":3.2},
     "RecoH_y":                           {"name":"RecoH_y",                            "title":"Reco H rapidity",                "bin":40,      "xmin":-4.,      "xmax":4.},
     "RecoH_mass":                        {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":75,      "xmin":110,       "xmax":140},
-    "RecoH_mass_1":                      {"name":"RecoH_mass",                         "title":"Reco H mass 1 [GeV]",            "bin":100,      "xmin":60,       "xmax":190},
+    "RecoH_mass_1":                      {"name":"RecoH_mass",                         "title":"Reco H mass [GeV]",              "bin":100,      "xmin":60,       "xmax":190},
 
     "Recoil_mass":                       {"name":"Recoil_mass",                       "title":"Recoil mass [GeV]",              "bin":50,      "xmin":110,        "xmax":140},
 
