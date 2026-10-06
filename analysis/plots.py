@@ -13,8 +13,12 @@ import os
 import glob
 import ROOT
 
-# get CUTS and VARIABLES data from analysis script
+# get processes from analysis stage script
+from analysis_stage import processList
+# get CUTS and VARIABLES data from analysis final script
 from analysis_final import cutList, histoList
+# to generate colors for background processes
+import matplotlib.pyplot as plt
 
 # Run ROOT in batch mode: does not open graphical windows
 ROOT.gROOT.SetBatch(True)
@@ -45,8 +49,7 @@ CUTS = list(cutList)
 
 # Histograms to plot
 # the imported histoList is a dictionary and so this just gets the keys
-# VARIABLES = list(histoList)
-VARIABLES = ["RecoH_mass_1"]
+VARIABLES = list(histoList)
 
 # Set this to True if you want backgrounds included
 PLOT_BACKGROUNDS = True
@@ -78,23 +81,7 @@ SIGNALS = {
     "wzp6_ee_mumuH_HZZ_ecm365": {
         "label": "ee #rightarrow #mu#muH #rightarrow HZZ",
         "color": "#d62728",
-    },
-
-    # "p8_ee_WW_ecm365": {
-    #     "label": "ee #rightarrow WW",
-    #     "color": "#9467bd",
-    # },
-
-    # "p8_ee_ZZ_ecm365": {
-    #     "label": "ee #rightarrow ZZ",
-    #     "color": "#e377c2",
-    # },
-
-    # "p8_ee_tt_ecm365": {
-    #     "label": "ee #rightarrow tt",
-    #     "color": "#8c564b",
-    # },
-    
+    },    
 }
 
 BACKGROUNDS = {
@@ -113,6 +100,68 @@ BACKGROUNDS = {
         "color": "#C4C4C4",
     },
 }
+
+# ---------------------------------------------------------------------------
+# this function updates the BACKGROUNDS dictionary
+# automatically generates the labels and colors for the additional processes
+# ---------------------------------------------------------------------------
+def get_remaining_bkgs():
+
+    latex = {"tautau":  "#tau#tau", 
+             "mumu":    "#mu#mu", 
+             "tautauH": "#tau#tauH", 
+             "Htautau": "H#tau#tau", 
+             "egamma":  "e#gamma",
+             "gammae":  "#gammae",
+             "Zmumu":   "Z#mu#mu",
+             "gaga":    "#gamma#gamma",
+             "nuenueZ": "#nue#nueZ",
+             "nunuH":   "#nu#nuH",
+             "mumuH":   "#mu#muH"}
+
+    # number of processes to be added
+    Np = len(processList)-len(SIGNALS)-len(BACKGROUNDS)
+    # generate Np hex color codes
+    colors = list(map(plt.cm.colors.to_hex, plt.cm.viridis(range(Np+1))))
+    ind = 0 # to access current proccess color
+    
+    for p in processList:
+        
+        # omit the signals and main backgroungs which are already handeled
+        if p in SIGNALS or p in BACKGROUNDS:
+            continue
+
+        # manual iteration is used over enumerate(processList) due to 
+        # the above conditional resulting in a out of range error
+        ind += 1
+
+        # list of objects for this process
+        objs = p.split("_")[1:-1] # 1 omits the p8 or wzp6, -1 omits the ecm365
+        
+        # omit the energy distinctions from the label
+        if objs[-2].isdigit():
+            objs.remove(objs[-2])
+        if objs[-1].isdigit():
+            objs.remove(objs[-1])
+
+        # init process label and fill it with the objects and latex formatting if needed
+        label = ""
+        for obj in objs:
+            if obj.isdigit():
+                continue
+            elif obj in latex:
+                label += latex[obj]
+            else:
+                label += obj
+            if obj != objs[-1]:
+                label += " #rightarrow "      
+        
+        BACKGROUNDS[p] = {"label": label,
+                          "color": colors[ind]}
+
+get_remaining_bkgs()
+# print(BACKGROUNDS)
+# ---------------------------------------------------------------------------
 
 # Convert hexadecimal colors to ROOT colors once
 for process_info in list(SIGNALS.values()) + list(BACKGROUNDS.values()):
@@ -349,7 +398,7 @@ def make_plot(
 
 
     # Background legend
-    background_legend_height = 0.03 * n_background
+    background_legend_height = 0.01 * n_background
 
     background_legend = ROOT.TLegend(
         0.70,
@@ -402,7 +451,7 @@ def make_plot(
             background_stack.Add(hist)
 
         # Using unsorted list here so that the order of the legend is always the same
-        for process, hist in background_hists:
+        # for process, hist in background_hists:
 
             # Only add positive-yield backgrounds to the legend
             if hist.Integral() > 0:
@@ -526,22 +575,22 @@ def make_plot(
     
     text = ROOT.TLatex()
     text.SetNDC()
+    text.SetTextFont(42) 
 
     # Energy
     ss_text = f"#sqrt{{s}} = {ENERGY} GeV,"
-    text.SetTextFont(132)
-    text.SetTextSize(0.02)
+    text.SetTextSize(0.022)
     text.DrawLatex(0.14, 0.91, ss_text)
     
     # Luminosity
     L_text = f"L = {INT_LUMI} ab^{{-1}}"
-    text.SetTextFont(132)
-    text.SetTextSize(0.02)
-    text.DrawLatex(0.26, 0.91, L_text)
+    # text.SetTextFont(42)
+    text.SetTextSize(0.022)
+    text.DrawLatex(0.28, 0.91, L_text)
 
     # FCCAnalyses label
     fcc_text = "#bf{FCCAnalyses: FCC-ee Simulation}"
-    text.SetTextFont(42)
+    # text.SetTextFont(42)
     text.SetTextSize(0.03)
     text.DrawLatex(0.48, 0.91, fcc_text)
 
@@ -580,7 +629,8 @@ def make_plot(
     for ext in exts:
         output_file = os.path.join(
             cut_dir,
-            f"{variable}_{suffix}.{ext}",
+            # f"{variable}_{suffix}.{ext}",
+            f"{variable}_{cut}_{suffix}.{ext}",
         )
         
         canvas.SaveAs(output_file)
@@ -626,8 +676,8 @@ def main():
 
             print()
             print("----------------------------------------------")
-            print(f"Processing: {variable}")
-            print(f"Selection : {cut}")
+            print(f" Processing: {variable}")
+            print(f" Selection : {cut}")
             print("----------------------------------------------")
 
 
@@ -743,12 +793,6 @@ def main():
             background_hists.clear()
 
 
-    print()
-    print("==============================================")
-    print(" Plotting finished.")
-    # print("==============================================")
-
-
 # ---------------------------------------------------------------------------
 # Run script
 # ---------------------------------------------------------------------------
@@ -760,10 +804,13 @@ if __name__ == "__main__":
     search_pattern = os.path.join(DIR_PLOTS, "**", "*.*")
     all_files = glob.glob(search_pattern, recursive=True)
     
+    # Calculate the epoch time when the script started using your existing START_TIME
+    epoch_start_time = time.time() - (time.perf_counter() - START_TIME)
+
     # Filter for files that were actually modified or created during this run
     updated_files = [
         file_path for file_path in all_files 
-        if os.path.isfile(file_path) and os.path.getmtime(file_path) >= START_TIME
+        if os.path.isfile(file_path) and os.path.getmtime(file_path) >= epoch_start_time
     ]
     total_plots = len(updated_files)
     
@@ -778,6 +825,9 @@ if __name__ == "__main__":
     hours, minutes = divmod(total_minutes, 60)
 
     # Output summary
+    print()
+    print("==============================================")
+    print(f" Plotting finished.")
     print(f" Elapsed time (H:M:S): {int(hours):02d}:{int(minutes):02d}:{int(seconds):02d}")
     print(f" Total plots produced: {total_plots:,}")
     print("==============================================")

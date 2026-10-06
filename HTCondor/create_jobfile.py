@@ -1,4 +1,5 @@
 import os
+import sys
 
 def create_condor_config(nCPUs: int,
                          memory: int,
@@ -91,20 +92,25 @@ def submit_jobs(output_dir: str):
         os.system(f"condor_submit {dir}/job_submit.cfg")
         print(f"GOOD SUBMISSION: {process} with {num_files} chunks")
 
-processList = {
 
-    # Signal
-    'wzp6_ee_eeH_HWW_ecm365':   {},
-    'wzp6_ee_mumuH_HWW_ecm365': {},
-    'wzp6_ee_eeH_HZZ_ecm365':   {},
-    'wzp6_ee_mumuH_HZZ_ecm365': {},
+# Get full processList from analysis_stage file
+sys.path.append("/work/aratanshi/HWWZZ/analysis")
+from analysis_stage import processList
 
-    # Background
-    'p8_ee_WW_ecm365': {},
-    'p8_ee_ZZ_ecm365': {},
-    'p8_ee_tt_ecm365': {},
+# processList = {
+
+#     # Signal
+#     'wzp6_ee_eeH_HWW_ecm365':   {},
+#     'wzp6_ee_mumuH_HWW_ecm365': {},
+#     'wzp6_ee_eeH_HZZ_ecm365':   {},
+#     'wzp6_ee_mumuH_HZZ_ecm365': {},
+
+#     # Background
+#     'p8_ee_WW_ecm365': {},
+#     'p8_ee_ZZ_ecm365': {},
+#     'p8_ee_tt_ecm365': {},
     
-}
+# }
 
 inputDir =  '/ceph/sgiappic/HiggsCP/winter23/'
 output =    '/ceph/aratanshi/HTCondor/' # output directory of submission files, needs to be different to have unique submission files
