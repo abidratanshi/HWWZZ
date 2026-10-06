@@ -45,5 +45,8 @@ for sel in selections:
     print(sel)
     print(f"S =        {S:.3e}, {S/S_total*100:.0f}% of total sig events")
     print(f"B =        {B:.3e}, {B/B_total*100:.0f}% of total bkg events")
+    # print(f"S/B =      {S/B:.3f}")
+    # print(f"S/√B =     {S/B**(1/2):.3f}")
     print(f"S/√(S+B) = {S/(S+B)**(1/2):.3f}")
     if sel != selections[-1]: print()
+    
