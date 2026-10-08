@@ -3,6 +3,11 @@
 """
 FCC-ee plotting script
 Adapted from FCCAnalyses/do_plots.py
+
+Includes a merging step: individual background processes are summed into
+groups (defined in BKG_GROUPS below) and written to MERGED_DIRECTORY, then
+the plots are made from the merged files. Signals are read unchanged from
+DIRECTORY.
 """
 
 # Start timer to measure script run time
@@ -12,6 +17,7 @@ START_TIME = time.perf_counter()
 import os
 import glob
 import ROOT
+import numpy as np
 
 # get processes from analysis stage script
 from analysis_stage import processList
@@ -33,8 +39,11 @@ ROOT.gStyle.SetPaperSize(20, 20)
 # Configuration
 # ---------------------------------------------------------------------------
 
-# Directory containing the final-stage ROOT files
+# Directory containing the final-stage ROOT files (one per process, per cut)
 DIRECTORY = "/ceph/aratanshi/final_output/"
+
+# Directory where the merged background files are written / read
+MERGED_DIRECTORY = "/ceph/aratanshi/final_output_merged/"
 
 # Directory where plots will be saved
 DIR_PLOTS = "/web/aratanshi/public_html/plots/"
@@ -57,6 +66,15 @@ PLOT_BACKGROUNDS = True
 # Produce linear and logarithmic versions
 PLOT_LOG = True
 PLOT_LINEAR = True
+
+# Run the merging step at the start of main()
+MERGE_BACKGROUNDS = True
+
+# Re-merge every group even if its merged file is already newer than all of
+# its inputs. Set to True after editing BKG_GROUPS (a removed member would
+# otherwise stay in an old merged file) or after re-running the final stage
+# in a way that does not change file modification times.
+FORCE_REMERGE = False
 
 # Each process contains:
 #   label = text displayed in the legend
@@ -81,87 +99,157 @@ SIGNALS = {
     "wzp6_ee_mumuH_HZZ_ecm365": {
         "label": "ee #rightarrow #mu#muH #rightarrow HZZ",
         "color": "#d62728",
-    },    
+    },
 }
+
+# ---------------------------------------------------------------------------
+# Background groups
+#
+# Each key is the name of the MERGED sample (file name will be
+# <key>_<cut>_histo.root in MERGED_DIRECTORY). "members" are the processes
+# that are summed into it. Edit this to change the grouping.
+# ---------------------------------------------------------------------------
+
+ECM = f"ecm{ENERGY}"
+
+# Higgs decay classes
+HQQ = ["Hbb", "Hcc", "Hss", "Hgg"]   # hadronic Higgs decays
+HVV = ["HWW", "HZZ"]
+HTT = ["Htautau"]
+
+
+def _higgs(prods, decays):
+    """All wzp6_ee_<prod>_<decay>_ecmXXX names for the given productions/decays."""
+    return [f"wzp6_ee_{p}_{d}_{ECM}" for p in prods for d in decays]
+
+
+BKG_GROUPS = {
+    # ---- main backgrounds (kept on their own) -----------------------------
+    f"p8_ee_WW_{ECM}": {
+        "label": "ee #rightarrow WW",
+        "members": [f"p8_ee_WW_{ECM}"],
+    },
+    f"p8_ee_ZZ_{ECM}": {
+        "label": "ee #rightarrow ZZ",
+        "members": [f"p8_ee_ZZ_{ECM}"],
+    },
+    f"p8_ee_tt_{ECM}": {
+        "label": "ee #rightarrow tt",
+        "members": [f"p8_ee_tt_{ECM}"],
+    },
+    f"p8_ee_WW_tautau_{ECM}": {      # skipped automatically if not on disk
+        "label": "ee #rightarrow WW #rightarrow #tau#tau",
+        "members": [f"p8_ee_WW_tautau_{ECM}"],
+    },
+
+    # ---- Z / diboson-like -------------------------------------------------
+    f"p8_ee_ZQQ_{ECM}": {
+        "label": "ee #rightarrow Z #rightarrow qq",
+        "members": [f"p8_ee_{z}_{ECM}" for z in ("Zqq", "Zbb", "Zcc", "Zss")],
+    },
+    f"wzp6_ee_LL_{ECM}": {
+        "label": "ee #rightarrow ll (e,#mu,#tau)",
+        "members": [
+            f"wzp6_ee_mumu_{ECM}",
+            f"wzp6_ee_ee_Mee_30_150_{ECM}",
+            f"wzp6_ee_tautau_{ECM}",
+        ],
+    },
+    f"wzp6_egamma_eZ_ZLL_{ECM}": {
+        "label": "e#gamma #rightarrow eZ #rightarrow e ll",
+        "members": [
+            f"wzp6_egamma_eZ_Zmumu_{ECM}",
+            f"wzp6_egamma_eZ_Zee_{ECM}",
+            f"wzp6_gammae_eZ_Zmumu_{ECM}",
+            f"wzp6_gammae_eZ_Zee_{ECM}",
+        ],
+    },
+    f"wzp6_gaga_LL_60_{ECM}": {
+        "label": "#gamma#gamma #rightarrow ll",
+        "members": [
+            f"wzp6_gaga_tautau_60_{ECM}",
+            f"wzp6_gaga_mumu_60_{ECM}",
+            f"wzp6_gaga_ee_60_{ECM}",
+        ],
+    },
+    f"wzp6_ee_nuenueZ_{ECM}": {
+        "label": "ee #rightarrow #nu_{e}#nu_{e}Z",
+        "members": [f"wzp6_ee_nuenueZ_{ECM}"],
+    },
+
+    # ---- tautauH ----------------------------------------------------------
+    f"wzp6_ee_tautauH_HQQ_{ECM}": {
+        "label": "ee #rightarrow #tau#tauH, H #rightarrow qq/gg",
+        "members": _higgs(["tautauH"], HQQ),
+    },
+    f"wzp6_ee_tautauH_HVV_{ECM}": {
+        "label": "ee #rightarrow #tau#tauH, H #rightarrow VV",
+        "members": _higgs(["tautauH"], HVV),
+    },
+    f"wzp6_ee_tautauH_Htautau_{ECM}": {
+        "label": "ee #rightarrow #tau#tauH, H #rightarrow #tau#tau",
+        "members": _higgs(["tautauH"], HTT),
+    },
+
+    # ---- nunuH ------------------------------------------------------------
+    f"wzp6_ee_nunuH_HQQ_{ECM}": {
+        "label": "ee #rightarrow #nu#nuH, H #rightarrow qq/gg",
+        "members": _higgs(["nunuH"], HQQ),
+    },
+    f"wzp6_ee_nunuH_HVV_{ECM}": {
+        "label": "ee #rightarrow #nu#nuH, H #rightarrow VV",
+        "members": _higgs(["nunuH"], HVV),
+    },
+    f"wzp6_ee_nunuH_Htautau_{ECM}": {
+        "label": "ee #rightarrow #nu#nuH, H #rightarrow #tau#tau",
+        "members": _higgs(["nunuH"], HTT),
+    },
+
+    # ---- eeH + mumuH, non-signal decays (HWW/HZZ are the signal) ----------
+    f"wzp6_ee_LLH_HQQ_{ECM}": {
+        "label": "ee #rightarrow (ee,#mu#mu)H, H #rightarrow qq/gg",
+        "members": _higgs(["eeH", "mumuH"], HQQ),
+    },
+    f"wzp6_ee_LLH_Htautau_{ECM}": {
+        "label": "ee #rightarrow (ee,#mu#mu)H, H #rightarrow #tau#tau",
+        "members": _higgs(["eeH", "mumuH"], HTT),
+    },
+
+    # ---- quark-pair + H (bbH, ccH, ssH, qqH) ------------------------------
+    f"wzp6_ee_QQH_HQQ_{ECM}": {
+        "label": "ee #rightarrow QQH, H #rightarrow qq/gg",
+        "members": _higgs(["bbH", "ccH", "ssH", "qqH"], HQQ),
+    },
+    f"wzp6_ee_QQH_HVV_{ECM}": {
+        "label": "ee #rightarrow QQH, H #rightarrow VV",
+        "members": _higgs(["bbH", "ccH", "ssH", "qqH"], HVV),
+    },
+    f"wzp6_ee_QQH_Htautau_{ECM}": {
+        "label": "ee #rightarrow QQH, H #rightarrow #tau#tau",
+        "members": _higgs(["bbH", "ccH", "ssH", "qqH"], HTT),
+    },
+}
+
+# Colours: the three main backgrounds keep their greys, every other group
+# gets an evenly spaced colour from viridis
+MAIN_COLORS = {
+    f"p8_ee_WW_{ECM}": "#3B3B3B",
+    f"p8_ee_ZZ_{ECM}": "#808080",
+    f"p8_ee_tt_{ECM}": "#C4C4C4",
+}
+
+_other_groups = [g for g in BKG_GROUPS if g not in MAIN_COLORS]
+_viridis = iter(
+    map(plt.cm.colors.to_hex, plt.cm.viridis(np.linspace(0, 1, len(_other_groups))))
+)
 
 BACKGROUNDS = {
-    "p8_ee_WW_ecm365": {
-        "label": "ee #rightarrow WW",
-        "color": "#3B3B3B",
-    },
-
-    "p8_ee_ZZ_ecm365": {
-        "label": "ee #rightarrow ZZ",
-        "color": "#808080",
-    },
-
-    "p8_ee_tt_ecm365": {
-        "label": "ee #rightarrow tt",
-        "color": "#C4C4C4",
-    },
+    group: {
+        "label": info["label"],
+        "color": MAIN_COLORS.get(group) or next(_viridis),
+    }
+    for group, info in BKG_GROUPS.items()
 }
-
-# ---------------------------------------------------------------------------
-# this function updates the BACKGROUNDS dictionary
-# automatically generates the labels and colors for the additional processes
-# ---------------------------------------------------------------------------
-def get_remaining_bkgs():
-
-    latex = {"tautau":  "#tau#tau", 
-             "mumu":    "#mu#mu", 
-             "tautauH": "#tau#tauH", 
-             "Htautau": "H#tau#tau", 
-             "egamma":  "e#gamma",
-             "gammae":  "#gammae",
-             "Zmumu":   "Z#mu#mu",
-             "gaga":    "#gamma#gamma",
-             "nuenueZ": "#nue#nueZ",
-             "nunuH":   "#nu#nuH",
-             "mumuH":   "#mu#muH"}
-
-    # number of processes to be added
-    Np = len(processList)-len(SIGNALS)-len(BACKGROUNDS)
-    # generate Np hex color codes
-    colors = list(map(plt.cm.colors.to_hex, plt.cm.viridis(range(Np+1))))
-    ind = 0 # to access current proccess color
-    
-    for p in processList:
-        
-        # omit the signals and main backgroungs which are already handeled
-        if p in SIGNALS or p in BACKGROUNDS:
-            continue
-
-        # manual iteration is used over enumerate(processList) due to 
-        # the above conditional resulting in a out of range error
-        ind += 1
-
-        # list of objects for this process
-        objs = p.split("_")[1:-1] # 1 omits the p8 or wzp6, -1 omits the ecm365
-        
-        # omit the energy distinctions from the label
-        if objs[-2].isdigit():
-            objs.remove(objs[-2])
-        if objs[-1].isdigit():
-            objs.remove(objs[-1])
-
-        # init process label and fill it with the objects and latex formatting if needed
-        label = ""
-        for obj in objs:
-            if obj.isdigit():
-                continue
-            elif obj in latex:
-                label += latex[obj]
-            else:
-                label += obj
-            if obj != objs[-1]:
-                label += " #rightarrow "      
-        
-        BACKGROUNDS[p] = {"label": label,
-                          "color": colors[ind]}
-
-get_remaining_bkgs()
-# print(BACKGROUNDS)
-# ---------------------------------------------------------------------------
 
 # Convert hexadecimal colors to ROOT colors once
 for process_info in list(SIGNALS.values()) + list(BACKGROUNDS.values()):
@@ -169,24 +257,166 @@ for process_info in list(SIGNALS.values()) + list(BACKGROUNDS.values()):
 
 
 # ---------------------------------------------------------------------------
+# Merging
+# ---------------------------------------------------------------------------
+
+def check_coverage():
+    """
+    Warn about processes in processList that are in no group and not a
+    signal, and about processes that appear in more than one group
+    (which would double count)
+    """
+
+    seen = {}
+
+    for group, info in BKG_GROUPS.items():
+        for proc in info["members"]:
+            if proc in seen:
+                print(
+                    f"  WARNING: {proc} is in both '{seen[proc]}' "
+                    f"and '{group}' (double counting!)"
+                )
+            seen[proc] = group
+
+    covered = set(seen) | set(SIGNALS)
+
+    for proc in processList:
+        if proc not in covered:
+            print(
+                f"  WARNING: {proc} is in processList but in no "
+                f"background group and is not a signal"
+            )
+
+
+def merge_group(group, members, cut, force=False):
+    """
+    Sum the histograms of all member processes for one cut and write them
+    to a single file: MERGED_DIRECTORY/<group>_<cut>_histo.root
+
+    Every histogram in each member file is summed (the file is opened once),
+    so no variable list is needed. The inputs are already scaled to
+    cross section * luminosity by the final stage (doScale = True), so
+    adding them is correct.
+    """
+
+    out_path = os.path.join(MERGED_DIRECTORY, f"{group}_{cut}_histo.root")
+
+    in_paths = []
+    for proc in members:
+        path = os.path.join(DIRECTORY, f"{proc}_{cut}_histo.root")
+        if os.path.isfile(path):
+            in_paths.append((proc, path))
+        else:
+            print(f"    [skip] {proc}: no file for cut '{cut}'")
+
+    if not in_paths:
+        print(f"  [none] {group}: no member files for cut '{cut}', nothing written")
+        return
+
+    # Skip if the merged file is already newer than every input
+    if not force and os.path.isfile(out_path):
+        newest_input = max(os.path.getmtime(p) for _, p in in_paths)
+        if os.path.getmtime(out_path) >= newest_input:
+            print(f"  [up to date] {group}")
+            return
+
+    merged = {}      # histogram name -> summed histogram
+    n_files = 0
+
+    for proc, path in in_paths:
+
+        tf = ROOT.TFile.Open(path, "READ")
+
+        if not tf or tf.IsZombie():
+            print(f"    [skip] {proc}: could not open {path}")
+            continue
+
+        n_files += 1
+
+        for key in tf.GetListOfKeys():
+            obj = key.ReadObj()
+
+            if not obj.InheritsFrom("TH1"):
+                continue
+
+            name = key.GetName()
+
+            if name not in merged:
+                h = obj.Clone()
+                h.SetDirectory(0)      # detach so it survives tf.Close()
+                merged[name] = h
+            else:
+                merged[name].Add(obj)
+
+        tf.Close()
+
+    if n_files == 0:
+        print(f"  [none] {group}: could not open any member file for cut '{cut}'")
+        return
+
+    out = ROOT.TFile.Open(out_path, "RECREATE")
+    out.cd()
+
+    for h in merged.values():
+        h.Write()
+
+    out.Close()
+
+    print(
+        f"  [merged] {group}: {n_files}/{len(members)} files, "
+        f"{len(merged)} histograms"
+    )
+
+
+def merge_backgrounds(cuts=None, force=False):
+    """
+    Merge all background groups for every cut
+    """
+
+    if cuts is None:
+        cuts = CUTS
+
+    os.makedirs(MERGED_DIRECTORY, exist_ok=True)
+
+    print()
+    print("----------------------------------------------")
+    print(" Merging backgrounds")
+    print("----------------------------------------------")
+
+    check_coverage()
+
+    for cut in cuts:
+        print(f" Selection: {cut}")
+
+        for group, info in BKG_GROUPS.items():
+            merge_group(group, info["members"], cut, force=force)
+
+    print(f" Merged files are in {MERGED_DIRECTORY}")
+
+
+# ---------------------------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------------------------
 
 
-def load_histogram(process, cut, variable):
+def load_histogram(process, cut, variable, directory=DIRECTORY):
     """
     Load one histogram from a ROOT file
 
     Parameters
     ----------
     process : str
-        Process name, e.g. 'wzp6_ee_eeH_HWW_ecm365'
+        Process (or merged group) name, e.g. 'wzp6_ee_eeH_HWW_ecm365'
 
     cut : str
         Selection name, e.g. 'selZ'
 
     variable : str
         Histogram name, e.g. 'Recoil_mass'
+
+    directory : str
+        Directory containing the file. Signals live in DIRECTORY,
+        merged backgrounds in MERGED_DIRECTORY
 
     Returns
     -------
@@ -196,7 +426,7 @@ def load_histogram(process, cut, variable):
     """
 
     filename = os.path.join(
-        DIRECTORY,
+        directory,
         f"{process}_{cut}_histo.root"
     )
 
@@ -572,16 +802,16 @@ def make_plot(
     # -----------------------------------------------------------------------
     # Add text
     # -----------------------------------------------------------------------
-    
+
     text = ROOT.TLatex()
     text.SetNDC()
-    text.SetTextFont(42) 
+    text.SetTextFont(42)
 
     # Energy
     ss_text = f"#sqrt{{s}} = {ENERGY} GeV,"
     text.SetTextSize(0.022)
     text.DrawLatex(0.14, 0.91, ss_text)
-    
+
     # Luminosity
     L_text = f"L = {INT_LUMI} ab^{{-1}}"
     # text.SetTextFont(42)
@@ -594,7 +824,7 @@ def make_plot(
     text.SetTextSize(0.03)
     text.DrawLatex(0.48, 0.91, fcc_text)
 
-    
+
     # -----------------------------------------------------------------------
     # Draw legends
     # -----------------------------------------------------------------------
@@ -619,23 +849,23 @@ def make_plot(
     # -----------------------------------------------------------------------
 
     suffix = "log" if logy else "lin"
-    
+
     cut_dir = os.path.join(DIR_PLOTS, cut)
     os.makedirs(cut_dir, exist_ok=True)
 
     # file type extensions to be produced
     exts = ("pdf", "png")
-    
+
     for ext in exts:
         output_file = os.path.join(
             cut_dir,
             # f"{variable}_{suffix}.{ext}",
             f"{variable}_{cut}_{suffix}.{ext}",
         )
-        
+
         canvas.SaveAs(output_file)
         print(f"  Saved: {output_file}")
-        
+
     # Explicitly delete canvas to avoid accumulating ROOT objects
     canvas.Close()
 
@@ -651,14 +881,24 @@ def main():
     print(" FCC-ee histogram plotting")
     print("==============================================")
     print(f" Input directory  : {DIRECTORY}")
+    print(f" Merged directory : {MERGED_DIRECTORY}")
     print(f" Output directory : {DIR_PLOTS}")
     print(f" Energy           : {ENERGY} GeV")
     print(f" Luminosity       : {INT_LUMI} ab^-1")
     print(f" Cuts             : {CUTS}")
     print(f" Variables        : {VARIABLES}")
     print(f" Backgrounds      : {PLOT_BACKGROUNDS}")
+    print(f" Merge first      : {MERGE_BACKGROUNDS} (force: {FORCE_REMERGE})")
     print("==============================================")
     print()
+
+
+    # -----------------------------------------------------------------------
+    # Merge backgrounds into groups (only needed if they will be plotted)
+    # -----------------------------------------------------------------------
+
+    if MERGE_BACKGROUNDS and PLOT_BACKGROUNDS:
+        merge_backgrounds(CUTS, force=FORCE_REMERGE)
 
 
     # -----------------------------------------------------------------------
@@ -682,7 +922,7 @@ def main():
 
 
             # ===============================================================
-            # Load signal histograms
+            # Load signal histograms (unmerged, from DIRECTORY)
             # ===============================================================
 
             signal_hists = []
@@ -693,6 +933,7 @@ def main():
                     process,
                     cut,
                     variable,
+                    directory=DIRECTORY,
                 )
 
                 if hist is None:
@@ -721,7 +962,7 @@ def main():
 
 
             # ===============================================================
-            # Load background histograms if requested
+            # Load merged background histograms if requested
             # ===============================================================
 
             background_hists = []
@@ -734,6 +975,7 @@ def main():
                         process,
                         cut,
                         variable,
+                        directory=MERGED_DIRECTORY,
                     )
 
                     if hist is None:
@@ -803,21 +1045,21 @@ if __name__ == "__main__":
     # Gather all file paths in the plots directory recursively
     search_pattern = os.path.join(DIR_PLOTS, "**", "*.*")
     all_files = glob.glob(search_pattern, recursive=True)
-    
+
     # Calculate the epoch time when the script started using your existing START_TIME
     epoch_start_time = time.time() - (time.perf_counter() - START_TIME)
 
     # Filter for files that were actually modified or created during this run
     updated_files = [
-        file_path for file_path in all_files 
+        file_path for file_path in all_files
         if os.path.isfile(file_path) and os.path.getmtime(file_path) >= epoch_start_time
     ]
     total_plots = len(updated_files)
-    
+
     # Calculate total elapsed run time
     END_TIME = time.perf_counter()
     total_seconds = END_TIME - START_TIME
-    
+
     # Split into whole minutes and remaining seconds
     total_minutes, seconds = divmod(total_seconds, 60)
 
